@@ -1,8 +1,27 @@
 aid: fintary
 name: Fintary
-description: 'Fintary is a company surfaced as a portfolio company of sierra-ventures and added to the
-  API Evangelist network as a stub for enrichment. Sector: fintech. This profile is a lead awaiting the
-  enrichment pipeline.'
+description: 'Fintary is an AI-powered commission management and revenue operations
+  platform for insurance distribution — serving brokerages, carriers, and wealth firms.
+  It automates compensation calculation and reporting across complex hierarchies,
+  splits, overrides, and bonuses; reconciles carrier statement data; monitors chargebacks;
+  surfaces real-time revenue and profitability analytics; and provides a white-label
+  producer portal for 24/7 commission visibility. Fintary integrates with agency and
+  distribution systems such as Applied Epic, Agency Integrator, SmartOffice, OneHQ,
+  and BenefitPoint, and states it supports API connections to accounting, document
+  management, and custom databases. This profile is maintained in the API Evangelist
+  network; Fintary does not currently publish a public developer portal or API specification.'
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://cdn.prod.website-files.com/6891283959a9d392e4db12c1/68d598f0c0abbe7967241ea6_fintary-webclip.png
 url: https://raw.githubusercontent.com/api-evangelist/fintary/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -12,10 +31,15 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Fintech
+- Insurance
+- Insurtech
+- Commissions
+- Revenue Operations
+- Analytics
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -25,3 +49,18 @@ maintainers:
 common:
 - type: Website
   url: https://fintary.com/
+- type: PrivacyPolicy
+  url: https://www.fintary.com/privacy-policy
+- type: TermsOfService
+  url: https://www.fintary.com/terms-of-service
+- type: Support
+  url: https://www.fintary.com/contact-us
+- type: Blog
+  url: https://fintary.com/resources
+- type: DomainSecurity
+  url: security/fintary-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
