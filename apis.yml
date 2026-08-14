@@ -7,19 +7,24 @@ description: 'Fintary is an AI-powered commission management and revenue operati
   surfaces real-time revenue and profitability analytics; and provides a white-label
   producer portal for 24/7 commission visibility. Fintary integrates with agency and
   distribution systems such as Applied Epic, Agency Integrator, SmartOffice, OneHQ,
-  and BenefitPoint, and states it supports API connections to accounting, document
-  management, and custom databases. This profile is maintained in the API Evangelist
-  network; Fintary does not currently publish a public developer portal or API specification.'
+  and BenefitPoint. Fintary publishes two OpenAPI 3.0.0 contracts on its own API host
+  at api.fintary.com — a customer-facing Open API (agents, commissions, payouts, policies,
+  analytics datasets/reports/widgets, document upload) and an AMS API (policies, customers,
+  agents, contracts, hierarchy, tasks, document repository, page-config registry) — plus
+  SSO integration guides for external identity providers. This profile is maintained in
+  the API Evangelist network.'
 accessModel:
   pricing: unknown
-  onboarding: unknown
+  onboarding: approval
   trial: false
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
+  label: Contact sales / customer tenant
+  confidence: medium
+  source:
+  - authentication
+  - documentation
+  generated: '2026-08-14'
   method: derived
 image: https://cdn.prod.website-files.com/6891283959a9d392e4db12c1/68d598f0c0abbe7967241ea6_fintary-webclip.png
 url: https://raw.githubusercontent.com/api-evangelist/fintary/refs/heads/main/apis.yml
@@ -29,9 +34,9 @@ x-backed-by:
 - sierra-ventures
 x-tier: stub
 x-tier-reason: portfolio-lead
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-14'
 tags:
 - Company
 - Fintech
@@ -40,7 +45,63 @@ tags:
 - Commissions
 - Revenue Operations
 - Analytics
-apis: []
+- Agency Management
+- Policy Management
+- Payouts
+- Reconciliation
+- OpenAPI
+apis:
+- name: Fintary Open API
+  description: >-
+    Customer-facing REST API over Fintary's commission and distribution data — list, create
+    and update agents; assign and remove uplines; read an agent's commissions, payouts,
+    policies and dashboard snapshot; query published analytics reports, datasets and
+    dashboard widgets; pull commission report data; and upload or convert documents.
+    Authenticated with an `x-api-key` header API key or an HTTP bearer token. Twenty-one
+    operations under the `/openapi/` path prefix on api.fintary.com.
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - Commissions
+  - Payouts
+  - Analytics
+  - Insurance
+  - Agency Management
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-open-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: Overlay
+    url: overlays/fintary-open-api-overlay.yaml
+- name: Fintary AMS API
+  description: >-
+    Agency Management System REST API covering the policy, customer and agent record
+    core — policy detail, status changes, teams, tasks, commission breakdown and the
+    two-phase document repository upload; customer CRUD, summaries and bulk update;
+    agent CRUD, contracts, hierarchy and full upline/downline tree; task management and
+    escalation; custom-field and status configuration; and a page-config/capabilities
+    registry that publishes bindable fields, widget vocabulary and an endpoint allowlist
+    for AI and wire clients. Sixty operations under `/api/ams/` on api.fintary.com,
+    authenticated with an HTTP bearer token.
+  humanURL: https://api.fintary.com/api-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - Policy Management
+  - Agency Management
+  - Insurance
+  - Commissions
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: Overlay
+    url: overlays/fintary-ams-api-overlay.yaml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -57,10 +118,52 @@ common:
   url: https://www.fintary.com/contact-us
 - type: Blog
   url: https://fintary.com/resources
+- type: Documentation
+  url: https://api.fintary.com/documentation
+- type: APIReference
+  url: https://api.fintary.com/openapi-doc
+- type: Login
+  url: https://app.fintary.com
+- type: StatusPage
+  url: https://fintary.instatus.com/
+- type: Compliance
+  url: https://www.fintary.com/carriers
 - type: DomainSecurity
   url: security/fintary-domain-security.yml
+- type: Authentication
+  url: authentication/fintary-authentication.yml
+- type: Conventions
+  url: conventions/fintary-conventions.yml
+- type: ErrorCatalog
+  url: errors/fintary-problem-types.yml
+- type: DataModel
+  url: data-model/fintary-data-model.yml
+- type: Lifecycle
+  url: lifecycle/fintary-lifecycle.yml
+- type: Conformance
+  url: conformance/fintary-conformance.yml
+- type: Packages
+  url: packages/fintary-packages.yml
+- type: MCPServer
+  url: mcp/fintary-mcp.yml
+- type: LLMsTxt
+  url: llms/fintary-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/fintary-agentic-access.yml
+- type: Plans
+  url: plans/fintary-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/fintary-rate-limits.yml
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-14'
+  status: enriched
+  artifacts_added: 24
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+  note: >-
+    Contract discovery beat a prior "no API" finding. Two OpenAPI 3.0.0 documents (81
+    operations) are published on Fintary's own API host, embedded in the __NEXT_DATA__ of
+    api.fintary.com/openapi-doc and /api-doc, which is why every conventional
+    /openapi.json probe returns 404. Both were confirmed live (401 on real routes, 404 on a
+    control path).
