@@ -1,0 +1,265 @@
+generated: '2026-08-14'
+method: derived
+status: candidate
+source: openapi/fintary-open-api-openapi.yml, openapi/fintary-ams-api-openapi.yml
+notes: No official hosted or local Fintary MCP server was found. Searched the Fintary documentation (api.fintary.com/documentation,
+  /openapi-doc, /api-doc), the marketing site, the Fintary GitHub organization and the npm/PyPI registries;
+  api.fintary.com/mcp and /sse both return 404 and mcp.fintary.com does not resolve. The tool list below
+  is a CANDIDATE derived one-per-operation from the two published OpenAPI documents; Fintary ships no
+  MCP server today. Tool names for the AMS API are synthesised from method+path because that document
+  declares no operationIds - the backing operation is recorded by method and path so nothing is invented.
+deployment:
+  mode: none
+  auth: unknown
+  verified: searched
+server:
+  name: fintary
+  transport: http
+  url: null
+tool_count: 81
+tools:
+- name: agents_get
+  description: Get agent by ID
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.get
+- name: agents_update
+  description: Update an agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.update
+- name: agents_assignUpline
+  description: Assign upline to an agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.assignUpline
+- name: agents_removeUpline
+  description: Remove upline from an agent (by contact_hierarchy str_id)
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.removeUpline
+- name: agents_listCommissions
+  description: Get commissions for an agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.listCommissions
+- name: agents_getDashboard
+  description: Get dashboard snapshot for an agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.getDashboard
+- name: agents_listPayouts
+  description: Get payouts for an agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.listPayouts
+- name: agents_listPolicies
+  description: Get policies for an agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.listPolicies
+- name: agents_list
+  description: List agents
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.list
+- name: agents_create
+  description: Create a new agent
+  source_operation: openapi/fintary-open-api-openapi.yml#agents.create
+- name: analytics_getDatasetData
+  description: Query an analytics dataset by name
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.getDatasetData
+- name: analytics_listDatasets
+  description: List analytics datasets
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.listDatasets
+- name: analytics_getReportData
+  description: Fetch data for a specific analytics report
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.getReportData
+- name: analytics_listReports
+  description: List published analytics reports
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.listReports
+- name: analytics_getExportTaskStatus
+  description: Get analytics export task status
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.getExportTaskStatus
+- name: analytics_listDefaultWidgets
+  description: List default analytics dashboard widgets
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.listDefaultWidgets
+- name: analytics_restoreDefaultWidget
+  description: Restore a default analytics widget
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.restoreDefaultWidget
+- name: analytics_listWidgets
+  description: List analytics dashboard widgets
+  source_operation: openapi/fintary-open-api-openapi.yml#analytics.listWidgets
+- name: compReports_getData
+  description: Get commission report data
+  source_operation: openapi/fintary-open-api-openapi.yml#compReports.getData
+- name: documents_convertHtmlToPdf
+  description: Convert HTML to PDF
+  source_operation: openapi/fintary-open-api-openapi.yml#documents.convertHtmlToPdf
+- name: documents_upload
+  description: Upload a document
+  source_operation: openapi/fintary-open-api-openapi.yml#documents.upload
+- name: get_agents
+  description: Agent detail
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}
+- name: patch_agents
+  description: Update an agent
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/agents/{strId}
+- name: delete_agents
+  description: Delete an agent
+  source_operation: openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/agents/{strId}
+- name: get_agents_contracts
+  description: Contract detail
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}/contracts/{contractId}
+- name: patch_agents_contracts
+  description: Update a contract
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/agents/{strId}/contracts/{contractId}
+- name: delete_agents_contracts
+  description: Delete a contract
+  source_operation: openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/agents/{strId}/contracts/{contractId}
+- name: get_agents_contracts
+  description: List agent contracts
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}/contracts
+- name: post_agents_contracts
+  description: Create agent contract
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/agents/{strId}/contracts
+- name: get_agents_hierarchy
+  description: Get agent hierarchy tree (uplines and downlines)
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}/hierarchy
+- name: get_agents_tree
+  description: Get the full hierarchy tree for an agent (ancestors + descendants)
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}/tree
+- name: patch_agents_bulk_update
+  description: Bulk update agents
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/agents/bulk-update
+- name: get_agents
+  description: List agents
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents
+- name: post_agents
+  description: Create an agent
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/agents
+- name: get_agents_summary
+  description: Agent summary
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/summary
+- name: get_configs_custom_fields
+  description: List custom field definitions for the current account
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/configs/custom-fields
+- name: post_configs_custom_fields
+  description: Create a custom field definition
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/configs/custom-fields
+- name: get_configs_statuses
+  description: List status configurations
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/configs/statuses
+- name: get_customers
+  description: Customer detail
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/customers/{strId}
+- name: patch_customers
+  description: Update a customer
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/customers/{strId}
+- name: delete_customers
+  description: Delete a customer
+  source_operation: openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/customers/{strId}
+- name: get_customers_policies
+  description: List policies for a customer
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/customers/{strId}/policies
+- name: patch_customers_bulk_update
+  description: Bulk update customers
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/customers/bulk-update
+- name: get_customers
+  description: List customers
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/customers
+- name: post_customers
+  description: Create a customer
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/customers
+- name: get_customers_summary
+  description: Customer summary
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/customers/summary
+- name: patch_policies_case_manager
+  description: Update policy case manager
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/policies/{strId}/case-manager
+- name: get_policies_commission
+  description: Get policy commission info (receivables, payouts by role, statement totals)
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}/commission
+- name: get_policies_customers
+  description: List customers associated with a policy
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}/customers
+- name: delete_policies_documents
+  description: Delete policy document
+  source_operation: openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/policies/{strId}/documents/{documentStrId}
+- name: get_policies_documents_download
+  description: Short-lived signed download URL for a policy document
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}/documents/{documentStrId}/download
+- name: post_policies_documents_finalize
+  description: Finalize a policy document upload (phase 2 of two)
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/policies/{strId}/documents/finalize
+- name: get_policies_documents
+  description: List policy documents (Document Repository Service)
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}/documents
+- name: post_policies_documents
+  description: Start a policy document upload (phase 1 of two)
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/policies/{strId}/documents
+- name: get_policies
+  description: Policy detail
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}
+- name: patch_policies
+  description: Update policy
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/policies/{strId}
+- name: delete_policies
+  description: Delete policy
+  source_operation: openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/policies/{strId}
+- name: patch_policies_status
+  description: Change policy status
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/policies/{strId}/status
+- name: patch_policies_tasks
+  description: Update policy task
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/policies/{strId}/tasks/{taskId}
+- name: delete_policies_tasks
+  description: Delete policy task
+  source_operation: openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/policies/{strId}/tasks/{taskId}
+- name: get_policies_tasks
+  description: List policy tasks
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}/tasks
+- name: post_policies_tasks
+  description: Create policy task
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/policies/{strId}/tasks
+- name: get_policies_team
+  description: Get policy team
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/{strId}/team
+- name: patch_policies_team
+  description: Update policy team
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/policies/{strId}/team
+- name: patch_policies_bulk_update
+  description: Bulk update policies
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/policies/bulk-update
+- name: post_policies_filter_options
+  description: Get filter option values for the policy list
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/policies/filter-options
+- name: get_policies_filters
+  description: Get policy list filter metadata
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/filters
+- name: post_policies
+  description: Create a policy
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/policies
+- name: post_policies_list
+  description: List policies with basic info
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/policies/list
+- name: get_policies_summary
+  description: Policy summary grouped by status
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/policies/summary
+- name: get_registry_capabilities
+  description: Get the AI/wire manifest (bindable fields, widget vocabulary, endpoint allowlist, limits)
+    for an AMS entity
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/registry/capabilities
+- name: put_registry_page_config_default
+  description: Make one of the calling account's saved page-config variants its active default
+  source_operation: openapi/fintary-ams-api-openapi.yml#PUT /api/ams/registry/page-config-default
+- name: put_registry_page_config_save
+  description: Save a named page-config variant for the calling account
+  source_operation: openapi/fintary-ams-api-openapi.yml#PUT /api/ams/registry/page-config-save
+- name: get_registry_page_config
+  description: Get the wire page config for an AMS entity
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/registry/page-config
+- name: get_registry_page_configs
+  description: List the calling account's saved page-config variants for an AMS entity (excludes the account's
+    active default)
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/registry/page-configs
+- name: patch_tasks
+  description: Update a task
+  source_operation: openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/tasks/{taskId}
+- name: post_tasks_escalate
+  description: Escalate a task
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/tasks/{taskId}/escalate
+- name: get_tasks
+  description: List the current user's tasks
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/tasks
+- name: post_tasks
+  description: Create a task
+  source_operation: openapi/fintary-ams-api-openapi.yml#POST /api/ams/tasks
+- name: get_tasks_scope
+  description: Get the current user's agent scope (self + downline contacts)
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/tasks/scope
+- name: get_tasks_summary
+  description: Get a summary of the current user's tasks
+  source_operation: openapi/fintary-ams-api-openapi.yml#GET /api/ams/tasks/summary

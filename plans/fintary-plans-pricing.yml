@@ -1,0 +1,27 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  https://www.fintary.com/ (full navigation and footer), https://www.fintary.com/product,
+  https://www.fintary.com/carriers, https://www.fintary.com/contact-us,
+  https://www.fintary.com/pricing (HTTP 404)
+plan_count: 0
+plans: []
+note: >-
+  Fintary publishes no pricing. There is no pricing page - https://www.fintary.com/pricing
+  returns HTTP 404 - and no "Pricing" link appears anywhere in the site navigation or
+  footer, which lists only about-us, carriers, contact-us, health, life-and-annuity,
+  p-c-brokerage, podcast, product, resources, ria-case-study, roi and glossary. No price,
+  tier, seat rate, transaction fee, quota or overage figure appears on any page. The only
+  commercial call to action is a demo request through https://www.fintary.com/contact-us,
+  and the only application entry point is https://app.fintary.com, which is a tenant login
+  with no self-service signup. The API surface matches: SSO provider setup is stated to be
+  "not self-service", and both OpenAPI documents are scoped to an existing customer
+  account. This is an enterprise contact-sales motion, recorded as an explicit zero rather
+  than omitted.
+access_model:
+  pricing: unknown
+  onboarding: approval
+  self_service_signup: false
+  free_tier: false
+  trial: false
+  public_api_keys: false

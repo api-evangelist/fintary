@@ -1,0 +1,46 @@
+generated: '2026-08-14'
+method: probed
+source: >-
+  openapi/fintary-open-api-openapi.yml, openapi/fintary-ams-api-openapi.yml, and live
+  unauthenticated requests to https://api.fintary.com/openapi/agents and
+  https://api.fintary.com/api/ams/agents on 2026-08-14
+limit_count: 0
+rate_limits: []
+response_headers: []
+status_code_on_exhaustion: null
+retry_after: false
+note: >-
+  Fintary documents no rate limits and signals none at runtime. Neither published OpenAPI
+  document declares a 429 response on any of its 81 operations - the full set of declared
+  status codes is 200, 201, 304, 400, 401, 403, 404, 413 and 500 - and neither declares any
+  rate-limit header. Live unauthenticated responses returned no RateLimit-*, X-RateLimit-*
+  or Retry-After header; the only non-standard headers observed were `x-cloud-trace-context`
+  (Google Cloud infrastructure) and `out_of_date` on the AMS routes. There is no published
+  limits, quotas or throttling page anywhere on fintary.com or api.fintary.com. This is a
+  measured zero: an agent calling this API has no runtime signal telling it when to back
+  off. The one adjacent capacity control that IS published is a payload ceiling, recorded
+  below.
+adjacent_controls:
+- kind: payload-size
+  operation: openapi/fintary-open-api-openapi.yml#documents.upload
+  status: 413
+  note: >-
+    The document upload operation declares a 413 response, the only capacity-related status
+    code anywhere in either document. No size figure is published.
+- kind: result-size
+  note: >-
+    Per-request result ceilings are declared as query-parameter bounds rather than as rate
+    limits - `limit` is 1-1000 on the agents list and 1-10000 (default 50) on analytics
+    dataset queries. These bound one response, not a call rate.
+- kind: background-export
+  note: >-
+    Large analytics exports are pushed off the request path with
+    `background_task=true` plus polling of GET /openapi/analytics/tasks/{taskId}, which
+    implies a synchronous work ceiling that is nowhere quantified.
+probes:
+- url: https://api.fintary.com/openapi/agents
+  status: 401
+  rate_limit_headers: none
+- url: https://api.fintary.com/api/ams/agents
+  status: 401
+  rate_limit_headers: none

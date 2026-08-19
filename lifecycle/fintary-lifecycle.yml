@@ -1,0 +1,72 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  https://fintary.instatus.com/, https://www.fintary.com/carriers,
+  https://api.fintary.com/openapi-doc, https://api.fintary.com/api-doc
+versioning:
+  scheme: none
+  current: '1.0'
+  docs: null
+  note: >-
+    Both published OpenAPI documents declare info.version 1.0. No version segment appears in
+    any of the 81 paths, no version header is documented, and Fintary publishes no
+    versioning policy.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No deprecation or sunset policy is published and no RFC 8594 Sunset/Deprecation header
+    is documented. No Deprecation pointer is emitted in apis.yml. The only deprecation
+    signal anywhere in the surface is a parameter-level note, recorded below.
+deprecated_operations: []
+deprecated_elements:
+- element: >-
+    openapi/fintary-open-api-openapi.yml#analytics.getReportData - `id` path parameter
+  note: >-
+    "Pass the string ID (str_id) of the report. Integer IDs are accepted for legacy
+    compatibility but deprecated."
+- element: >-
+    openapi/fintary-open-api-openapi.yml#AnalyticsDatasetPage schema
+  note: >-
+    Described as "Paginated dataset rows returned by the deprecated dataset-by-name query
+    endpoint."
+sla:
+  url: https://www.fintary.com/carriers
+  uptime_target: 99.9%
+  note: >-
+    A "99.9% uptime SLA" is claimed on the carriers marketing page. No SLA document, credit
+    schedule, or measurement definition is published.
+status_page: https://fintary.instatus.com/
+status_page_detail:
+  provider: Instatus
+  verified: >-
+    Confirmed as Fintary's own page, not a vendor false positive - the control host
+    zzznotarealcompanyxyz.instatus.com redirects to instatus.com while fintary.instatus.com
+    serves a 180KB page titled "Fintary - Status". (fintary.statuspage.io was also probed
+    and rejected: it redirects to Atlassian's marketing page, exactly as a nonsense control
+    subdomain does.)
+  components:
+  - Web app
+  - Integrations
+  - Document processing
+  - Calculation engine
+  - Reporting & analytics
+  state_at_probe: All systems operational
+  subscribe: [Email, Slack, Microsoft Teams, Google Chat, Webhook, RSS, Atom, API]
+  note: >-
+    The status page is not linked from fintary.com, api.fintary.com, or either OpenAPI
+    document; it was found by probing the conventional status-vendor subdomains.
+changelog:
+  url: null
+  note: >-
+    No dated changelog, release notes, or "what's new" page was found on the marketing site,
+    the API host, or either documentation page. No ChangeLog pointer is emitted.
+roadmap:
+  url: null
+support:
+  url: https://www.fintary.com/contact-us
+  note: >-
+    The SSO integration guides direct integrators to "your Fintary representative" and
+    "Fintary support" rather than to a self-service channel; SSO provider setup is
+    explicitly not self-service.

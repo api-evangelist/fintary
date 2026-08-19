@@ -1,0 +1,79 @@
+generated: '2026-08-14'
+method: probed
+source: live GET of /.well-known/* on every Fintary host
+note: >-
+  Nothing was found. Every /.well-known/ path probed on the marketing host (fintary.com),
+  the API host (api.fintary.com) and the application host (app.fintary.com) missed. Two
+  distinct negative shapes were observed and both are recorded as misses. fintary.com is a
+  Webflow site and answers every /.well-known/* request with a fixed 404 body ("Invalid
+  .well-known request"). api.fintary.com is a Next.js app and answers 404 for these paths
+  (a control path that cannot exist returns the same 404, so the host discriminates
+  normally). app.fintary.com is a single-page React app whose catch-all returns HTTP 200
+  with the SPA HTML shell for EVERY path — including a nonsense control path — so its 200s
+  are not documents and are recorded as misses. No WellKnown or SecurityTxt pointer is
+  emitted in apis.yml: this file documents an absence, not a presence.
+hosts:
+- host: https://fintary.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.fintary.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  control:
+    path: /zzz-control-nonexistent-path-xyz
+    status: 404
+    discriminates: true
+- host: https://app.fintary.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    document: false
+    note: SPA HTML shell, not a document
+  - path: /.well-known/agent-card.json
+    status: 200
+    document: false
+    note: SPA HTML shell, not a document
+  - path: /.well-known/agent.json
+    status: 200
+    document: false
+    note: SPA HTML shell, not a document
+  control:
+    path: /zzz-control-nonexistent-path-xyz
+    status: 200
+    discriminates: false
+    note: >-
+      Catch-all answers 200 with the same 780-byte React shell for any path, so no 200 on
+      this host can be believed as a served document.
+summary:
+  documents_found: 0
+  security_txt: false
+  agent_card: false
+  api_catalog: false

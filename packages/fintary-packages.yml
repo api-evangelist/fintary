@@ -1,0 +1,27 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  npm registry search, PyPI, GitHub org github.com/Fintary, and the Fintary API documentation
+  at https://api.fintary.com/documentation, /openapi-doc and /api-doc
+note: >-
+  No first-party Fintary client library was found in any public package registry. The npm
+  registry search for "fintary" returned zero objects; pypi.org/pypi/fintary/json returned
+  404; the Fintary GitHub organization (github.com/Fintary, id 131309616) holds a single
+  repository and it is a fork of an unrelated project (spec.md), with no SDK, CLI or
+  client. Neither published OpenAPI document links an SDK, and the documentation pages
+  describe raw HTTP with an `x-api-key` header or an HTTP bearer token rather than a
+  packaged client. This is a recorded absence, not an unchecked field — no SDKs pointer is
+  emitted in apis.yml.
+packages: []
+package_count: 0
+official_count: 0
+registries_checked:
+- registry: npm
+  query: https://registry.npmjs.org/-/v1/search?text=fintary
+  result: 0 packages
+- registry: pypi
+  query: https://pypi.org/pypi/fintary/json
+  result: HTTP 404
+- registry: github
+  query: https://api.github.com/orgs/Fintary/repos
+  result: 1 repository, a fork of spec.md, no client library

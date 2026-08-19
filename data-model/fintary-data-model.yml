@@ -1,0 +1,1835 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/fintary-open-api-openapi.yml, openapi/fintary-ams-api-openapi.yml
+note: Entity graph derived mechanically from components.schemas $ref links and id-reference field names
+  in the two OpenAPI documents Fintary publishes. Fintary does not publish an object reference, so id
+  prefixes and domain semantics are not filled in. The dominant identifier convention observed across
+  both documents is a string `strId` / `str_id` on records (agents, customers, policies, contracts, documents,
+  reports), with integer IDs accepted on some analytics report routes for legacy compatibility and marked
+  deprecated in the spec.
+core_entities:
+- Agent
+- Customer
+- Policy
+- Contract
+- Task
+- Document
+- Commission
+- Payout
+- AnalyticsReport
+- AnalyticsDataset
+- AnalyticsWidget
+identifier_convention:
+  primary: strId (string) / str_id (string)
+  legacy: integer report IDs accepted on analytics report routes, deprecated
+entity_count: 140
+relationship_count: 68
+entities:
+- name: AgGridCompositeDateFilterSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - filterType
+  - operator
+  - conditions
+  id_reference_fields: []
+- name: AgGridCompositeTextFilterSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - filterType
+  - operator
+  - conditions
+  id_reference_fields: []
+- name: AgGridDateFilterSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 4
+  required:
+  - filterType
+  - type
+  id_reference_fields: []
+- name: AgGridNumberFilterSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 4
+  required:
+  - filterType
+  - type
+  - filter
+  id_reference_fields: []
+- name: AgGridTextFilterSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - filterType
+  - type
+  - filter
+  id_reference_fields: []
+- name: AnalyticsDatasetDataResponse
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 8
+  required:
+  - data
+  - reportName
+  - accountId
+  - pageRowCount
+  - rowCount
+  id_reference_fields:
+  - accountId
+- name: AnalyticsDatasetTable
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 5
+  required:
+  - id
+  id_reference_fields: []
+- name: AnalyticsReportColumnMetadataSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - name
+  - type
+  id_reference_fields: []
+- name: AnalyticsReportFilterSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - column_name
+  - filter_values
+  id_reference_fields: []
+- name: AnalyticsReportMeasureSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - column
+  - aggregation
+  - outputName
+  id_reference_fields: []
+- name: AnalyticsReportsListQuerySchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 2
+  required: []
+  id_reference_fields:
+  - account_id
+  - contact_id
+- name: AssignUplineRequestSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 4
+  required:
+  - upline
+  id_reference_fields: []
+- name: AssignUplineResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 2
+  required:
+  - assigned
+  - str_id
+  id_reference_fields:
+  - str_id
+- name: ConvertHtmlToPdfRenderingOptions
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 11
+  required: []
+  id_reference_fields: []
+- name: ConvertHtmlToPdfRequest
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - html_content
+  id_reference_fields: []
+- name: DocumentUploadResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - id
+  - str_id
+  - sync_id
+  id_reference_fields:
+  - str_id
+  - sync_id
+- name: DocumentUploadSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 12
+  required:
+  - file
+  - type
+  id_reference_fields:
+  - company_id
+  - sync_id
+- name: FlattenedPublishedReportSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 21
+  required:
+  - selected_columns
+  - column_order
+  - columns
+  - measures
+  - output_columns
+  - date_key
+  - dataset_description
+  - dataset_id
+  id_reference_fields:
+  - account_id
+  - dataset_id
+  - str_id
+- name: OpenAgentCreateSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 14
+  required: []
+  id_reference_fields:
+  - sync_id
+- name: OpenAgentDatasetPage
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 6
+  required:
+  - rows
+  - pageRowCount
+  - rowCount
+  id_reference_fields: []
+- name: OpenAgentDetailSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 22
+  required:
+  - id
+  - str_id
+  - sync_id
+  - first_name
+  - last_name
+  - email
+  - phone
+  - agent_code
+  - company_name
+  - type
+  - start_date
+  - status
+  - payout_level
+  - payable_status
+  - bank_info
+  - notes
+  - created_at
+  - created_by
+  - updated_at
+  - updated_by
+  - parent_relationships
+  - child_relationships
+  id_reference_fields:
+  - str_id
+  - sync_id
+- name: OpenAgentIdParamSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 1
+  required:
+  - id
+  id_reference_fields: []
+- name: OpenAgentListQuerySchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 5
+  required: []
+  id_reference_fields: []
+- name: OpenAgentListResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 2
+  required:
+  - items
+  - count
+  id_reference_fields: []
+- name: OpenAgentUpdateSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 13
+  required: []
+  id_reference_fields: []
+- name: OpenAnalyticsWidget
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 19
+  required:
+  - id
+  - str_id
+  - analytic_report_access_id
+  - analytic_report_access_str_id
+  - principal_type
+  - is_default_widget
+  - label
+  - chart_type
+  - x_axis_column
+  - y_axis_column
+  - stack_column
+  - echart_option
+  - value
+  - config
+  - table_data
+  - data_error
+  - grid_position
+  - created_at
+  - updated_at
+  id_reference_fields:
+  - analytic_report_access_id
+  - analytic_report_access_str_id
+  - str_id
+- name: OpenApiCodedErrorResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 2
+  required:
+  - error
+  - code
+  id_reference_fields: []
+- name: OpenApiSimpleErrorResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 1
+  required:
+  - error
+  id_reference_fields: []
+- name: RemoveUplineRequestSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 1
+  required:
+  - str_id
+  id_reference_fields:
+  - str_id
+- name: RestoreDefaultWidgetRequest
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 1
+  required:
+  - default_widget_str_id
+  id_reference_fields:
+  - default_widget_str_id
+- name: OpenAPIResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 4
+  required:
+  - success
+  - message
+  - statusCode
+  id_reference_fields: []
+- name: OpenAnalyticsWidgetTableConfig
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - visible_columns
+  id_reference_fields: []
+- name: OpenAnalyticsWidgetTableFilter
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 3
+  required:
+  - column
+  - operation
+  - values
+  id_reference_fields: []
+- name: OpenAnalyticsWidgetGridPosition
+  spec: openapi/fintary-open-api-openapi.yml
+  field_count: 4
+  required:
+  - x
+  - y
+  - w
+  - h
+  id_reference_fields: []
+- name: AgentDetailResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 42
+  required:
+  - strId
+  - firstName
+  - lastName
+  - name
+  - email
+  - phone
+  - agentCode
+  - status
+  - level
+  - type
+  - companyName
+  - geoState
+  - startDate
+  - endDate
+  - userStrId
+  - middleName
+  - nickname
+  - title
+  - gender
+  - birthday
+  - phoneType
+  - phone2
+  - phone2Type
+  - externalId
+  - notes
+  - payableStatus
+  - payoutLevel
+  - brokerCommPayTo
+  - gaFieldRep
+  - gaRepresentative
+  - qbVendor
+  - street
+  - city
+  - country
+  - zip
+  - hierarchy
+  - policies
+  - customers
+  - commissionProfiles
+  - createdAt
+  - updatedAt
+  id_reference_fields:
+  - externalId
+  - strId
+  - userStrId
+- name: AgentHierarchyNodeSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 10
+  required:
+  - strId
+  - firstName
+  - lastName
+  - name
+  - email
+  - agentCode
+  - level
+  - splitPercentage
+  - hierarchyId
+  - children
+  id_reference_fields:
+  - hierarchyId
+  - strId
+- name: AgentHierarchyResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 9
+  required:
+  - strId
+  - firstName
+  - lastName
+  - name
+  - email
+  - agentCode
+  - level
+  - uplines
+  - downlines
+  id_reference_fields:
+  - strId
+- name: AgentListItemSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 36
+  required:
+  - strId
+  - firstName
+  - lastName
+  - name
+  - email
+  - phone
+  - agentCode
+  - status
+  - level
+  - policyCount
+  - customerCount
+  - companyName
+  - geoState
+  - startDate
+  - endDate
+  - middleName
+  - nickname
+  - title
+  - gender
+  - birthday
+  - phoneType
+  - phone2
+  - phone2Type
+  - externalId
+  - notes
+  - payableStatus
+  - payoutLevel
+  - brokerCommPayTo
+  - gaFieldRep
+  - gaRepresentative
+  - qbVendor
+  - street
+  - city
+  - country
+  - zip
+  - createdAt
+  id_reference_fields:
+  - externalId
+  - strId
+- name: AgentListResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - data
+  - pagination
+  id_reference_fields: []
+- name: AgentSummaryResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - total
+  - active
+  - writingAgents
+  - salesReps
+  id_reference_fields: []
+- name: AgentTreeNodeSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 11
+  required:
+  - strId
+  - depth
+  - children
+  id_reference_fields:
+  - parentContactId
+  - strId
+- name: AgentTreeResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - ancestors
+  - descendants
+  id_reference_fields: []
+- name: AmsAgentContractPathParamsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strId
+  - contractId
+  id_reference_fields:
+  - contractId
+  - strId
+- name: AmsAgentListQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 12
+  required:
+  - page
+  - pageSize
+  - sortOrder
+  id_reference_fields: []
+- name: AmsAgentPathParamsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - strId
+  id_reference_fields:
+  - strId
+- name: AmsAgentTreeQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strId
+  id_reference_fields:
+  - strId
+- name: AmsBindableFieldSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - source
+  id_reference_fields: []
+- name: AmsBulkUpdateAgentDataSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 13
+  required: []
+  id_reference_fields:
+  - userStrId
+- name: AmsBulkUpdateAgentsBodySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strIds
+  - data
+  id_reference_fields: []
+- name: AmsBulkUpdateCustomerDataSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 13
+  required: []
+  id_reference_fields:
+  - parentId
+  - primaryAddressStrId
+- name: AmsBulkUpdateCustomersBodySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strIds
+  - data
+  id_reference_fields: []
+- name: AmsBulkUpdatePoliciesBodySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strIds
+  - data
+  id_reference_fields: []
+- name: AmsBulkUpdatePolicyDataSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 15
+  required: []
+  id_reference_fields:
+  - customerId
+  - policyId
+- name: AmsBulkUpdateResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - totalUpdated
+  id_reference_fields: []
+- name: AmsCapabilitiesResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required:
+  - bindableFields
+  - widgetVocabulary
+  - endpoints
+  - limits
+  - schemaVersion
+  - etag
+  id_reference_fields: []
+- name: AmsContractListQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required: []
+  id_reference_fields: []
+- name: AmsCreateAgentSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 16
+  required: []
+  id_reference_fields:
+  - userStrId
+- name: AmsCreateContractSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 7
+  required:
+  - companyId
+  id_reference_fields:
+  - companyId
+- name: AmsCreateCustomFieldDefinitionSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 12
+  required:
+  - entityType
+  - fieldKey
+  - displayName
+  - dataType
+  - isRequired
+  - isSearchable
+  - isFilterable
+  - isReportable
+  - sortOrder
+  id_reference_fields: []
+- name: AmsCreateCustomerSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 15
+  required: []
+  id_reference_fields:
+  - parentId
+  - primaryAddressStrId
+- name: AmsCreateMyTaskSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 9
+  required:
+  - title
+  - targetAudience
+  - targetId
+  - status
+  - priority
+  - type
+  id_reference_fields:
+  - targetId
+- name: AmsCreatePolicyDocumentSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - name
+  - fileName
+  - mimeType
+  id_reference_fields: []
+- name: AmsCreatePolicySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 41
+  required: []
+  id_reference_fields:
+  - aggregationId
+  - commissionProfileId
+  - customerId
+  - documentId
+  - groupId
+  - internalId
+  - policyId
+  - syncId
+- name: AmsCreatePolicyTaskSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required:
+  - title
+  - status
+  - priority
+  - dueDate
+  id_reference_fields: []
+- name: AmsCustomFieldDefinitionSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 14
+  required:
+  - strId
+  - entityType
+  - fieldKey
+  - displayName
+  - dataType
+  - isRequired
+  - isSearchable
+  - isFilterable
+  - isReportable
+  - validationRulesJson
+  - defaultValue
+  - enumOptionsJson
+  - sortOrder
+  id_reference_fields:
+  - strId
+- name: AmsCustomFieldListQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required: []
+  id_reference_fields: []
+- name: AmsCustomFieldValueInputSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required:
+  - fieldDefinitionId
+  id_reference_fields:
+  - fieldDefinitionId
+- name: AmsCustomFieldValueSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 9
+  required:
+  - fieldDefinitionId
+  - fieldKey
+  - displayName
+  - dataType
+  id_reference_fields:
+  - fieldDefinitionId
+- name: AmsCustomerAddressSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 10
+  required: []
+  id_reference_fields:
+  - strId
+- name: AmsCustomerListQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 9
+  required:
+  - page
+  - pageSize
+  - sortOrder
+  id_reference_fields:
+  - agentId
+- name: AmsCustomerPathParamsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - strId
+  id_reference_fields:
+  - strId
+- name: AmsCustomerPoliciesQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - strId
+  - page
+  - pageSize
+  id_reference_fields:
+  - strId
+- name: AmsEscalateMyTaskSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - taskId
+  - escalateToUids
+  id_reference_fields:
+  - taskId
+- name: AmsFilterConditionSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - field
+  - op
+  id_reference_fields: []
+- name: AmsFilterFieldSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 8
+  required:
+  - field
+  - label
+  - type
+  - operators
+  - sortable
+  id_reference_fields: []
+- name: AmsFinalizePolicyDocumentSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - documentStrId
+  id_reference_fields:
+  - documentStrId
+- name: AmsLimitsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - maxSummaryCards
+  - maxColumns
+  - maxBlocksPerPage
+  - maxPageComplexity
+  id_reference_fields: []
+- name: AmsMyTasksQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required:
+  - page
+  - pageSize
+  id_reference_fields: []
+- name: AmsMyTasksSummaryQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required: []
+  id_reference_fields: []
+- name: AmsPageConfigResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - config
+  - schemaVersion
+  - configVersion
+  - etag
+  - updatedAt
+  id_reference_fields: []
+- name: AmsPageConfigWireSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 10
+  required:
+  - id
+  - version
+  - entity
+  - title
+  - routeBase
+  - dataSource
+  - table
+  - detail
+  id_reference_fields: []
+- name: AmsPaginationSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - page
+  - pageSize
+  - total
+  - totalPages
+  id_reference_fields: []
+- name: AmsPolicyDocumentPathParamsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strId
+  - documentStrId
+  id_reference_fields:
+  - documentStrId
+  - strId
+- name: AmsPolicyFilterMetadataSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - fields
+  id_reference_fields: []
+- name: AmsPolicyFilterOptionsQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - fields
+  - optionSearch
+  - optionLimit
+  id_reference_fields: []
+- name: AmsPolicyListQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - page
+  - pageSize
+  - sort
+  id_reference_fields: []
+- name: AmsPolicyPathParamsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - strId
+  id_reference_fields:
+  - strId
+- name: AmsPolicyTaskPathParamsSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strId
+  - taskId
+  id_reference_fields:
+  - strId
+  - taskId
+- name: AmsPolicyTeamMemberSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - contactStrId
+  - role
+  - isPrimary
+  id_reference_fields:
+  - contactStrId
+- name: AmsRegistryErrorSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - code
+  - message
+  id_reference_fields: []
+- name: AmsSortSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - field
+  - direction
+  id_reference_fields: []
+- name: AmsStatusConfigItemSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 8
+  required:
+  - strId
+  - entityType
+  - name
+  - label
+  - color
+  - isSystem
+  - isDefault
+  - sortOrder
+  id_reference_fields:
+  - strId
+- name: AmsStatusConfigListQuerySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required: []
+  id_reference_fields: []
+- name: AmsUpdateAgentSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 16
+  required: []
+  id_reference_fields:
+  - userStrId
+- name: AmsUpdateContractSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required: []
+  id_reference_fields: []
+- name: AmsUpdateCustomerSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 15
+  required: []
+  id_reference_fields:
+  - parentId
+  - primaryAddressStrId
+- name: AmsUpdateMyTaskSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 7
+  required:
+  - taskId
+  id_reference_fields:
+  - taskId
+- name: AmsUpdatePolicyCaseManagerSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - caseManagerStrId
+  id_reference_fields:
+  - caseManagerStrId
+- name: AmsUpdatePolicyDocumentSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required: []
+  id_reference_fields: []
+- name: AmsUpdatePolicySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 41
+  required: []
+  id_reference_fields:
+  - aggregationId
+  - commissionProfileId
+  - customerId
+  - documentId
+  - groupId
+  - internalId
+  - policyId
+  - syncId
+- name: AmsUpdatePolicyStatusSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - status
+  id_reference_fields: []
+- name: AmsUpdatePolicyTaskSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required: []
+  id_reference_fields: []
+- name: AmsUpdatePolicyTeamSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - members
+  id_reference_fields: []
+- name: AmsWidgetVocabularySchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - blocks
+  - cells
+  - tabKinds
+  - filterKinds
+  id_reference_fields: []
+- name: ContractCompanyResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 7
+  required:
+  - id
+  - companyName
+  - companyId
+  - email
+  - phone
+  - website
+  - address
+  id_reference_fields:
+  - companyId
+- name: ContractListResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - contracts
+  - total
+  - page
+  - pageSize
+  id_reference_fields: []
+- name: ContractResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 13
+  required:
+  - id
+  - agentId
+  - companyId
+  - contractLevel
+  - licenseNumber
+  - status
+  - effectiveDate
+  - endDate
+  - notes
+  - createdAt
+  - updatedAt
+  id_reference_fields:
+  - agentId
+  - companyId
+- name: CustomerDetailResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 34
+  required:
+  - strId
+  - firstName
+  - lastName
+  - middleName
+  - companyName
+  - email
+  - phone
+  - dob
+  - gender
+  - type
+  - status
+  - parentId
+  - acquisitionChannel
+  - primaryAddressStrId
+  - nickname
+  - contact
+  - contactEmail
+  - fax
+  - website
+  - region
+  - groupId
+  - tinNumber
+  - deltaCo
+  - deltaGroupNo
+  - startDate
+  - endDate
+  - originalEffectiveDate
+  - addresses
+  - policies
+  - owners
+  - aliases
+  - createdAt
+  - updatedAt
+  id_reference_fields:
+  - groupId
+  - parentId
+  - primaryAddressStrId
+  - strId
+- name: CustomerListItemSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 29
+  required:
+  - strId
+  - firstName
+  - lastName
+  - companyName
+  - email
+  - phone
+  - type
+  - status
+  - policyCount
+  - agents
+  - middleName
+  - dob
+  - gender
+  - acquisitionChannel
+  - nickname
+  - contact
+  - contactEmail
+  - fax
+  - website
+  - region
+  - groupId
+  - tinNumber
+  - deltaCo
+  - deltaGroupNo
+  - startDate
+  - endDate
+  - originalEffectiveDate
+  - createdAt
+  id_reference_fields:
+  - groupId
+  - strId
+- name: CustomerListResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - data
+  - pagination
+  id_reference_fields: []
+- name: CustomerSummaryResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - total
+  - activeWithPolicies
+  - withoutPolicies
+  - individual
+  - group
+  id_reference_fields: []
+- name: MyAgentScopeResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - hasAgent
+  - agents
+  - allContactIds
+  id_reference_fields:
+  - selfContactId
+- name: MyTaskContactSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - strId
+  id_reference_fields:
+  - strId
+- name: MyTaskItemSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 15
+  required:
+  - strId
+  - title
+  - status
+  - type
+  - priority
+  - createdAt
+  - targetAudience
+  - targetId
+  - assignees
+  id_reference_fields:
+  - strId
+  - targetId
+- name: MyTaskListResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - data
+  - pagination
+  id_reference_fields: []
+- name: MyTaskPolicyContextSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 6
+  required:
+  - strId
+  id_reference_fields:
+  - policyId
+  - strId
+- name: MyTasksSummaryResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - counts
+  - total
+  id_reference_fields: []
+- name: PolicyCaseManagerUpdateResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - strId
+  id_reference_fields:
+  - caseManagerId
+  - strId
+- name: PolicyCommissionDetailSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 7
+  required:
+  - receivables
+  - totalReceivedToDate
+  - payoutsByRole
+  - statementCount
+  - totalPaidOut
+  - netProfit
+  - marginPercentRate
+  id_reference_fields: []
+- name: PolicyCommissionPayoutByRoleSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - role
+  - roleLabel
+  - amount
+  id_reference_fields: []
+- name: PolicyCommissionReceivableLineSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 8
+  required:
+  - strId
+  - party
+  - compensationType
+  - rate
+  - amount
+  - contactId
+  - contactName
+  - date
+  id_reference_fields:
+  - contactId
+  - strId
+- name: PolicyCustomerListItemSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 8
+  required:
+  - strId
+  - type
+  id_reference_fields:
+  - strId
+- name: PolicyDetailResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 57
+  required:
+  - strId
+  - policyId
+  - policyStatus
+  - caseStatus
+  - customerName
+  - customerType
+  - productName
+  - productType
+  - productSubType
+  - productOptionName
+  - writingCarrierName
+  - effectiveDate
+  - expirationDate
+  - signedDate
+  - policyDate
+  - cancellationDate
+  - reinstatementDate
+  - firstPaymentDate
+  - firstProcessedDate
+  - premiumAmount
+  - commissionableAmount
+  - excessAmount
+  - commissionsExpected
+  - customerPaidPremiumAmount
+  - splitPercentage
+  - paymentMode
+  - policyTermMonths
+  - geoState
+  - notes
+  - dba
+  - internalId
+  - transactionType
+  - accountType
+  - groupId
+  - groupName
+  - aggregationId
+  - aggregationPrimary
+  - type
+  - tags
+  - documentId
+  - processingStatus
+  - commissionProfileId
+  - syncId
+  - applicationDate
+  - issueDate
+  - issueAge
+  - agentName
+  - createdAt
+  - updatedAt
+  - customFields
+  - receivables
+  - customerStrId
+  - team
+  - documents
+  - tasks
+  - commissions
+  - customer
+  id_reference_fields:
+  - aggregationId
+  - commissionProfileId
+  - customerStrId
+  - documentId
+  - groupId
+  - internalId
+  - policyId
+  - strId
+  - syncId
+- name: PolicyDocumentDetailSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 11
+  required:
+  - strId
+  - name
+  - fileName
+  - status
+  - createdAt
+  id_reference_fields:
+  - strId
+- name: PolicyDocumentUploadTicketSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - documentStrId
+  - signedPutUrl
+  - mimeType
+  id_reference_fields:
+  - documentStrId
+- name: PolicyFilterOptionFieldSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - field
+  - values
+  - totalOptions
+  id_reference_fields: []
+- name: PolicyFilterOptionValueSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - value
+  - label
+  - count
+  id_reference_fields: []
+- name: PolicyFilterOptionsResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required:
+  - fields
+  - dateRanges
+  - totalPolicies
+  id_reference_fields: []
+- name: PolicyListItemSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 51
+  required:
+  - strId
+  - policyId
+  - policyStatus
+  - caseStatus
+  - customerName
+  - customerType
+  - productName
+  - productType
+  - productSubType
+  - productOptionName
+  - writingCarrierName
+  - effectiveDate
+  - expirationDate
+  - signedDate
+  - policyDate
+  - cancellationDate
+  - reinstatementDate
+  - firstPaymentDate
+  - firstProcessedDate
+  - premiumAmount
+  - commissionableAmount
+  - excessAmount
+  - commissionsExpected
+  - customerPaidPremiumAmount
+  - splitPercentage
+  - paymentMode
+  - policyTermMonths
+  - geoState
+  - notes
+  - dba
+  - internalId
+  - transactionType
+  - accountType
+  - groupId
+  - groupName
+  - aggregationId
+  - aggregationPrimary
+  - type
+  - tags
+  - documentId
+  - processingStatus
+  - commissionProfileId
+  - syncId
+  - applicationDate
+  - issueDate
+  - issueAge
+  - agentName
+  - createdAt
+  - updatedAt
+  - customFields
+  - receivables
+  id_reference_fields:
+  - aggregationId
+  - commissionProfileId
+  - documentId
+  - groupId
+  - internalId
+  - policyId
+  - strId
+  - syncId
+- name: PolicyListResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - data
+  - pagination
+  id_reference_fields: []
+- name: PolicySummaryResponseSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 2
+  required:
+  - total
+  - byStatus
+  id_reference_fields: []
+- name: PolicyTaskDetailSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 9
+  required:
+  - strId
+  - title
+  - status
+  - assigneeUids
+  - notes
+  - priority
+  - dueDate
+  - createdAt
+  - updatedAt
+  id_reference_fields:
+  - strId
+- name: PolicyTeamMemberContactSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 8
+  required:
+  - strId
+  - firstName
+  - lastName
+  - name
+  - email
+  - phone
+  - agentCode
+  - companyName
+  id_reference_fields:
+  - strId
+- name: PolicyTeamMemberDetailSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 7
+  required:
+  - strId
+  - contactStrId
+  - role
+  - roleLabel
+  - isPrimary
+  - agentSplit
+  - contact
+  id_reference_fields:
+  - contactStrId
+  - strId
+- name: AmsWireDataSourceConfigSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 7
+  required:
+  - listEndpoint
+  - detailEndpoint
+  - idField
+  id_reference_fields: []
+- name: AmsWireSummaryConfigSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 3
+  required: []
+  id_reference_fields: []
+- name: AmsWireTableConfigSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 4
+  required:
+  - columns
+  - pageSize
+  id_reference_fields: []
+- name: AmsWireColumnConfigSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 8
+  required:
+  - field
+  - header
+  id_reference_fields: []
+- name: AmsWireTabConfigSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 5
+  required:
+  - id
+  - label
+  - kind
+  id_reference_fields: []
+- name: AmsWireBlockConfigSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  field_count: 1
+  required:
+  - type
+  id_reference_fields: []
+relationships:
+- from: AgGridCompositeDateFilterSchema
+  to: AgGridDateFilterSchema
+  via: conditions
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: AgGridCompositeTextFilterSchema
+  to: AgGridTextFilterSchema
+  via: conditions
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: ConvertHtmlToPdfRequest
+  to: ConvertHtmlToPdfRenderingOptions
+  via: rendering_options
+  cardinality: has_one
+  spec: openapi/fintary-open-api-openapi.yml
+- from: FlattenedPublishedReportSchema
+  to: AnalyticsReportColumnMetadataSchema
+  via: columns
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: FlattenedPublishedReportSchema
+  to: AnalyticsReportMeasureSchema
+  via: measures
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: FlattenedPublishedReportSchema
+  to: AnalyticsReportFilterSchema
+  via: filters
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: OpenAgentListResponseSchema
+  to: OpenAgentDetailSchema
+  via: items
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: OpenAnalyticsWidget
+  to: OpenAnalyticsWidgetTableConfig
+  via: config
+  cardinality: has_one
+  spec: openapi/fintary-open-api-openapi.yml
+- from: OpenAnalyticsWidget
+  to: OpenAnalyticsWidgetGridPosition
+  via: grid_position
+  cardinality: has_one
+  spec: openapi/fintary-open-api-openapi.yml
+- from: OpenAnalyticsWidgetTableConfig
+  to: OpenAnalyticsWidgetTableFilter
+  via: filters
+  cardinality: has_many
+  spec: openapi/fintary-open-api-openapi.yml
+- from: AgentHierarchyNodeSchema
+  to: AgentHierarchyNodeSchema
+  via: children
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentHierarchyResponseSchema
+  to: AgentHierarchyNodeSchema
+  via: uplines
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentHierarchyResponseSchema
+  to: AgentHierarchyNodeSchema
+  via: downlines
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentListResponseSchema
+  to: AgentListItemSchema
+  via: data
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentListResponseSchema
+  to: AmsPaginationSchema
+  via: pagination
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentTreeNodeSchema
+  to: AgentTreeNodeSchema
+  via: children
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentTreeResponseSchema
+  to: AgentTreeNodeSchema
+  via: self
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentTreeResponseSchema
+  to: AgentTreeNodeSchema
+  via: ancestors
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AgentTreeResponseSchema
+  to: AgentTreeNodeSchema
+  via: descendants
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsBulkUpdateAgentsBodySchema
+  to: AmsBulkUpdateAgentDataSchema
+  via: data
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsBulkUpdateCustomersBodySchema
+  to: AmsBulkUpdateCustomerDataSchema
+  via: data
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsBulkUpdatePoliciesBodySchema
+  to: AmsBulkUpdatePolicyDataSchema
+  via: data
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsCapabilitiesResponseSchema
+  to: AmsBindableFieldSchema
+  via: bindableFields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsCapabilitiesResponseSchema
+  to: AmsWidgetVocabularySchema
+  via: widgetVocabulary
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsCapabilitiesResponseSchema
+  to: AmsLimitsSchema
+  via: limits
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsCreateContractSchema
+  to: AmsContractStatusSchema
+  via: status
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsCreateCustomerSchema
+  to: AmsCustomerAddressSchema
+  via: addresses
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsCreatePolicySchema
+  to: AmsCustomFieldValueInputSchema
+  via: customFields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsFilterConditionSchema
+  to: AmsFilterValueSchema
+  via: value
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPageConfigResponseSchema
+  to: AmsPageConfigWireSchema
+  via: config
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPageConfigWireSchema
+  to: AmsWireDataSourceConfigSchema
+  via: dataSource
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPageConfigWireSchema
+  to: AmsWireSummaryConfigSchema
+  via: summary
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPageConfigWireSchema
+  to: AmsWireTableConfigSchema
+  via: table
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPageConfigWireSchema
+  to: AmsWireBlockConfigSchema
+  via: layout
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPolicyFilterMetadataSchema
+  to: AmsFilterFieldSchema
+  via: fields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPolicyFilterOptionsQuerySchema
+  to: AmsFilterNodeSchema
+  via: filter
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPolicyListQuerySchema
+  to: AmsSortSchema
+  via: sort
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsPolicyListQuerySchema
+  to: AmsFilterNodeSchema
+  via: filter
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsUpdateContractSchema
+  to: AmsContractStatusSchema
+  via: status
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsUpdateCustomerSchema
+  to: AmsCustomerAddressSchema
+  via: addresses
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsUpdatePolicySchema
+  to: AmsCustomFieldValueInputSchema
+  via: customFields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsUpdatePolicyTeamSchema
+  to: AmsPolicyTeamMemberSchema
+  via: members
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: ContractListResponseSchema
+  to: ContractResponseSchema
+  via: contracts
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: ContractResponseSchema
+  to: ContractCompanyResponseSchema
+  via: company
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: ContractResponseSchema
+  to: ContractCompanyResponseSchema
+  via: canonicalCompany
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: CustomerListResponseSchema
+  to: CustomerListItemSchema
+  via: data
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: CustomerListResponseSchema
+  to: AmsPaginationSchema
+  via: pagination
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: MyTaskItemSchema
+  to: MyTaskContactSchema
+  via: creator
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: MyTaskItemSchema
+  to: MyTaskContactSchema
+  via: assignees
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: MyTaskItemSchema
+  to: MyTaskPolicyContextSchema
+  via: policyContext
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: MyTaskListResponseSchema
+  to: MyTaskItemSchema
+  via: data
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: MyTaskListResponseSchema
+  to: AmsPaginationSchema
+  via: pagination
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyCommissionDetailSchema
+  to: PolicyCommissionReceivableLineSchema
+  via: receivables
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyCommissionDetailSchema
+  to: PolicyCommissionPayoutByRoleSchema
+  via: payoutsByRole
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyDetailResponseSchema
+  to: AmsCustomFieldValueSchema
+  via: customFields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyDetailResponseSchema
+  to: PolicyTeamMemberDetailSchema
+  via: team
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyDetailResponseSchema
+  to: PolicyDocumentDetailSchema
+  via: documents
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyDetailResponseSchema
+  to: PolicyTaskDetailSchema
+  via: tasks
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyDetailResponseSchema
+  to: PolicyCommissionDetailSchema
+  via: commissions
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyDocumentDetailSchema
+  to: AmsPolicyDocumentStatusSchema
+  via: status
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyFilterOptionFieldSchema
+  to: PolicyFilterOptionValueSchema
+  via: values
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyFilterOptionsResponseSchema
+  to: PolicyFilterOptionFieldSchema
+  via: fields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyListItemSchema
+  to: AmsCustomFieldValueSchema
+  via: customFields
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyListResponseSchema
+  to: PolicyListItemSchema
+  via: data
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyListResponseSchema
+  to: AmsPaginationSchema
+  via: pagination
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: PolicyTeamMemberDetailSchema
+  to: PolicyTeamMemberContactSchema
+  via: contact
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsWireTableConfigSchema
+  to: AmsWireColumnConfigSchema
+  via: columns
+  cardinality: has_many
+  spec: openapi/fintary-ams-api-openapi.yml
+- from: AmsWireColumnConfigSchema
+  to: AmsWireFilterConfigSchema
+  via: filter
+  cardinality: has_one
+  spec: openapi/fintary-ams-api-openapi.yml

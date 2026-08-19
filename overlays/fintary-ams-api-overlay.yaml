@@ -1,0 +1,69 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Fintary AMS API
+  version: 1.0.0
+extends: openapi/fintary-ams-api-openapi.yml
+x-provenance:
+  generated: '2026-08-14'
+  method: generated
+  source: >-
+    Enhancements derived from the harvested spec plus live probes of api.fintary.com on
+    2026-08-14. The harvested document is never mutated; every change we would make lives
+    here.
+actions:
+- target: $
+  description: >-
+    The published document declares no servers[]. The host is established from the
+    documentation page (api.fintary.com/api-doc) and confirmed live - an unauthenticated GET
+    of https://api.fintary.com/api/ams/agents returns HTTP 401 "Not authenticated", while a
+    control path on the same host returns 404.
+  update:
+    servers:
+    - url: https://api.fintary.com
+      description: Fintary production API host
+- target: $.info
+  update:
+    x-apievangelist-slug: fintary
+    x-apievangelist-harvested: '2026-08-14'
+    x-apievangelist-source: https://api.fintary.com/api-doc
+    x-apievangelist-harvest-method: >-
+      Extracted verbatim from the __NEXT_DATA__ props.pageProps.spec of the server-rendered
+      documentation page; the spec is not served at any standalone .json or .yaml URL.
+    description: >-
+      Agency Management System REST API covering policies, customers, agents, contracts,
+      hierarchy, tasks, the policy document repository, and a page-config/capabilities
+      registry that publishes bindable fields, widget vocabulary and an endpoint allowlist
+      for AI and wire clients. Authenticated with an HTTP bearer token.
+    contact:
+      name: Fintary
+      url: https://www.fintary.com/contact-us
+- target: $.info
+  description: Gaps recorded against the harvested document, for the provider to close.
+  update:
+    x-apievangelist-gaps:
+    - No servers[] block, so no machine can resolve a request URL from the document alone.
+    - >-
+      Not one of the 60 operations declares an operationId, which blocks every downstream
+      binding - SDK generation, Arazzo workflows, MCP tool naming and the agent-skill
+      grounding this pipeline performs. This is the single highest-value fix in either
+      document.
+    - >-
+      Error coverage is thin - only 200/201/304/404 are declared. No 400, 401 or 403 appears
+      anywhere, even though the API returns 401 live and the AmsRegistryErrorSchema enumerates
+      unauthenticated, permission_denied, invalid_argument and failed_precondition.
+    - No 429 response and no rate-limit headers on any operation.
+    - No Idempotency-Key contract on the create or bulk-update operations.
+    - Pagination lives inside POST request bodies on the list routes and is not documented anywhere.
+    - No license or termsOfService in info.
+- target: $.components.securitySchemes.BearerAuth
+  update:
+    x-apievangelist-note: >-
+      Enforced live - an unauthenticated request returns HTTP 401 with the plain-text body
+      "Not authenticated" and no JSON envelope, which does not match AmsRegistryErrorSchema.
+- target: $.paths['/api/ams/registry/capabilities']
+  update:
+    x-apievangelist-note: >-
+      Notable as an agent-facing surface: this operation returns Fintary's own AI/wire
+      manifest - bindable fields, widget vocabulary, endpoint allowlist and limits for an AMS
+      entity. It is the closest thing Fintary publishes to an agent contract, but it is
+      authenticated and per-tenant, so it is not a discovery document.

@@ -1,0 +1,3932 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fintary Open API documentation",
+    "version": "1.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "string"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "API key for authentication"
+      }
+    },
+    "schemas": {
+      "AgGridCompositeDateFilterSchema": {
+        "type": "object",
+        "properties": {
+          "filterType": {
+            "type": "string",
+            "enum": [
+              "date"
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ]
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgGridDateFilterSchema"
+            }
+          }
+        },
+        "required": [
+          "filterType",
+          "operator",
+          "conditions"
+        ]
+      },
+      "AgGridCompositeTextFilterSchema": {
+        "type": "object",
+        "properties": {
+          "filterType": {
+            "type": "string",
+            "enum": [
+              "text"
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ]
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgGridTextFilterSchema"
+            }
+          }
+        },
+        "required": [
+          "filterType",
+          "operator",
+          "conditions"
+        ]
+      },
+      "AgGridDateFilterSchema": {
+        "type": "object",
+        "properties": {
+          "filterType": {
+            "type": "string",
+            "enum": [
+              "date"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "equals",
+              "notEqual",
+              "lessThan",
+              "greaterThan",
+              "inRange"
+            ]
+          },
+          "dateFrom": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateTo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "filterType",
+          "type"
+        ]
+      },
+      "AgGridFilterModelSchema": {
+        "type": "object",
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/AgGridTextFilterSchema"
+            },
+            {
+              "$ref": "#/components/schemas/AgGridCompositeTextFilterSchema"
+            },
+            {
+              "$ref": "#/components/schemas/AgGridNumberFilterSchema"
+            },
+            {
+              "$ref": "#/components/schemas/AgGridCompositeDateFilterSchema"
+            },
+            {
+              "$ref": "#/components/schemas/AgGridDateFilterSchema"
+            }
+          ]
+        }
+      },
+      "AgGridNumberFilterSchema": {
+        "type": "object",
+        "properties": {
+          "filterType": {
+            "type": "string",
+            "enum": [
+              "number"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "equals",
+              "notEqual",
+              "lessThan",
+              "greaterThan",
+              "inRange"
+            ]
+          },
+          "filter": {
+            "type": "number"
+          },
+          "filterTo": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "filterType",
+          "type",
+          "filter"
+        ]
+      },
+      "AgGridTextFilterSchema": {
+        "type": "object",
+        "properties": {
+          "filterType": {
+            "type": "string",
+            "enum": [
+              "text"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "contains",
+              "equals",
+              "notEqual",
+              "startsWith",
+              "endsWith"
+            ]
+          },
+          "filter": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "filterType",
+          "type",
+          "filter"
+        ]
+      },
+      "AnalyticsDatasetDataResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "description": "Dataset rows for the current page. Column set depends on the dataset."
+          },
+          "reportName": {
+            "type": "string",
+            "description": "Name of the queried dataset",
+            "example": "latest_commissions"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Account the dataset rows belong to",
+            "example": "acct_7f3c2b1a"
+          },
+          "pageRowCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of rows returned on the current page",
+            "example": 50
+          },
+          "rowCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total rows matching the query across all pages",
+            "example": 412
+          },
+          "startDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Resolved start of the date filter window, when applied"
+          },
+          "endDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Resolved end of the date filter window, when applied"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based page index returned",
+            "example": 0
+          }
+        },
+        "required": [
+          "data",
+          "reportName",
+          "accountId",
+          "pageRowCount",
+          "rowCount"
+        ],
+        "description": "Paginated dataset rows returned by the deprecated dataset-by-name query endpoint"
+      },
+      "AnalyticsDatasetListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/AnalyticsDatasetTable"
+        },
+        "description": "List of available analytics tables"
+      },
+      "AnalyticsDatasetTable": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Full table identifier",
+            "example": "fintary-prod.analytics_reports.agency_receivables_by_policy"
+          },
+          "friendlyName": {
+            "type": "string",
+            "description": "Human-readable name for the table",
+            "example": "Agency receivables by policy"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the table"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "description": "Labels attached to the table"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the column"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Data type of the column"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.",
+                  "example": "Unique policy number assigned by the carrier"
+                }
+              },
+              "required": [
+                "name",
+                "type"
+              ]
+            },
+            "description": "Column definitions for the dataset"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "AnalyticsReportColumnMetadataSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Column name in the underlying dataset",
+            "example": "policy_number"
+          },
+          "type": {
+            "type": "string",
+            "description": "BigQuery column type",
+            "example": "STRING"
+          },
+          "description": {
+            "type": "string",
+            "description": "Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.",
+            "example": "Unique policy number assigned by the carrier"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "AnalyticsReportFilterSchema": {
+        "type": "object",
+        "properties": {
+          "column_name": {
+            "type": "string",
+            "description": "Dataset column the filter applies to",
+            "example": "carrier_name"
+          },
+          "operation": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter operation identifier",
+            "example": "substring_contains"
+          },
+          "filter_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Values used by the filter operation",
+            "example": [
+              "Acme"
+            ]
+          }
+        },
+        "required": [
+          "column_name",
+          "filter_values"
+        ]
+      },
+      "AnalyticsReportMeasureSchema": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string",
+            "description": "Source column the measure aggregates",
+            "example": "premium_amount"
+          },
+          "aggregation": {
+            "type": "string",
+            "enum": [
+              "ANY",
+              "SUM",
+              "AVG",
+              "COUNT",
+              "MIN",
+              "MAX"
+            ],
+            "description": "Aggregation applied to the column",
+            "example": "SUM"
+          },
+          "outputName": {
+            "type": "string",
+            "description": "Column name exposed in report output",
+            "example": "total_premium"
+          }
+        },
+        "required": [
+          "column",
+          "aggregation",
+          "outputName"
+        ]
+      },
+      "AnalyticsReportsListQuerySchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "Account override for Fintary Admin or Account Admin callers. Must be supplied together with `contact_id` to impersonate a specific contact. Account admins may only use their own account.",
+            "example": "acct_7f3c2b1a"
+          },
+          "contact_id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Contact override for Fintary Admin or Account Admin callers. Must be supplied together with `account_id`. Resolves the contact user role used for report access checks.",
+            "example": 12345
+          }
+        },
+        "description": "Query parameters for listing published analytics reports"
+      },
+      "AnalyticsReportsListResponseSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/FlattenedPublishedReportSchema"
+        },
+        "description": "Published analytics reports visible to the authenticated principal"
+      },
+      "AssignUplineRequestSchema": {
+        "type": "object",
+        "properties": {
+          "upline": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Agent identifier (str_id or agent_code) of the upline agent"
+          },
+          "start_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "Start date of the hierarchy period",
+            "format": "date-time"
+          },
+          "end_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "End date of the hierarchy period",
+            "format": "date-time"
+          },
+          "split_percentage": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Split percentage (0-100). Stored in percentage form (e.g. 80 for 80%)"
+          }
+        },
+        "required": [
+          "upline"
+        ],
+        "description": "Request body for assigning upline to an agent"
+      },
+      "AssignUplineResponseSchema": {
+        "type": "object",
+        "properties": {
+          "assigned": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "str_id": {
+            "type": "string",
+            "description": "str_id of the created contact_hierarchy record; use this when removing upline"
+          }
+        },
+        "required": [
+          "assigned",
+          "str_id"
+        ],
+        "description": "Response when upline is successfully assigned"
+      },
+      "ConvertHtmlToPdfRenderingOptions": {
+        "type": "object",
+        "properties": {
+          "page_size": {
+            "type": "string",
+            "description": "Paper size (e.g. A4, Letter)",
+            "example": "A4"
+          },
+          "margin_top": {
+            "type": "number",
+            "description": "Top margin"
+          },
+          "margin_bottom": {
+            "type": "number",
+            "description": "Bottom margin"
+          },
+          "margin_left": {
+            "type": "number",
+            "description": "Left margin"
+          },
+          "margin_right": {
+            "type": "number",
+            "description": "Right margin"
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ],
+            "description": "Page orientation",
+            "example": "portrait"
+          },
+          "print_background": {
+            "type": "boolean",
+            "description": "Whether to render background graphics"
+          },
+          "scale": {
+            "type": "number",
+            "description": "Render scale factor",
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "description": "PDF document title"
+          },
+          "author": {
+            "type": "string",
+            "description": "PDF document author"
+          },
+          "subject": {
+            "type": "string",
+            "description": "PDF document subject"
+          }
+        },
+        "description": "Optional PDF rendering options passed to the conversion service"
+      },
+      "ConvertHtmlToPdfRequest": {
+        "type": "object",
+        "properties": {
+          "html_content": {
+            "type": "string",
+            "format": "binary",
+            "description": "HTML file to convert to PDF (required)."
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "description": "Optional asset files referenced by the HTML (images, fonts, CSS)."
+          },
+          "rendering_options": {
+            "description": "Optional rendering options, sent as a JSON-encoded string form field.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConvertHtmlToPdfRenderingOptions"
+              }
+            ]
+          }
+        },
+        "required": [
+          "html_content"
+        ],
+        "description": "Multipart request to convert an HTML document (plus optional assets) to a PDF. Max 32 MB total."
+      },
+      "DocumentUploadCompanyValidationSchema": {
+        "$ref": "#/components/schemas/DocumentUploadSchema"
+      },
+      "DocumentUploadResponseSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "str_id": {
+            "type": "string"
+          },
+          "sync_id": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "str_id",
+          "sync_id"
+        ]
+      },
+      "DocumentUploadSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "commission",
+              "policy",
+              "compgrid"
+            ]
+          },
+          "file": {
+            "type": "file",
+            "description": "File to upload"
+          },
+          "company_id": {
+            "type": "string",
+            "maxLength": 36,
+            "description": "Identifier (stored as sync_id of company entity) for the company synced from third-party systems. \n\n**Note:** At least one of `company_id` or `company_name` is required.",
+            "example": "1234"
+          },
+          "company_name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Name of the carrier / company. \n\n**Note:** At least one of `company_id` or `company_name` is required.",
+            "example": "Company name"
+          },
+          "is_upline": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indicates the provided company_name refers to an upline company",
+            "example": false
+          },
+          "bank_total_amount": {
+            "type": "number",
+            "description": "Bank deposit amount for commission statements",
+            "example": 1000
+          },
+          "statement_amount": {
+            "type": "number",
+            "description": "Statement amount for commission statements",
+            "example": 1000
+          },
+          "check_date": {
+            "type": "string",
+            "description": "Date of the check",
+            "format": "date"
+          },
+          "deposit_date": {
+            "type": "string",
+            "description": "Date of the deposit",
+            "format": "date"
+          },
+          "filename": {
+            "type": "string",
+            "description": "Filename of the file",
+            "example": "filename.pdf"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes for the document",
+            "example": ""
+          },
+          "sync_id": {
+            "type": "string",
+            "description": "Unique id for document. Currently unused, but allows for referencing file in the future.",
+            "example": "ZBcA7v_iwNGGHR9r4xAiD"
+          }
+        },
+        "description": "A document uploaded to the server. At least one of company_id or company_name must be provided. If neither is supplied and the system cannot determine the company automatically, the request will be rejected.",
+        "required": [
+          "file",
+          "type"
+        ]
+      },
+      "FlattenedPublishedReportSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Numeric identifier of the published report access record (legacy). Prefer `str_id` for follow-up calls.",
+            "example": 42
+          },
+          "str_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "String identifier of the published report access record. Pass this value as `{id}` to `GET /openapi/analytics/reports/{id}`.",
+            "example": "rpt_abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the published report",
+            "example": "Agency receivables by policy"
+          },
+          "principal_type": {
+            "type": "string",
+            "enum": [
+              "account",
+              "user",
+              "role"
+            ],
+            "description": "Access principal type that scopes who can run the report",
+            "example": "account"
+          },
+          "account_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Account the report access record belongs to",
+            "example": "acct_7f3c2b1a"
+          },
+          "selected_columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Columns selected for the report, resolved against the dataset schema",
+            "example": [
+              "policy_number",
+              "premium_amount",
+              "effective_date"
+            ]
+          },
+          "group_by_columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Columns used for grouping when measures are configured",
+            "example": [
+              "carrier_name"
+            ]
+          },
+          "column_order": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Preferred column ordering for the report UI and exports",
+            "example": [
+              "policy_number",
+              "premium_amount"
+            ]
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnalyticsReportColumnMetadataSchema"
+            },
+            "description": "Dataset column metadata for the report backing table"
+          },
+          "measures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnalyticsReportMeasureSchema"
+            },
+            "description": "Configured aggregations appended to report output"
+          },
+          "column_header_names": {
+            "nullable": true,
+            "description": "Optional custom header labels keyed by column name"
+          },
+          "output_columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Final column list returned by `GET /openapi/analytics/reports/{id}` (dimensions plus measure output names)",
+            "example": [
+              "policy_number",
+              "premium_amount",
+              "total_premium"
+            ]
+          },
+          "date_key": {
+            "type": "string",
+            "nullable": true,
+            "description": "Dataset column used as the default date filter when querying report data",
+            "example": "effective_date"
+          },
+          "dataset_description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable description of the backing dataset",
+            "example": "Receivables aggregated at the policy level"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "ISO-8601 timestamp when the report access record was last updated (falls back to `created_at` when absent)",
+            "example": "2026-04-06T18:00:00.000Z"
+          },
+          "dataset_id": {
+            "type": "string",
+            "description": "Fully qualified BigQuery table identifier for the dataset",
+            "example": "fintary-prod.analytics_reports.agency_receivables_by_policy"
+          },
+          "state": {
+            "type": "string",
+            "nullable": true,
+            "description": "Lifecycle state of the report access record",
+            "example": "active"
+          },
+          "published": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether the report access record is published",
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional description of the published report"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnalyticsReportFilterSchema"
+            },
+            "description": "Pre-configured filters applied when the report is run"
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "ISO-8601 timestamp when the report access record was created",
+            "example": "2026-01-15T12:30:00.000Z"
+          }
+        },
+        "required": [
+          "selected_columns",
+          "column_order",
+          "columns",
+          "measures",
+          "output_columns",
+          "date_key",
+          "dataset_description",
+          "dataset_id"
+        ],
+        "description": "Published analytics report metadata flattened per access record, including resolved dataset columns"
+      },
+      "OpenAgentCreateSchema": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "agent_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "company_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "nullable": true,
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Sales rep",
+                  "Agent",
+                  "IMO",
+                  "Agency"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Sales rep",
+                    "Agent",
+                    "IMO",
+                    "Agency"
+                  ]
+                }
+              }
+            ],
+            "description": "Type of the agent. Known values: Sales rep, Agent, IMO, Agency"
+          },
+          "start_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "ISO datetime string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "Inactive",
+              "Terminated",
+              "active",
+              "archived",
+              "manager",
+              "current"
+            ],
+            "description": "Status of the agent"
+          },
+          "payout_level": {
+            "type": "string",
+            "nullable": true
+          },
+          "payable_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "payable",
+              "non_payable",
+              "pay_to_upline"
+            ],
+            "description": "Payable status of the agent"
+          },
+          "bank_info": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "sync_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Client system identifier for the agent. Used for syncing with external systems; Fintary generates its own str_id internally."
+          }
+        },
+        "description": "Input for creating a new agent"
+      },
+      "OpenAgentDatasetPage": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "description": "Dataset rows for the current page. Columns are determined by the underlying analytics dataset and are not statically typed. Additional non-reserved query parameters are applied as column filters."
+          },
+          "pageRowCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of rows returned on the current page",
+            "example": 20
+          },
+          "rowCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total number of rows matching the query across all pages",
+            "example": 137
+          },
+          "startDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Resolved start of the date filter window, when applied",
+            "example": "2026-01-01T00:00:00.000Z"
+          },
+          "endDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Resolved end of the date filter window, when applied",
+            "example": "2026-03-31T23:59:59.999Z"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based page index returned",
+            "example": 0
+          }
+        },
+        "required": [
+          "rows",
+          "pageRowCount",
+          "rowCount"
+        ],
+        "description": "Paginated dataset rows returned by the agent commissions, payouts, policies, and dashboard endpoints. Wrapped in the standard Open API response envelope under `data`."
+      },
+      "OpenAgentDetailSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "str_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "sync_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "first_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "agent_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "company_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "nullable": true,
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Sales rep",
+                  "Agent",
+                  "IMO",
+                  "Agency"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Sales rep",
+                    "Agent",
+                    "IMO",
+                    "Agency"
+                  ]
+                }
+              }
+            ],
+            "description": "Type of the agent. Known values: Sales rep, Agent, IMO, Agency"
+          },
+          "start_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "ISO date string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "Inactive",
+              "Terminated",
+              "active",
+              "archived",
+              "manager",
+              "current"
+            ],
+            "description": "Status of the agent"
+          },
+          "payout_level": {
+            "type": "string",
+            "nullable": true
+          },
+          "payable_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "payable",
+              "non_payable",
+              "pay_to_upline"
+            ],
+            "description": "Payable status of the agent"
+          },
+          "bank_info": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "description": "ISO datetime when created",
+            "format": "date-time"
+          },
+          "created_by": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "ISO datetime when last updated",
+            "format": "date-time"
+          },
+          "updated_by": {
+            "type": "string",
+            "nullable": true
+          },
+          "parent_relationships": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "str_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Fintary-generated identifier for this hierarchy relationship (contact_hierarchy.str_id). Use when removing upline."
+                },
+                "start_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "date-time"
+                },
+                "end_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "date-time"
+                },
+                "split_percentage": {
+                  "nullable": true
+                },
+                "sync_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Client system identifier for this hierarchy relationship (contact_hierarchy.sync_id)."
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "parent": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "str_id": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "sync_id": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "first_name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "email": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "email"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "agent_code": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "status": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "str_id",
+                    "sync_id",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "agent_code",
+                    "status"
+                  ]
+                }
+              },
+              "required": [
+                "str_id",
+                "start_date",
+                "end_date",
+                "sync_id",
+                "created_at",
+                "parent"
+              ]
+            }
+          },
+          "child_relationships": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "str_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Fintary-generated identifier for this hierarchy relationship (contact_hierarchy.str_id). Use when removing upline."
+                },
+                "start_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "date-time"
+                },
+                "end_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "date-time"
+                },
+                "split_percentage": {
+                  "nullable": true
+                },
+                "sync_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Client system identifier for this hierarchy relationship (contact_hierarchy.sync_id)."
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "str_id": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "sync_id": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "first_name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "email": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "email"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "agent_code": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "status": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "str_id",
+                    "sync_id",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "agent_code",
+                    "status"
+                  ]
+                }
+              },
+              "required": [
+                "str_id",
+                "start_date",
+                "end_date",
+                "sync_id",
+                "created_at",
+                "contact"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "str_id",
+          "sync_id",
+          "first_name",
+          "last_name",
+          "email",
+          "phone",
+          "agent_code",
+          "company_name",
+          "type",
+          "start_date",
+          "status",
+          "payout_level",
+          "payable_status",
+          "bank_info",
+          "notes",
+          "created_at",
+          "created_by",
+          "updated_at",
+          "updated_by",
+          "parent_relationships",
+          "child_relationships"
+        ],
+        "description": "Agent detail"
+      },
+      "OpenAgentIdParamSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path param for agent identifier. Supports str_id, agent_code, or sync_id."
+      },
+      "OpenAgentListQuerySchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "Inactive",
+              "Terminated",
+              "active",
+              "archived",
+              "manager",
+              "current"
+            ],
+            "description": "Filter by agent status"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Sales rep",
+              "Agent",
+              "IMO",
+              "Agency"
+            ],
+            "description": "Filter by agent type"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "description": "Query params for listing agents"
+      },
+      "OpenAgentListResponseSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpenAgentDetailSchema"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "count"
+        ],
+        "description": "Paginated list of agents with total count"
+      },
+      "OpenAgentUpdateSchema": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "agent_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "company_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "nullable": true,
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Sales rep",
+                  "Agent",
+                  "IMO",
+                  "Agency"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Sales rep",
+                    "Agent",
+                    "IMO",
+                    "Agency"
+                  ]
+                }
+              }
+            ],
+            "description": "Type of the agent. Known values: Sales rep, Agent, IMO, Agency"
+          },
+          "start_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "ISO datetime string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "Inactive",
+              "Terminated",
+              "active",
+              "archived",
+              "manager",
+              "current"
+            ],
+            "description": "Status of the agent"
+          },
+          "payout_level": {
+            "type": "string",
+            "nullable": true
+          },
+          "payable_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "payable",
+              "non_payable",
+              "pay_to_upline"
+            ],
+            "description": "Payable status of the agent"
+          },
+          "bank_info": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "description": "Input for updating an existing agent"
+      },
+      "OpenAnalyticsWidgetListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/OpenAnalyticsWidget"
+        },
+        "description": "Analytics dashboard widgets visible to the authenticated user"
+      },
+      "OpenAnalyticsWidget": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Numeric identifier of the widget record",
+            "example": 481
+          },
+          "str_id": {
+            "type": "string",
+            "description": "String identifier of the widget record",
+            "example": "wgt_4f2a9c1b"
+          },
+          "analytic_report_access_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Report access record the widget is backed by, when any",
+            "example": 42
+          },
+          "analytic_report_access_str_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "String identifier of the backing report access record",
+            "example": "rpt_abc123xyz"
+          },
+          "principal_type": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "account",
+              "user",
+              "role",
+              null
+            ],
+            "description": "Access principal type that scopes the backing report",
+            "example": "account"
+          },
+          "is_default_widget": {
+            "type": "boolean",
+            "description": "Whether this widget originates from a default template",
+            "example": false
+          },
+          "label": {
+            "type": "string",
+            "description": "Display label of the widget",
+            "example": "Premium by carrier"
+          },
+          "chart_type": {
+            "type": "string",
+            "enum": [
+              "line",
+              "bar",
+              "pie",
+              "value",
+              "table"
+            ],
+            "description": "Visualization type used to render the widget",
+            "example": "bar"
+          },
+          "x_axis_column": {
+            "type": "string",
+            "nullable": true,
+            "description": "Dataset column mapped to the x-axis (dimension)",
+            "example": "carrier_name"
+          },
+          "y_axis_column": {
+            "type": "string",
+            "description": "Dataset column mapped to the y-axis (measure)",
+            "example": "premium_amount"
+          },
+          "stack_column": {
+            "type": "string",
+            "nullable": true,
+            "description": "Dataset column used to stack series, when configured"
+          },
+          "echart_option": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {},
+            "description": "ECharts option object used to render chart widgets. Shape varies by chart type."
+          },
+          "value": {
+            "type": "number",
+            "nullable": true,
+            "description": "Aggregated scalar result for `value` chart widgets",
+            "example": 124500
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OpenAnalyticsWidgetTableConfig"
+              }
+            ],
+            "nullable": true,
+            "description": "Table widget configuration; null for non-table widgets"
+          },
+          "table_data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "description": "Row matrix for `table` chart widgets. The first row contains column headers."
+          },
+          "data_error": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error message when the widget data could not be resolved"
+          },
+          "grid_position": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OpenAnalyticsWidgetGridPosition"
+              }
+            ],
+            "nullable": true,
+            "description": "Dashboard grid placement of the widget"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-8601 timestamp when the widget was created",
+            "example": "2026-01-15T12:30:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-8601 timestamp when the widget was last updated",
+            "example": "2026-04-06T18:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "str_id",
+          "analytic_report_access_id",
+          "analytic_report_access_str_id",
+          "principal_type",
+          "is_default_widget",
+          "label",
+          "chart_type",
+          "x_axis_column",
+          "y_axis_column",
+          "stack_column",
+          "echart_option",
+          "value",
+          "config",
+          "table_data",
+          "data_error",
+          "grid_position",
+          "created_at",
+          "updated_at"
+        ],
+        "description": "Resolved analytics dashboard widget with rendered chart data"
+      },
+      "OpenApiCodedErrorResponseSchema": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Forbidden"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code",
+            "example": "FORBIDDEN_WIDGET_CONTEXT"
+          }
+        },
+        "required": [
+          "error",
+          "code"
+        ],
+        "description": "Error payload that includes a machine-readable `code` (e.g. forbidden widget context)"
+      },
+      "OpenApiSimpleErrorResponseSchema": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Account not found"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "description": "Simple error payload returned by some Open API routes"
+      },
+      "RemoveUplineRequestSchema": {
+        "type": "object",
+        "properties": {
+          "str_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "str_id of the contact_hierarchy record (returned when assigning upline)"
+          }
+        },
+        "required": [
+          "str_id"
+        ],
+        "description": "Request body for removing upline (by contact_hierarchy str_id)"
+      },
+      "RestoreDefaultWidgetRequest": {
+        "type": "object",
+        "properties": {
+          "default_widget_str_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "str_id of the default widget template to restore (from `GET /openapi/analytics/widgets/defaults`)",
+            "example": "wgt_default_premium"
+          }
+        },
+        "required": [
+          "default_widget_str_id"
+        ],
+        "description": "Request body for restoring a default analytics widget"
+      },
+      "OpenAPIResponseSchema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {},
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "statusCode"
+        ]
+      },
+      "OpenAnalyticsWidgetTableConfig": {
+        "type": "object",
+        "properties": {
+          "visible_columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Columns rendered by the table widget",
+            "example": [
+              "policy_number",
+              "premium_amount"
+            ]
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpenAnalyticsWidgetTableFilter"
+            },
+            "description": "Filters applied to the table widget"
+          },
+          "row_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Maximum rows rendered by the table widget",
+            "example": 100
+          }
+        },
+        "required": [
+          "visible_columns"
+        ],
+        "description": "Configuration for `table` chart-type widgets"
+      },
+      "OpenAnalyticsWidgetTableFilter": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string",
+            "description": "Dataset column the filter applies to",
+            "example": "carrier_name"
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "substring_contains",
+              "substring_not_contains",
+              "contains",
+              "not_contains",
+              "is_empty",
+              "is_not_empty",
+              "less_than",
+              "equal_to",
+              "greater_than"
+            ],
+            "description": "Filter operation identifier",
+            "example": "contains"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Values used by the filter operation",
+            "example": [
+              "Acme"
+            ]
+          }
+        },
+        "required": [
+          "column",
+          "operation",
+          "values"
+        ],
+        "description": "A single filter applied to a table widget"
+      },
+      "OpenAnalyticsWidgetGridPosition": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Grid column offset",
+            "example": 0
+          },
+          "y": {
+            "type": "number",
+            "description": "Grid row offset",
+            "example": 0
+          },
+          "w": {
+            "type": "number",
+            "description": "Width in grid units",
+            "example": 6
+          },
+          "h": {
+            "type": "number",
+            "description": "Height in grid units",
+            "example": 4
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "w",
+          "h"
+        ],
+        "description": "Dashboard grid placement of a widget"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/openapi/agents/{id}": {
+      "get": {
+        "operationId": "agents.get",
+        "summary": "Get agent by ID",
+        "description": "Returns a single agent's full profile along with its upline and downline hierarchy relationships. The agent is resolved by `str_id`, `agent_code`, or `sync_id`.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDetailSchema"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "agents.update",
+        "summary": "Update an agent",
+        "description": "Updates an existing agent's profile fields. The agent is resolved by `str_id` or `agent_code`. Only the fields supplied in the request body are changed; omitted fields are left untouched.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id or agent_code)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAgentUpdateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDetailSchema"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Request body is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        }
+      }
+    },
+    "/openapi/agents/{id}/assign-upline": {
+      "post": {
+        "operationId": "agents.assignUpline",
+        "summary": "Assign upline to an agent",
+        "description": "Creates an upline hierarchy relationship for the agent, optionally scoped by a start/end date range and a split percentage. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Returns the created `contact_hierarchy` `str_id`, which is required to remove the relationship via `DELETE /openapi/agents/{id}/assign-upline`.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id) to assign upline to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignUplineRequestSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upline assigned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AssignUplineResponseSchema"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Either the request body is invalid (e.g. missing upline), or the upline relationship already exists for this agent and upline pair.\n"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found or Upline agent not found"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "agents.removeUpline",
+        "summary": "Remove upline from an agent (by contact_hierarchy str_id)",
+        "description": "Removes the upline relationship by the contact_hierarchy str_id in the request body. Use the str_id returned when assigning upline.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id) the hierarchy belongs to; must match contact_hierarchy's contact_id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveUplineRequestSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upline removed successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Upline relationship not found"
+          }
+        }
+      }
+    },
+    "/openapi/agents/{id}/commissions": {
+      "get": {
+        "operationId": "agents.listCommissions",
+        "summary": "Get commissions for an agent",
+        "description": "Returns commission records for the agent from the `latest_commissions` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000,
+              "default": 20
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "description": "End date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agent commissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDatasetPage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        }
+      }
+    },
+    "/openapi/agents/{id}/dashboard": {
+      "get": {
+        "operationId": "agents.getDashboard",
+        "summary": "Get dashboard snapshot for an agent",
+        "description": "Returns a dashboard snapshot (aggregated production/commission metrics) for the agent, optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the underlying dataset.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 1
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "description": "End date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agent dashboard snapshot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDatasetPage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        }
+      }
+    },
+    "/openapi/agents/{id}/payouts": {
+      "get": {
+        "operationId": "agents.listPayouts",
+        "summary": "Get payouts for an agent",
+        "description": "Returns payout records for the agent from the `contact_payouts_enriched` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 20
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "description": "End date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agent payouts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDatasetPage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        }
+      }
+    },
+    "/openapi/agents/{id}/policies": {
+      "get": {
+        "operationId": "agents.listPolicies",
+        "summary": "Get policies for an agent",
+        "description": "Returns policy records for the agent from the `contact_policies` analytics dataset, paginated, optionally filtered by a date range, and sortable via `order_by` + `sort`. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Agent identifier (str_id, agent_code, or sync_id)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 20
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "description": "End date filter (ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "description": "Column to sort by",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Sort direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agent policies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDatasetPage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        }
+      }
+    },
+    "/openapi/agents": {
+      "get": {
+        "operationId": "agents.list",
+        "summary": "List agents",
+        "description": "Returns a paginated list of agents in the account, optionally filtered by status, company name, and type. Each item includes the agent's profile plus its upline (`parent_relationships`) and downline (`child_relationships`) hierarchy records.\n",
+        "tags": [
+          "Agents"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by agent status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "company_name",
+            "in": "query",
+            "required": false,
+            "description": "Filter by company name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by agent type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (0-based)",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of items per page (1-1000)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentListResponseSchema"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "operationId": "agents.create",
+        "summary": "Create a new agent",
+        "description": "Creates a new agent (contact) in the account. Supply an optional `sync_id` to correlate the agent with your external system; Fintary generates its own `str_id`. Returns the created agent's full profile.\n",
+        "tags": [
+          "Agents"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAgentCreateSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agent created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OpenAgentDetailSchema"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Request body is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/openapi/analytics/datasets/{name}": {
+      "get": {
+        "operationId": "analytics.getDatasetData",
+        "summary": "Query an analytics dataset by name",
+        "description": "Returns filtered, sorted, and optionally aggregated rows for a named dataset, or streams the result as CSV when `csv_output=true`. Complex parameters (`filter_model`, `sort_model`, `filters`, `measures`) are passed as JSON-encoded strings.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Dataset name to query.",
+            "schema": {
+              "type": "string",
+              "example": "latest_commissions"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "required": false,
+            "description": "Account override (Fintary Admin only).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contact_id",
+            "in": "query",
+            "required": false,
+            "description": "Scope rows to a single contact.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start of the date filter window (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "description": "End of the date filter window (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "columns",
+            "in": "query",
+            "required": false,
+            "description": "Columns to return. Repeat the parameter for multiple values.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "csv_output",
+            "in": "query",
+            "required": false,
+            "description": "When `true`, stream the result as a CSV file attachment.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "filter_model",
+            "in": "query",
+            "required": false,
+            "description": "JSON-encoded AG Grid filter model.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_model",
+            "in": "query",
+            "required": false,
+            "description": "JSON-encoded AG Grid sort model.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "required": false,
+            "description": "JSON-encoded array of `{ column, operation, values }` filters.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "description": "Column(s) to sort by. Repeat for multiple values. `sortBy` is accepted as an alias and takes precedence when both are supplied.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "Sort direction per `order_by` column.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "group_bys",
+            "in": "query",
+            "required": false,
+            "description": "Columns to group by when measures are supplied.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "measures",
+            "in": "query",
+            "required": false,
+            "description": "JSON-encoded array of `{ column, aggregation, outputName }` measures.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated dataset rows as JSON, or a CSV file stream when `csv_output=true`.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsDatasetDataResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Report name is required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Middleware auth failures return the standard response envelope; the handler returns `{ error }` when the account context is missing.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/analytics/datasets": {
+      "get": {
+        "operationId": "analytics.listDatasets",
+        "summary": "List analytics datasets",
+        "description": "Lists the available analytics datasets (BigQuery tables) for the account, including each dataset's description and its full column list (name, type, and business description sourced from the BigQuery schema). Used by downstream experiences (e.g. My Data Insights) to surface metadata for selecting the right dataset.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available analytics datasets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsDatasetListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Missing or invalid API key / bearer token is rejected by the API middleware and returns the standard response envelope.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/analytics/reports/{id}": {
+      "get": {
+        "operationId": "analytics.getReportData",
+        "summary": "Fetch data for a specific analytics report",
+        "description": "Fetches a published analytics report by id. Returns report data rows by default; pass `metadata_only=true` for the report configuration only, or `csv_output=true` (optionally with `background_task=true`) to export as CSV. Admin/Account-Admin callers may scope to another account/contact via `account_id`/`contact_id`.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Report identifier. Pass the string ID (`str_id`) of the report. Integer IDs are accepted for legacy compatibility but deprecated.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date (inclusive) in YYYY-MM-DD for report data query.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "description": "End date (inclusive) in YYYY-MM-DD for report data query.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "description": "Page size for report data query.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Zero-based page index for report data query.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "required": false,
+            "description": "Account ID override (Fintary Admin or Account Admin). Account admins are restricted to their own account.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contact_id",
+            "in": "query",
+            "required": false,
+            "description": "Contact ID to fetch report data for (Fintary Admin or Account Admin). Must be used with account_id.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "csv_output",
+            "in": "query",
+            "required": false,
+            "description": "When true, returns report data as CSV.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "filter_model",
+            "in": "query",
+            "required": false,
+            "description": "AgGrid filter model JSON string for server-side filtering.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "description": "Sort column name. Repeat the parameter to apply multi-column sorting, for example `?order_by=column_a&order_by=column_b`.",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Sort direction aligned with `order_by`. Repeat the parameter to match multi-column sorting, for example `?sort=asc&sort=desc`.",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "asc",
+                      "desc"
+                    ]
+                  }
+                }
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "background_task",
+            "in": "query",
+            "required": false,
+            "description": "When true (requires csv_output=true), queues the export as a background task. Returns `{ taskId, statusUrl }` instead of streaming CSV. Poll `GET /openapi/analytics/tasks/{taskId}` for status and the signed download URL.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "email_account_admins",
+            "in": "query",
+            "required": false,
+            "description": "When true (requires background_task=true), emails account admins when the export completes.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "metadata_only",
+            "in": "query",
+            "required": false,
+            "description": "When true, returns only the report configuration (no data rows). See response shape (2).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "{column}_start",
+            "in": "query",
+            "required": false,
+            "description": "Dynamic per-column date-range lower bound (inclusive). Replace `{column}` with any filterable date column (e.g. `effective_date_start`); pair it with the matching `{column}_end`. Parsed by `parseDateColumnRangesFromQuery`. Distinct from the report-wide `start_date`/`end_date`.\n",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "{column}_end",
+            "in": "query",
+            "required": false,
+            "description": "Dynamic per-column date-range upper bound (inclusive). Pairs with `{column}_start` (e.g. `effective_date_end`).\n",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Several response shapes depending on parameters: (1) Default \u2014 returns report data with rows, pageRowCount, rowCount, and page. A date range (or dynamic `{column}_start`/`{column}_end`) narrows the data but is not required. (2) metadata_only=true \u2014 returns report configuration only (analytic_report_access with selected_columns, group_by_columns, filters, roles, users). (3) csv_output=true \u2014 streams CSV directly. (4) csv_output=true&background_task=true \u2014 returns `{ taskId: string, statusUrl: string }`. Poll GET /openapi/analytics/tasks/{taskId} for status.\n"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Report not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/openapi/analytics/reports": {
+      "get": {
+        "operationId": "analytics.listReports",
+        "summary": "List published analytics reports",
+        "description": "Returns published analytics report definitions visible to the authenticated principal. Each item represents one **report access record** (not the underlying template) and includes resolved dataset column metadata.\nUse the `str_id` from a list item as `{id}` in `GET /openapi/analytics/reports/{id}` to fetch report data or export CSV.\n**Admin overrides:** Fintary Admins and Account Admins may pass `account_id` and `contact_id` together to list reports as if they were that contact's user. `contact_id` alone has no effect; `account_id` alone has no effect. Account admins are restricted to their own `account_id`.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "required": false,
+            "description": "Account override (Fintary Admin or Account Admin). Must be used with `contact_id`. Account admins may only query their own account.\n",
+            "schema": {
+              "type": "string",
+              "example": "acct_7f3c2b1a"
+            }
+          },
+          {
+            "name": "contact_id",
+            "in": "query",
+            "required": false,
+            "description": "Contact override (Fintary Admin or Account Admin). Must be used with `account_id`. Resolves the contact's user and role for access checks.\n",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "example": 12345
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published analytics reports for the resolved principal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsReportsListResponseSchema"
+                },
+                "examples": {
+                  "withReports": {
+                    "summary": "One published report",
+                    "value": [
+                      {
+                        "id": 42,
+                        "str_id": "rpt_abc123xyz",
+                        "name": "Agency receivables by policy",
+                        "principal_type": "account",
+                        "account_id": "acct_7f3c2b1a",
+                        "selected_columns": [
+                          "policy_number",
+                          "premium_amount",
+                          "effective_date"
+                        ],
+                        "group_by_columns": [],
+                        "column_order": [
+                          "policy_number",
+                          "premium_amount"
+                        ],
+                        "columns": [
+                          {
+                            "name": "policy_number",
+                            "type": "STRING",
+                            "description": "Unique policy number assigned by the carrier"
+                          },
+                          {
+                            "name": "premium_amount",
+                            "type": "FLOAT",
+                            "description": "Annualized premium amount for the policy"
+                          },
+                          {
+                            "name": "effective_date",
+                            "type": "DATE",
+                            "description": "Date the policy became effective"
+                          }
+                        ],
+                        "measures": [],
+                        "column_header_names": null,
+                        "output_columns": [
+                          "policy_number",
+                          "premium_amount",
+                          "effective_date"
+                        ],
+                        "date_key": "effective_date",
+                        "dataset_description": "Receivables aggregated at the policy level",
+                        "updated_at": "2026-04-06T18:00:00.000Z",
+                        "dataset_id": "fintary-prod.analytics_reports.agency_receivables_by_policy",
+                        "state": "active",
+                        "published": true,
+                        "description": null,
+                        "filters": [],
+                        "created_at": "2026-01-15T12:30:00.000Z"
+                      }
+                    ]
+                  },
+                  "empty": {
+                    "summary": "No visible published reports",
+                    "value": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid authentication, invalid role context, or unauthorized account override. Middleware auth failures return the standard response envelope; the handler returns `{ error }` for an unauthorized account override.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                },
+                "examples": {
+                  "unauthorizedAccount": {
+                    "summary": "Account admin querying another account",
+                    "value": {
+                      "error": "Account admins can only query their own account"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                },
+                "examples": {
+                  "serverError": {
+                    "value": {
+                      "error": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/analytics/tasks/{taskId}": {
+      "get": {
+        "operationId": "analytics.getExportTaskStatus",
+        "summary": "Get analytics export task status",
+        "description": "Poll the status of a background analytics CSV export task. Create a task by calling `GET /openapi/analytics/reports/{id}` with `csv_output=true&background_task=true`. The `statusUrl` in that response points here.\nPoll until `status` is `completed` or `error`. On completion, `result.downloadUrl` is a signed GCS URL valid for 24 hours.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "description": "Task ID returned by the background export request.",
+            "schema": {
+              "type": "string",
+              "example": "pz9BqB8PhZmrzsDn3AYFN"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "taskId",
+                    "status",
+                    "type",
+                    "createdAt",
+                    "updatedAt",
+                    "duration",
+                    "result",
+                    "error"
+                  ],
+                  "properties": {
+                    "taskId": {
+                      "type": "string",
+                      "example": "pz9BqB8PhZmrzsDn3AYFN"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "pending",
+                        "processing",
+                        "completed",
+                        "error"
+                      ],
+                      "example": "completed"
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "analytics_export"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "duration": {
+                      "type": "integer",
+                      "nullable": true,
+                      "description": "Elapsed processing time in milliseconds. Null until complete.",
+                      "example": 45213
+                    },
+                    "result": {
+                      "type": "object",
+                      "nullable": true,
+                      "description": "Populated when status is `completed`.",
+                      "properties": {
+                        "fileName": {
+                          "type": "string",
+                          "example": "my-dataset-2026-04-06T18-00-00-abc123.csv"
+                        },
+                        "downloadUrl": {
+                          "type": "string",
+                          "description": "Signed GCS URL valid for 24 hours.",
+                          "example": "https://storage.googleapis.com/..."
+                        },
+                        "completedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Error message when status is `error`. Null otherwise.",
+                      "example": null
+                    }
+                  }
+                },
+                "examples": {
+                  "pending": {
+                    "summary": "Task still processing",
+                    "value": {
+                      "taskId": "pz9BqB8PhZmrzsDn3AYFN",
+                      "status": "pending",
+                      "type": "analytics_export",
+                      "createdAt": "2026-04-06T18:00:00.000Z",
+                      "updatedAt": "2026-04-06T18:00:01.000Z",
+                      "duration": null,
+                      "result": null,
+                      "error": null
+                    }
+                  },
+                  "completed": {
+                    "summary": "Task completed with download URL",
+                    "value": {
+                      "taskId": "pz9BqB8PhZmrzsDn3AYFN",
+                      "status": "completed",
+                      "type": "analytics_export",
+                      "createdAt": "2026-04-06T18:00:00.000Z",
+                      "updatedAt": "2026-04-06T18:00:45.000Z",
+                      "duration": 45213,
+                      "result": {
+                        "fileName": "my-dataset-2026-04-06T18-00-00-abc123.csv",
+                        "downloadUrl": "https://storage.googleapis.com/fintary-dev.appspot.com/exports/...",
+                        "completedAt": "2026-04-06T18:00:45.000Z"
+                      },
+                      "error": null
+                    }
+                  },
+                  "error": {
+                    "summary": "Task failed",
+                    "value": {
+                      "taskId": "pz9BqB8PhZmrzsDn3AYFN",
+                      "status": "error",
+                      "type": "analytics_export",
+                      "createdAt": "2026-04-06T18:00:00.000Z",
+                      "updatedAt": "2026-04-06T18:00:10.000Z",
+                      "duration": 10032,
+                      "result": null,
+                      "error": "Failed to stream CSV: dataset not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid authentication"
+          },
+          "404": {
+            "description": "Task not found or belongs to a different account"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/openapi/analytics/widgets/defaults": {
+      "get": {
+        "operationId": "analytics.listDefaultWidgets",
+        "summary": "List default analytics dashboard widgets",
+        "description": "Returns the default analytics widget templates available for the authenticated user's role, with rendered chart data. Use `POST /openapi/analytics/widgets/defaults/restore` to add one of these defaults back to the user's dashboard. Optional `dateColumnRange_<column>` query parameters constrain the data window per dataset column.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dateColumnRange_effective_date",
+            "in": "query",
+            "required": false,
+            "description": "Per-column date range filter. Replace the suffix with any dataset date column. Value is a JSON-encoded `{ startDate, endDate }` range.\n",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default widgets for the user's role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAnalyticsWidgetListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or invalid role context. Middleware auth failures return the standard response envelope; the handler returns `{ error }` for an unresolved account or invalid role.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/analytics/widgets/defaults/restore": {
+      "post": {
+        "operationId": "analytics.restoreDefaultWidget",
+        "summary": "Restore a default analytics widget",
+        "description": "Restores a default widget template to the authenticated user's dashboard. Pass the `default_widget_str_id` of a template returned by `GET /openapi/analytics/widgets/defaults`. Returns the restored widget with rendered chart data.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreDefaultWidgetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The restored widget",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAnalyticsWidget"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or invalid role context. Middleware auth failures return the standard response envelope; the handler returns `{ error }` for an unresolved account/user or invalid role.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default widget not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/analytics/widgets": {
+      "get": {
+        "operationId": "analytics.listWidgets",
+        "summary": "List analytics dashboard widgets",
+        "description": "Returns the analytics dashboard widgets configured for the authenticated user within their account, with rendered chart data. Optional `dateColumnRange_<column>` query parameters constrain the data window per dataset column. Returns an empty array when the user has no resolvable widget context.\n",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contact_id",
+            "in": "query",
+            "required": false,
+            "description": "Resolve widgets for a specific contact (admin/impersonation).",
+            "schema": {
+              "type": "integer",
+              "example": 12345
+            }
+          },
+          {
+            "name": "adminOnly",
+            "in": "query",
+            "required": false,
+            "description": "When `true`, restrict results to account-admin widgets.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "dateColumnRange_effective_date",
+            "in": "query",
+            "required": false,
+            "description": "Per-column date range filter. Replace the suffix with any dataset date column. Value is a JSON-encoded `{ startDate, endDate }` range.\n",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Widgets visible to the authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAnalyticsWidgetListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Auth failures from the API middleware return the standard response envelope; the handler returns `{ error }` when the account cannot be resolved.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden for the resolved widget context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiCodedErrorResponseSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OpenApiSimpleErrorResponseSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/comp-reports/data": {
+      "get": {
+        "operationId": "compReports.getData",
+        "summary": "Get commission report data",
+        "description": "Returns paginated commission report data rows for a published commission report, identified by its report string id. Rows are processed through the commission-report post-processor (role-based commission-field filtering, owner-zero-row drops, canonical totals), so the payload matches what a user sees in the report view. Note: this is a behavioral change from the previous raw-snapshot response \u2014 fields the caller's role cannot see are now redacted.\n",
+        "tags": [
+          "Commission Reports"
+        ],
+        "parameters": [
+          {
+            "name": "report_str_id",
+            "in": "query",
+            "required": true,
+            "description": "The report string ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of rows to return (1-10000, default 50)",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 10000
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination (0-based, default 0)",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Report data retrieved successfully"
+          },
+          "400": {
+            "description": "Missing or invalid report_str_id"
+          },
+          "404": {
+            "description": "Report not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/openapi/documents/convert-html-to-pdf": {
+      "post": {
+        "operationId": "documents.convertHtmlToPdf",
+        "summary": "Convert HTML to PDF",
+        "description": "Renders an uploaded HTML document (with optional referenced assets) to a PDF via the Fintary file-conversion service. Multipart upload; the request and the generated PDF are each capped at 32 MB. Requires the FFC feature flag to be enabled for the account (otherwise 403). Optionally set the `x-output-filename` header (must match `*.pdf`) to name the downloaded file; it falls back to `converted.pdf`.\n",
+        "tags": [
+          "Documents"
+        ],
+        "parameters": [
+          {
+            "name": "x-output-filename",
+            "in": "header",
+            "required": false,
+            "description": "Desired output filename. Must match `*.pdf`, else `converted.pdf` is used.",
+            "schema": {
+              "type": "string",
+              "example": "statement.pdf"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ConvertHtmlToPdfRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The generated PDF document (binary).",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `html_content`, or invalid `rendering_options` JSON/values.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The file-conversion feature is not enabled for the account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The request payload or generated PDF exceeds the 32 MB limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Conversion failed due to an upstream file-conversion error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi/documents/upload": {
+      "post": {
+        "operationId": "documents.upload",
+        "summary": "Upload a document",
+        "description": "Uploads a commission/policy/compgrid statement document (multipart), classifies it, extracts statement amounts, and creates a processing task. At least one of `company_id` or `company_name` is required.\n",
+        "tags": [
+          "Documents"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUploadSchema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenAPIResponseSchema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DocumentUploadResponseSchema"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

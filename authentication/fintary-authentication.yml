@@ -1,0 +1,105 @@
+generated: '2026-08-14'
+method: searched
+source: openapi/fintary-ams-api-openapi.yml, openapi/fintary-open-api-openapi.yml
+docs: https://api.fintary.com/documentation
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: string
+  sources:
+  - openapi/fintary-ams-api-openapi.yml
+  - openapi/fintary-open-api-openapi.yml
+  applies_to: Fintary Open API, Fintary AMS API
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: x-api-key
+  description: API key for authentication
+  sources:
+  - openapi/fintary-open-api-openapi.yml
+  applies_to: Fintary Open API
+application:
+  style: global
+  note: >-
+    Both documents declare a top-level `security` requirement rather than per-operation
+    security. The Open API accepts either scheme (`ApiKeyAuth` OR `BearerAuth`); the AMS API
+    declares `BearerAuth` only. No operation in either document opts out.
+observed:
+- url: https://api.fintary.com/openapi/agents
+  status: 401
+  body: '{"success":false,"data":null,"message":"Missing or invalid API key","statusCode":401}'
+  note: Confirms the x-api-key scheme is enforced live.
+- url: https://api.fintary.com/api/ams/agents
+  status: 401
+  body: Not authenticated
+  note: Confirms the AMS bearer scheme is enforced live.
+key_issuance:
+  self_service: false
+  note: >-
+    Fintary publishes no key-management or token-issuance documentation. There is no
+    developer console, no key page, no signup, and no documented token endpoint for the
+    APIs themselves. Keys and bearer tokens are obtained through a Fintary representative
+    against an existing customer account.
+scopes:
+  published: false
+  note: >-
+    Neither document declares an oauth2 securityScheme and no scope or permission reference
+    is published, so no scopes/ artifact is emitted. Authorization is expressed instead as
+    coarse account roles - `account_admin`, `producer`, `data_specialist` (named in the SSO
+    guides) - plus per-operation admin gates in the Open API, where `account_id` and
+    `contact_id` overrides are documented as "Fintary Admin only" or "Fintary Admin or
+    Account Admin".
+sso:
+  role: client
+  protocol: OAuth 2.0 authorization code
+  docs: https://api.fintary.com/documentation
+  self_service: false
+  note: >-
+    Distinct from API authentication. Fintary acts as the OAuth CLIENT against a customer's
+    identity provider: the user is redirected to the customer's authorization URL, the IdP
+    returns a code to Fintary's redirect URI, Fintary exchanges it at the customer's token
+    endpoint using client credentials the customer issues, then decodes the selected JWT and
+    reads claims. Fintary publishes no authorization server of its own and issues no
+    developer-facing scopes. Setup is performed by Fintary staff from configuration the
+    customer supplies.
+  variants:
+  - id: contact-sync-id-sso
+    title: Contact Sync ID SSO
+    user_resolution: contact_sync_id
+    identity_claim: contact_id
+    role_claim: role
+    token_source: access_token or id_token
+    role_mapping: [account_admin, producer, data_specialist]
+    provisioning_flags: [createContactIfMissing, createUserIfMissing]
+    fallback: >-
+      userResolution.identityFallback = 'email' resolves the user by verified email when the
+      identity claim is absent; that path matches existing `users` records only and never
+      reads or writes `contacts`.
+    forwarded_entry: https://api.fintary.com/oauth/callback?code=<code>&provider=<provider_slug>
+  - id: email-sso
+    title: Email-based SSO
+    user_resolution: email
+    identity_claim: email
+    token_source: id_token first, falling back to access_token
+    provisioning: >-
+      Does not create users on the fly - users must be invited into Fintary in advance and
+      must be active, or login fails.
+  configuration_inputs:
+  - provider name/slug
+  - Fintary account (customer tenant) to map
+  - authorization URL
+  - token URL
+  - client ID and secret
+  - redirect URI(s)
+  - scopes and extra authorization parameters
+  - token endpoint content type (application/json or application/x-www-form-urlencoded)
+transport:
+  https_only: true
+  hsts: 'max-age=63072000; includeSubDomains'

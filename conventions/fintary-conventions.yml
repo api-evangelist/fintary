@@ -1,0 +1,141 @@
+generated: '2026-08-14'
+method: derived
+source: >-
+  openapi/fintary-open-api-openapi.yml, openapi/fintary-ams-api-openapi.yml,
+  https://api.fintary.com/documentation, and live unauthenticated probes of
+  https://api.fintary.com/openapi/agents and https://api.fintary.com/api/ams/agents
+  on 2026-08-14
+note: >-
+  Fintary publishes no prose conventions guide — there is no "getting started",
+  "errors", "pagination" or "rate limits" page. Everything below is read out of the two
+  OpenAPI documents served at api.fintary.com/openapi-doc and /api-doc, the two SSO
+  integration guides at api.fintary.com/documentation, and headers observed on live
+  unauthenticated requests. Absences are recorded as absences.
+base_url: https://api.fintary.com
+path_prefixes:
+- prefix: /openapi/
+  api: Fintary Open API
+- prefix: /api/ams/
+  api: Fintary AMS API
+authentication:
+  styles:
+  - type: apiKey
+    location: header
+    parameter: x-api-key
+    applies_to: Fintary Open API
+  - type: http
+    scheme: bearer
+    applies_to: Fintary Open API, Fintary AMS API
+  applied: >-
+    Both documents declare a top-level `security` requirement, so auth is applied globally
+    rather than per-operation. The Open API accepts either scheme (`ApiKeyAuth` OR
+    `BearerAuth`); the AMS API accepts `BearerAuth` only.
+  detail: authentication/fintary-authentication.yml
+  sso: >-
+    Separate from API auth, Fintary operates an inbound SSO service in which Fintary is the
+    OAuth 2.0 client against a customer's identity provider (authorization-code flow, code
+    exchanged at the customer's token endpoint, claims read from the id_token or
+    access_token). It is configured by Fintary staff, not self-service, and issues no
+    developer-facing scopes. See lifecycle/ and authentication/ for detail.
+idempotency:
+  supported: false
+  evidence: >-
+    No Idempotency-Key header, parameter, or equivalent appears anywhere in either OpenAPI
+    document (zero matches for /idempoten/i across both), and no documentation page
+    mentions retry-safety. Creates (POST /openapi/agents, POST /api/ams/policies,
+    POST /api/ams/customers, POST /api/ams/agents, POST /api/ams/tasks) carry no
+    deduplication contract. No Idempotency pointer is emitted in apis.yml.
+pagination:
+  style: offset
+  note: >-
+    Zero-based page index plus a page size, passed as query parameters. Two parameter
+    spellings coexist across the Open API surface and are not reconciled anywhere in the
+    documentation.
+  parameters:
+  - name: page
+    in: query
+    description: Page number, 0-based
+    apis: [Fintary Open API]
+  - name: page_size
+    in: query
+    description: Page size (analytics report data query)
+    apis: [Fintary Open API]
+  - name: limit
+    in: query
+    description: >-
+      Items per page. Range and default differ by route: 1-1000 on the agents list,
+      1-10000 with a default of 50 on analytics dataset queries.
+    apis: [Fintary Open API]
+  response_fields:
+  - pageRowCount
+  - rowCount
+  ams_note: >-
+    The AMS API paginates inside request bodies on its POST list routes
+    (POST /api/ams/policies/list) rather than by query parameter, and exposes only
+    `entity` and `query` as query parameters.
+sorting_and_filtering:
+  sort_parameters: [order_by, orderBy, sortBy, order, sort, sort_model]
+  filter_parameters: [filter_model, filters, status, type, company_name, start_date, end_date]
+  dynamic_filters:
+  - '{column}_start and {column}_end for per-column date-range bounds'
+  - dateColumnRange_effective_date and sibling per-column date-range filters
+  note: >-
+    Filtering and sorting on the analytics and dataset routes are expressed as JSON-encoded
+    AG Grid filter and sort models passed in query strings
+    (AgGridFilterModelSchema, AgGridTextFilterSchema, AgGridDateFilterSchema and their
+    composite AND/OR variants are first-class schemas in the Open API document). This
+    couples the public contract to a specific client-side grid library.
+field_selection:
+  supported: true
+  parameter: columns
+  note: Repeat the `columns` parameter for multiple values on analytics dataset queries.
+  expansion: not supported
+  metadata_only: >-
+    `metadata_only=true` on the report data route returns the report configuration with no
+    data rows.
+export:
+  csv: 'csv_output=true streams the result as a CSV file attachment'
+  background_tasks: >-
+    `background_task=true` (requires csv_output=true) queues an export as a background task;
+    poll GET /openapi/analytics/tasks/{taskId} for status, and
+    `email_account_admins=true` emails account admins on completion.
+request_tracing:
+  request_id_header: null
+  observed: >-
+    Responses carry `x-cloud-trace-context` and `server: Google Frontend`, which are Google
+    Cloud infrastructure headers rather than a documented Fintary correlation contract. The
+    AMS routes also expose a non-standard `out_of_date` header via
+    access-control-expose-headers. Nothing is documented.
+versioning:
+  scheme: none
+  current: '1.0'
+  note: >-
+    Both documents declare info.version 1.0. There is no version segment in any path, no
+    version header, and no published versioning or deprecation policy. See
+    lifecycle/fintary-lifecycle.yml.
+error_envelope:
+  format: vendor
+  shapes:
+  - '{error, code}'
+  - '{error}'
+  - '{code, message}'
+  - '{success, data, message, statusCode} (observed live, undocumented)'
+  problem_json: false
+  detail: errors/fintary-problem-types.yml
+rate_limiting:
+  documented: false
+  response_headers: []
+  status_code_on_exhaustion: null
+  evidence: >-
+    Neither document declares a 429 response on any of the 81 operations, and no
+    RateLimit-*, X-RateLimit-* or Retry-After header appeared on live responses.
+  detail: rate-limits/fintary-rate-limits.yml
+transport_security:
+  hsts: 'strict-transport-security: max-age=63072000; includeSubDomains (observed on api.fintary.com)'
+  detail: security/fintary-domain-security.yml
+cross_links:
+  authentication: authentication/fintary-authentication.yml
+  errors: errors/fintary-problem-types.yml
+  lifecycle: lifecycle/fintary-lifecycle.yml
+  rate_limits: rate-limits/fintary-rate-limits.yml
+  data_model: data-model/fintary-data-model.yml

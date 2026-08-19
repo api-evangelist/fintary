@@ -1,0 +1,328 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/fintary-open-api-openapi.yml, openapi/fintary-ams-api-openapi.yml
+format: vendor
+format_note: 'NOT RFC 9457. Neither Fintary document uses application/problem+json. Two distinct error
+  envelopes are published instead, and a third was observed live: (1) the Open API coded envelope {error,
+  code} where `code` is a machine-readable string such as FORBIDDEN_WIDGET_CONTEXT; (2) the Open API simple
+  envelope {error}; and (3) the AMS registry envelope {code, message} where `code` is drawn from a closed
+  enum of five gRPC-style values. A live unauthenticated GET of https://api.fintary.com/openapi/agents
+  on 2026-08-14 returned HTTP 401 with a fourth shape, {success, data, message, statusCode}, which no
+  published schema describes.'
+envelopes:
+- name: OpenApiCodedErrorResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  fields:
+  - error
+  - code
+  required:
+  - error
+  - code
+  description: 'Error payload including a machine-readable code (example: FORBIDDEN_WIDGET_CONTEXT)'
+- name: OpenApiSimpleErrorResponseSchema
+  spec: openapi/fintary-open-api-openapi.yml
+  fields:
+  - error
+  required:
+  - error
+  description: 'Simple error payload returned by some Open API routes (example: Account not found)'
+- name: AmsRegistryErrorSchema
+  spec: openapi/fintary-ams-api-openapi.yml
+  fields:
+  - code
+  - message
+  required:
+  - code
+  - message
+  codes:
+  - invalid_argument
+  - not_found
+  - failed_precondition
+  - unauthenticated
+  - permission_denied
+  description: Closed-enum error code plus a human message, used by the AMS registry routes
+- name: observed-live-envelope
+  spec: null
+  fields:
+  - success
+  - data
+  - message
+  - statusCode
+  method: probed
+  source: https://api.fintary.com/openapi/agents
+  example: '{"success":false,"data":null,"message":"Missing or invalid API key","statusCode":401}'
+  description: Observed on a live unauthenticated request; not described by either published spec
+problem_count: 26
+problems:
+- status: 404
+  title: Not found
+  spec: openapi/fintary-ams-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}
+  - openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/agents/{strId}
+  - openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/agents/{strId}
+  - openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}/contracts/{contractId}
+  - openapi/fintary-ams-api-openapi.yml#PATCH /api/ams/agents/{strId}/contracts/{contractId}
+  - openapi/fintary-ams-api-openapi.yml#DELETE /api/ams/agents/{strId}/contracts/{contractId}
+  - openapi/fintary-ams-api-openapi.yml#GET /api/ams/agents/{strId}/contracts
+  - openapi/fintary-ams-api-openapi.yml#POST /api/ams/agents/{strId}/contracts
+  occurrences: 32
+- status: 400
+  title: Bad request
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#documents.upload
+  occurrences: 1
+- status: 400
+  title: Bad request - Request body is required
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#agents.update
+  - openapi/fintary-open-api-openapi.yml#agents.create
+  occurrences: 2
+- status: 400
+  title: 'Bad request. Either the request body is invalid (e.g. missing upline), or the upline relationship
+    already exists for this agent and upline pair.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#agents.assignUpline
+  occurrences: 1
+- status: 400
+  title: Missing `html_content`, or invalid `rendering_options` JSON/values.
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenAPIResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#documents.convertHtmlToPdf
+  occurrences: 1
+- status: 400
+  title: Missing or invalid report_str_id
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#compReports.getData
+  occurrences: 1
+- status: 400
+  title: Report name is required
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenApiSimpleErrorResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.getDatasetData
+  occurrences: 1
+- status: 401
+  title: Missing or invalid authentication
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.getExportTaskStatus
+  occurrences: 1
+- status: 401
+  title: 'Missing or invalid authentication, invalid role context, or unauthorized account override. Middleware
+    auth failures return the standard response envelope; the handler returns `{ error }` for an unauthorized
+    account override.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.listReports
+  occurrences: 1
+- status: 401
+  title: Unauthorized
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#agents.get
+  - openapi/fintary-open-api-openapi.yml#agents.update
+  - openapi/fintary-open-api-openapi.yml#agents.assignUpline
+  - openapi/fintary-open-api-openapi.yml#agents.removeUpline
+  - openapi/fintary-open-api-openapi.yml#agents.listCommissions
+  - openapi/fintary-open-api-openapi.yml#agents.getDashboard
+  - openapi/fintary-open-api-openapi.yml#agents.listPayouts
+  - openapi/fintary-open-api-openapi.yml#agents.listPolicies
+  occurrences: 11
+- status: 401
+  title: 'Unauthorized or invalid role context. Middleware auth failures return the standard response
+    envelope; the handler returns `{ error }` for an unresolved account or invalid role.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.listDefaultWidgets
+  occurrences: 1
+- status: 401
+  title: 'Unauthorized or invalid role context. Middleware auth failures return the standard response
+    envelope; the handler returns `{ error }` for an unresolved account/user or invalid role.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.restoreDefaultWidget
+  occurrences: 1
+- status: 401
+  title: 'Unauthorized. Auth failures from the API middleware return the standard response envelope; the
+    handler returns `{ error }` when the account cannot be resolved.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.listWidgets
+  occurrences: 1
+- status: 401
+  title: 'Unauthorized. Middleware auth failures return the standard response envelope; the handler returns
+    `{ error }` when the account context is missing.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.getDatasetData
+  occurrences: 1
+- status: 401
+  title: 'Unauthorized. Missing or invalid API key / bearer token is rejected by the API middleware and
+    returns the standard response envelope.
+
+    '
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenAPIResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.listDatasets
+  occurrences: 1
+- status: 403
+  title: Forbidden for the resolved widget context
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenApiCodedErrorResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.listWidgets
+  occurrences: 1
+- status: 403
+  title: The file-conversion feature is not enabled for the account.
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenAPIResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#documents.convertHtmlToPdf
+  occurrences: 1
+- status: 404
+  title: Agent not found
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#agents.get
+  - openapi/fintary-open-api-openapi.yml#agents.update
+  - openapi/fintary-open-api-openapi.yml#agents.listCommissions
+  - openapi/fintary-open-api-openapi.yml#agents.getDashboard
+  - openapi/fintary-open-api-openapi.yml#agents.listPayouts
+  - openapi/fintary-open-api-openapi.yml#agents.listPolicies
+  occurrences: 6
+- status: 404
+  title: Agent not found or Upline agent not found
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#agents.assignUpline
+  occurrences: 1
+- status: 404
+  title: Default widget not found
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenApiSimpleErrorResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.restoreDefaultWidget
+  occurrences: 1
+- status: 404
+  title: Report not found
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.getReportData
+  - openapi/fintary-open-api-openapi.yml#compReports.getData
+  occurrences: 2
+- status: 404
+  title: Task not found or belongs to a different account
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.getExportTaskStatus
+  occurrences: 1
+- status: 404
+  title: Upline relationship not found
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types: []
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#agents.removeUpline
+  occurrences: 1
+- status: 413
+  title: The request payload or generated PDF exceeds the 32 MB limit.
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenAPIResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#documents.convertHtmlToPdf
+  occurrences: 1
+- status: 500
+  title: Conversion failed due to an upstream file-conversion error.
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: OpenAPIResponseSchema
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#documents.convertHtmlToPdf
+  occurrences: 1
+- status: 500
+  title: Internal server error
+  spec: openapi/fintary-open-api-openapi.yml
+  media_types:
+  - application/json
+  schema: null
+  source_operations:
+  - openapi/fintary-open-api-openapi.yml#analytics.getDatasetData
+  - openapi/fintary-open-api-openapi.yml#analytics.listDatasets
+  - openapi/fintary-open-api-openapi.yml#analytics.getReportData
+  - openapi/fintary-open-api-openapi.yml#analytics.listReports
+  - openapi/fintary-open-api-openapi.yml#analytics.getExportTaskStatus
+  - openapi/fintary-open-api-openapi.yml#analytics.listDefaultWidgets
+  - openapi/fintary-open-api-openapi.yml#analytics.restoreDefaultWidget
+  - openapi/fintary-open-api-openapi.yml#analytics.listWidgets
+  occurrences: 10

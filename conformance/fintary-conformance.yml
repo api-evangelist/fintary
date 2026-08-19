@@ -1,0 +1,102 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  openapi/fintary-open-api-openapi.yml, openapi/fintary-ams-api-openapi.yml,
+  https://api.fintary.com/documentation, https://www.fintary.com/carriers
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    Two documents declare openapi 3.0.0 - "Fintary Open API documentation" (18 paths, 21
+    operations, 39 schemas) and "Fintary AMS API documentation" (43 paths, 60 operations,
+    112 schemas), served from api.fintary.com/openapi-doc and /api-doc.
+- id: openapi-3.1
+  conforms: false
+  evidence: Both documents are 3.0.0.
+- id: http-bearer-auth
+  conforms: true
+  evidence: securitySchemes.BearerAuth type http, scheme bearer, in both documents.
+- id: api-key-auth
+  conforms: true
+  evidence: securitySchemes.ApiKeyAuth type apiKey, in header, name x-api-key (Open API only).
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    No oauth2 securityScheme is declared in either OpenAPI document, so the APIs themselves
+    are not OAuth-protected. Fintary does operate an OAuth 2.0 authorization-code flow, but
+    in the CLIENT role: its SSO service redirects a user to a customer identity provider's
+    authorization URL, exchanges the code at the customer's token endpoint, and reads
+    claims from the returned id_token or access_token
+    (https://api.fintary.com/documentation). It issues no developer-facing scopes and
+    publishes no authorization server, which is why no scopes/ artifact is emitted.
+- id: oidc
+  conforms: partial
+  evidence: >-
+    The SSO guides parse JWT id_tokens and read `email`, `contact_id`, `role`, `first_name`,
+    `last_name` and `name` claims, but no OpenID Provider metadata is published and
+    /.well-known/openid-configuration returns 404 on every Fintary host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    No application/problem+json media type appears in either document. Errors use three
+    published vendor envelopes plus a fourth observed live. See
+    errors/fintary-problem-types.yml.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on fintary.com and api.fintary.com.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog returns 404 on every Fintary host.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header is documented or observed.
+- id: idempotency-key
+  conforms: false
+  evidence: No idempotency key header or parameter appears in either document.
+- id: rate-limit-headers
+  conforms: false
+  evidence: >-
+    No RateLimit-*, X-RateLimit-* or Retry-After header is documented, and no 429 response
+    is declared on any of the 81 operations.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no webhook surface. /asyncapi.yaml and /asyncapi.json return
+    404 on api.fintary.com; zero occurrences of "webhook" in either OpenAPI document.
+- id: graphql
+  conforms: false
+  evidence: api.fintary.com/graphql returns 404.
+- id: mcp
+  conforms: false
+  evidence: >-
+    api.fintary.com/mcp and /sse return 404; mcp.fintary.com does not resolve; no server is
+    published in any registry.
+- id: a2a
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json return 404 on fintary.com and
+    api.fintary.com. app.fintary.com answers 200 for both, but its catch-all answers 200
+    with the same SPA shell for a nonsense control path, so it is not a card.
+- id: hsts
+  conforms: true
+  evidence: 'api.fintary.com returns strict-transport-security: max-age=63072000; includeSubDomains.'
+- id: dnssec
+  conforms: false
+  evidence: security/fintary-domain-security.yml - fintary.com has no DNSSEC and no CAA records.
+compliance_program:
+  published: true
+  url: https://www.fintary.com/carriers
+  certifications:
+  - SOC 2 Type II
+  claims:
+  - SOC 2 Type II certified
+  - Insurance-grade security
+  - Complete audit trails
+  - Regulatory compliance tools
+  - 99.9% uptime SLA
+  note: >-
+    These are marketing-page claims on https://www.fintary.com/carriers. Fintary publishes
+    no trust center, no security page (fintary.com/security returns 404), no report request
+    flow, and no auditor or report date. The Compliance pointer in apis.yml points at the
+    page that carries the SOC 2 Type II claim; no TrustCenter pointer is emitted because
+    no trust center exists.

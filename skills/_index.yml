@@ -1,0 +1,66 @@
+generated: '2026-08-14'
+method: generated
+source: >-
+  Generated from the two OpenAPI documents Fintary publishes at
+  https://api.fintary.com/openapi-doc and https://api.fintary.com/api-doc, harvested
+  2026-08-14. Fintary publishes no skills, AGENTS.md or agent guidance of its own, so
+  nothing here was searched. Every operationId cited in an Open API skill appears verbatim
+  in that document; the AMS API declares no operationIds at all, so its skill cites
+  operations by method and path exactly as published.
+skill_count: 4
+skills:
+- file: fintary-onboard-agent-and-set-upline.md
+  name: Onboard a Fintary agent and place them in the hierarchy
+  api: openapi/fintary-open-api-openapi.yml
+  operations:
+  - agents.create
+  - agents.assignUpline
+  - agents.get
+  - agents.removeUpline
+  - agents.list
+- file: fintary-agent-compensation-review.md
+  name: Assemble an agent's compensation picture
+  api: openapi/fintary-open-api-openapi.yml
+  operations:
+  - agents.get
+  - agents.listCommissions
+  - agents.listPayouts
+  - agents.listPolicies
+  - agents.getDashboard
+  - compReports.getData
+- file: fintary-export-analytics-report.md
+  name: Query and export a Fintary analytics report or dataset
+  api: openapi/fintary-open-api-openapi.yml
+  operations:
+  - analytics.listReports
+  - analytics.getReportData
+  - analytics.listDatasets
+  - analytics.getDatasetData
+  - analytics.getExportTaskStatus
+  - analytics.listWidgets
+  - analytics.listDefaultWidgets
+  - analytics.restoreDefaultWidget
+- file: fintary-ams-policy-lifecycle.md
+  name: Manage a policy through the Fintary AMS API
+  api: openapi/fintary-ams-api-openapi.yml
+  operations:
+  - POST /api/ams/policies
+  - GET /api/ams/policies/{strId}
+  - PATCH /api/ams/policies/{strId}/status
+  - PATCH /api/ams/policies/{strId}/team
+  - POST /api/ams/policies/{strId}/documents
+  - POST /api/ams/policies/{strId}/documents/finalize
+  - GET /api/ams/policies/{strId}/commission
+  - POST /api/ams/policies/list
+cross_cutting_rules:
+  applies_to_every_skill:
+  - Credentials are not self-service; they are issued by a Fintary representative.
+  - No idempotency key exists on any operation, so every create can duplicate on retry.
+  - No 429 and no rate-limit headers, so back-off must be self-imposed.
+  - No sandbox or test mode; every call is a production call.
+  - No webhooks and no AsyncAPI; polling is the only way to learn that something changed.
+  sources:
+  - conventions/fintary-conventions.yml
+  - errors/fintary-problem-types.yml
+  - authentication/fintary-authentication.yml
+  - rate-limits/fintary-rate-limits.yml

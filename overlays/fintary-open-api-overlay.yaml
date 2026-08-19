@@ -1,0 +1,62 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Fintary Open API
+  version: 1.0.0
+extends: openapi/fintary-open-api-openapi.yml
+x-provenance:
+  generated: '2026-08-14'
+  method: generated
+  source: >-
+    Enhancements derived from the harvested spec plus live probes of api.fintary.com on
+    2026-08-14. The harvested document is never mutated; every change we would make lives
+    here.
+actions:
+- target: $
+  description: >-
+    The published document declares no servers[]. The host is established from the
+    documentation page (api.fintary.com/openapi-doc) and confirmed live - an unauthenticated
+    GET of https://api.fintary.com/openapi/agents returns HTTP 401 "Missing or invalid API
+    key", while a control path on the same host returns 404.
+  update:
+    servers:
+    - url: https://api.fintary.com
+      description: Fintary production API host
+- target: $.info
+  update:
+    x-apievangelist-slug: fintary
+    x-apievangelist-harvested: '2026-08-14'
+    x-apievangelist-source: https://api.fintary.com/openapi-doc
+    x-apievangelist-harvest-method: >-
+      Extracted verbatim from the __NEXT_DATA__ props.pageProps.spec of the server-rendered
+      documentation page; the spec is not served at any standalone .json or .yaml URL.
+    description: >-
+      Customer-facing REST API over Fintary's commission and distribution data - agents,
+      uplines, commissions, payouts, policies, analytics reports/datasets/widgets, commission
+      report data, and document upload/conversion. Authenticated with an `x-api-key` header
+      API key or an HTTP bearer token.
+    contact:
+      name: Fintary
+      url: https://www.fintary.com/contact-us
+- target: $.info
+  description: Gaps recorded against the harvested document, for the provider to close.
+  update:
+    x-apievangelist-gaps:
+    - No servers[] block, so no machine can resolve a request URL from the document alone.
+    - No tags[] declared; all 21 operations are untagged.
+    - No 429 response and no rate-limit headers on any operation.
+    - No Idempotency-Key contract on any of the create operations.
+    - Errors use two vendor envelopes rather than application/problem+json, and a third
+      envelope was observed live that no schema in the document describes.
+    - No license or termsOfService in info.
+- target: $.components.securitySchemes.ApiKeyAuth
+  update:
+    x-apievangelist-note: >-
+      Enforced live - an unauthenticated request returns HTTP 401 with
+      {"success":false,"data":null,"message":"Missing or invalid API key","statusCode":401}.
+      Keys are not self-service; they are issued through a Fintary representative.
+- target: $.components.securitySchemes.BearerAuth
+  update:
+    x-apievangelist-note: >-
+      bearerFormat is declared as the literal string "string" rather than a token format
+      such as JWT, so the document does not tell a client what kind of bearer token to
+      present.
