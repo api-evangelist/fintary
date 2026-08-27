@@ -51,63 +51,176 @@ tags:
 - Reconciliation
 - OpenAPI
 apis:
-- name: Fintary Open API
-  description: >-
-    Customer-facing REST API over Fintary's commission and distribution data — list, create
-    and update agents; assign and remove uplines; read an agent's commissions, payouts,
-    policies and dashboard snapshot; query published analytics reports, datasets and
-    dashboard widgets; pull commission report data; and upload or convert documents.
-    Authenticated with an `x-api-key` header API key or an HTTP bearer token. Twenty-one
-    operations under the `/openapi/` path prefix on api.fintary.com.
+- aid: fintary:fintary-agents-api
+  name: Fintary Agents API
+  description: The Agents API from Fintary — 7 operation(s) for agents.
   humanURL: https://api.fintary.com/openapi-doc
   baseURL: https://api.fintary.com
   tags:
-  - Commissions
-  - Payouts
-  - Analytics
-  - Insurance
-  - Agency Management
+  - Agents
   properties:
   - type: OpenAPI
-    url: openapi/fintary-open-api-openapi.yml
+    url: openapi/fintary-agents-api-openapi.yml
   - type: APIReference
     url: https://api.fintary.com/openapi-doc
   - type: Documentation
     url: https://api.fintary.com/documentation
-  - type: Overlay
-    url: overlays/fintary-open-api-overlay.yaml
-- name: Fintary AMS API
-  description: >-
-    Agency Management System REST API covering the policy, customer and agent record
-    core — policy detail, status changes, teams, tasks, commission breakdown and the
-    two-phase document repository upload; customer CRUD, summaries and bulk update;
-    agent CRUD, contracts, hierarchy and full upline/downline tree; task management and
-    escalation; custom-field and status configuration; and a page-config/capabilities
-    registry that publishes bindable fields, widget vocabulary and an endpoint allowlist
-    for AI and wire clients. Sixty operations under `/api/ams/` on api.fintary.com,
-    authenticated with an HTTP bearer token.
-  humanURL: https://api.fintary.com/api-doc
-  baseURL: https://api.fintary.com
-  tags:
-  - Policy Management
-  - Agency Management
-  - Insurance
-  - Commissions
-  properties:
-  - type: OpenAPI
-    url: openapi/fintary-ams-api-openapi.yml
   - type: APIReference
     url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-ams-agents-api
+  name: Fintary AMS - Agents API
+  description: Agent management endpoints
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - AMS - Agents
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-agents-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
   - type: Documentation
     url: https://api.fintary.com/documentation
-  - type: Overlay
-    url: overlays/fintary-ams-api-overlay.yaml
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-ams-configs-api
+  name: Fintary AMS - Configs API
+  description: AMS configuration endpoints (statuses, roles)
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - AMS - Configs
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-configs-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-ams-customers-api
+  name: Fintary AMS - Customers API
+  description: Customer management endpoints
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - AMS - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-customers-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-ams-policies-api
+  name: Fintary AMS - Policies API
+  description: Policy management endpoints
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - AMS - Policies
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-policies-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-ams-registry-api
+  name: Fintary AMS - Registry API
+  description: The AMS - Registry API from Fintary — 5 operation(s) for ams - registry.
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - AMS - Registry
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-registry-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-ams-tasks-api
+  name: Fintary AMS - Tasks API
+  description: The AMS - Tasks API from Fintary — 5 operation(s) for ams - tasks.
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - AMS - Tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-ams-tasks-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-analytics-api
+  name: Fintary Analytics API
+  description: The Analytics API from Fintary — 8 operation(s) for analytics.
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - Analytics
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-analytics-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-commission-reports-api
+  name: Fintary Commission Reports API
+  description: The Commission Reports API from Fintary — 1 operation(s) for commission reports.
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - Commission Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-commission-reports-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
+- aid: fintary:fintary-documents-api
+  name: Fintary Documents API
+  description: The Documents API from Fintary — 2 operation(s) for documents.
+  humanURL: https://api.fintary.com/openapi-doc
+  baseURL: https://api.fintary.com
+  tags:
+  - Documents
+  properties:
+  - type: OpenAPI
+    url: openapi/fintary-documents-api-openapi.yml
+  - type: APIReference
+    url: https://api.fintary.com/openapi-doc
+  - type: Documentation
+    url: https://api.fintary.com/documentation
+  - type: APIReference
+    url: https://api.fintary.com/api-doc
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/fintary-open-api-overlay.yaml
+- type: Overlay
+  url: overlays/fintary-ams-api-overlay.yaml
 - type: Website
   url: https://fintary.com/
 - type: PrivacyPolicy
