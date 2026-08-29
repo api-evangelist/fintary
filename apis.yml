@@ -229,6 +229,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/fintary-capability-edges.yml
+  name: Fintary Business Capability Map
 - type: Overlay
   url: overlays/fintary-open-api-overlay.yaml
 - type: Overlay
