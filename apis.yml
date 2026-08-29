@@ -13,6 +13,18 @@ description: 'Fintary is an AI-powered commission management and revenue operati
   agents, contracts, hierarchy, tasks, document repository, page-config registry) — plus
   SSO integration guides for external identity providers. This profile is maintained in
   the API Evangelist network.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: approval
