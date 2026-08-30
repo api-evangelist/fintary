@@ -1,0 +1,1270 @@
+openapi: 3.2.0
+info:
+  title: Fintary AMS API documentation AMS - Customers API
+  version: '1.0'
+  description: Customer management endpoints
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- BearerAuth: []
+tags:
+- name: AMS - Customers
+  description: Customer management endpoints
+paths:
+  /api/ams/customers/{strId}:
+    get:
+      summary: Customer detail
+      tags:
+      - AMS - Customers
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerDetailResponseSchema'
+        '404':
+          description: Not found
+    patch:
+      summary: Update a customer
+      tags:
+      - AMS - Customers
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsUpdateCustomerSchema'
+      responses:
+        '200':
+          description: Customer updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerDetailResponseSchema'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete a customer
+      tags:
+      - AMS - Customers
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Customer deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: boolean
+                    example: true
+        '404':
+          description: Not found
+  /api/ams/customers/{strId}/policies:
+    get:
+      summary: List policies for a customer
+      tags:
+      - AMS - Customers
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyListResponseSchema'
+  /api/ams/customers/bulk-update:
+    patch:
+      summary: Bulk update customers
+      tags:
+      - AMS - Customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsBulkUpdateCustomersBodySchema'
+      responses:
+        '200':
+          description: Bulk update results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmsBulkUpdateResponseSchema'
+  /api/ams/customers:
+    get:
+      summary: List customers
+      tags:
+      - AMS - Customers
+      parameters:
+      - name: query
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/AmsCustomerListQuerySchema'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerListResponseSchema'
+    post:
+      summary: Create a customer
+      tags:
+      - AMS - Customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsCreateCustomerSchema'
+      responses:
+        '200':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerDetailResponseSchema'
+  /api/ams/customers/summary:
+    get:
+      summary: Customer summary
+      tags:
+      - AMS - Customers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerSummaryResponseSchema'
+components:
+  schemas:
+    PolicyListItemSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        policyId:
+          type:
+          - string
+          - 'null'
+        policyStatus:
+          type:
+          - string
+          - 'null'
+        caseStatus:
+          type:
+          - string
+          - 'null'
+        customerName:
+          type:
+          - string
+          - 'null'
+        customerType:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        productType:
+          type:
+          - string
+          - 'null'
+        productSubType:
+          type:
+          - string
+          - 'null'
+        productOptionName:
+          type:
+          - string
+          - 'null'
+        writingCarrierName:
+          type:
+          - string
+          - 'null'
+        effectiveDate:
+          type:
+          - string
+          - 'null'
+        expirationDate:
+          type:
+          - string
+          - 'null'
+        signedDate:
+          type:
+          - string
+          - 'null'
+        policyDate:
+          type:
+          - string
+          - 'null'
+        cancellationDate:
+          type:
+          - string
+          - 'null'
+        reinstatementDate:
+          type:
+          - string
+          - 'null'
+        firstPaymentDate:
+          type:
+          - string
+          - 'null'
+        firstProcessedDate:
+          type:
+          - string
+          - 'null'
+        premiumAmount:
+          type:
+          - string
+          - 'null'
+        commissionableAmount:
+          type:
+          - string
+          - 'null'
+        excessAmount:
+          type:
+          - string
+          - 'null'
+        commissionsExpected:
+          type:
+          - string
+          - 'null'
+        customerPaidPremiumAmount:
+          type:
+          - string
+          - 'null'
+        splitPercentage:
+          type:
+          - string
+          - 'null'
+        paymentMode:
+          type:
+          - string
+          - 'null'
+        policyTermMonths:
+          type:
+          - integer
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        dba:
+          type:
+          - string
+          - 'null'
+        internalId:
+          type:
+          - string
+          - 'null'
+        transactionType:
+          type:
+          - string
+          - 'null'
+        accountType:
+          type:
+          - string
+          - 'null'
+        groupId:
+          type:
+          - string
+          - 'null'
+        groupName:
+          type:
+          - string
+          - 'null'
+        aggregationId:
+          type:
+          - string
+          - 'null'
+        aggregationPrimary:
+          type:
+          - boolean
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        documentId:
+          type:
+          - string
+          - 'null'
+        processingStatus:
+          type:
+          - string
+          - 'null'
+        commissionProfileId:
+          type:
+          - string
+          - 'null'
+        syncId:
+          type:
+          - string
+          - 'null'
+        applicationDate:
+          type:
+          - string
+          - 'null'
+        issueDate:
+          type:
+          - string
+          - 'null'
+        issueAge:
+          type:
+          - integer
+          - 'null'
+        agentName:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+        updatedAt:
+          type:
+          - string
+          - 'null'
+        customFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomFieldValueSchema'
+        receivables:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              party:
+                type: string
+              compensationType:
+                type:
+                - string
+                - 'null'
+              rate:
+                type:
+                - string
+                - 'null'
+              amount:
+                type:
+                - string
+                - 'null'
+              contactId:
+                type:
+                - string
+                - 'null'
+              contactName:
+                type:
+                - string
+                - 'null'
+              date:
+                type:
+                - string
+                - 'null'
+            required:
+            - id
+            - party
+      required:
+      - strId
+      - policyId
+      - policyStatus
+      - caseStatus
+      - customerName
+      - customerType
+      - productName
+      - productType
+      - productSubType
+      - productOptionName
+      - writingCarrierName
+      - effectiveDate
+      - expirationDate
+      - signedDate
+      - policyDate
+      - cancellationDate
+      - reinstatementDate
+      - firstPaymentDate
+      - firstProcessedDate
+      - premiumAmount
+      - commissionableAmount
+      - excessAmount
+      - commissionsExpected
+      - customerPaidPremiumAmount
+      - splitPercentage
+      - paymentMode
+      - policyTermMonths
+      - geoState
+      - notes
+      - dba
+      - internalId
+      - transactionType
+      - accountType
+      - groupId
+      - groupName
+      - aggregationId
+      - aggregationPrimary
+      - type
+      - tags
+      - documentId
+      - processingStatus
+      - commissionProfileId
+      - syncId
+      - applicationDate
+      - issueDate
+      - issueAge
+      - agentName
+      - createdAt
+      - updatedAt
+      - customFields
+      - receivables
+    AmsCustomerAddressSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        type:
+          type: string
+        label:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        zip:
+          type: string
+        zipExt4:
+          type: string
+    AmsCustomFieldValueSchema:
+      type: object
+      properties:
+        fieldDefinitionId:
+          type: string
+        fieldKey:
+          type: string
+        displayName:
+          type: string
+        dataType:
+          type: string
+          enum:
+          - text
+          - number
+          - boolean
+          - date
+          - json
+        valueText:
+          type:
+          - string
+          - 'null'
+        valueNumber:
+          type:
+          - number
+          - 'null'
+        valueBoolean:
+          type:
+          - boolean
+          - 'null'
+        valueDate:
+          type:
+          - string
+          - 'null'
+        valueJson:
+          type:
+          - string
+          - 'null'
+      required:
+      - fieldDefinitionId
+      - fieldKey
+      - displayName
+      - dataType
+    CustomerSummaryResponseSchema:
+      type: object
+      properties:
+        total:
+          type: integer
+        activeWithPolicies:
+          type: integer
+        withoutPolicies:
+          type: integer
+        individual:
+          type: integer
+        group:
+          type: integer
+      required:
+      - total
+      - activeWithPolicies
+      - withoutPolicies
+      - individual
+      - group
+    AmsBulkUpdateCustomersBodySchema:
+      type: object
+      properties:
+        strIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+        data:
+          $ref: '#/components/schemas/AmsBulkUpdateCustomerDataSchema'
+      required:
+      - strIds
+      - data
+    CustomerDetailResponseSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        strId:
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        dob:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - integer
+          - 'null'
+        acquisitionChannel:
+          type:
+          - string
+          - 'null'
+        primaryAddressStrId:
+          type:
+          - string
+          - 'null'
+        nickname:
+          type:
+          - string
+          - 'null'
+        contact:
+          type:
+          - string
+          - 'null'
+        contactEmail:
+          type:
+          - string
+          - 'null'
+        fax:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+        region:
+          type:
+          - string
+          - 'null'
+        groupId:
+          type:
+          - string
+          - 'null'
+        tinNumber:
+          type:
+          - string
+          - 'null'
+        deltaCo:
+          type:
+          - string
+          - 'null'
+        deltaGroupNo:
+          type: array
+          items:
+            type: string
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        originalEffectiveDate:
+          type:
+          - string
+          - 'null'
+        addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type: string
+              type:
+                type:
+                - string
+                - 'null'
+              label:
+                type:
+                - string
+                - 'null'
+              address1:
+                type:
+                - string
+                - 'null'
+              address2:
+                type:
+                - string
+                - 'null'
+              city:
+                type:
+                - string
+                - 'null'
+              state:
+                type:
+                - string
+                - 'null'
+              country:
+                type:
+                - string
+                - 'null'
+              zip:
+                type:
+                - string
+                - 'null'
+              zipExt4:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - type
+            - label
+            - address1
+            - address2
+            - city
+            - state
+            - country
+            - zip
+            - zipExt4
+        policies:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type: string
+              policyId:
+                type:
+                - string
+                - 'null'
+              policyStatus:
+                type:
+                - string
+                - 'null'
+              productName:
+                type:
+                - string
+                - 'null'
+              writingCarrierName:
+                type:
+                - string
+                - 'null'
+              effectiveDate:
+                type:
+                - string
+                - 'null'
+              premiumAmount:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - policyId
+            - policyStatus
+            - productName
+            - writingCarrierName
+            - effectiveDate
+            - premiumAmount
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+              contactName:
+                type:
+                - string
+                - 'null'
+              relationshipType:
+                type: string
+            required:
+            - contactStrId
+            - contactName
+            - relationshipType
+        aliases:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type:
+                - string
+                - 'null'
+              firstName:
+                type:
+                - string
+                - 'null'
+              lastName:
+                type:
+                - string
+                - 'null'
+              companyName:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - firstName
+            - lastName
+            - companyName
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+      - strId
+      - firstName
+      - lastName
+      - middleName
+      - companyName
+      - email
+      - phone
+      - dob
+      - gender
+      - type
+      - status
+      - parentId
+      - acquisitionChannel
+      - primaryAddressStrId
+      - nickname
+      - contact
+      - contactEmail
+      - fax
+      - website
+      - region
+      - groupId
+      - tinNumber
+      - deltaCo
+      - deltaGroupNo
+      - startDate
+      - endDate
+      - originalEffectiveDate
+      - addresses
+      - policies
+      - owners
+      - aliases
+      - createdAt
+      - updatedAt
+    AmsBulkUpdateResponseSchema:
+      type: object
+      properties:
+        totalUpdated:
+          type: integer
+      required:
+      - totalUpdated
+    AmsCreateCustomerSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        companyName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - other
+        type:
+          type: string
+          enum:
+          - individual
+          - group
+        status:
+          type: string
+        parentId:
+          type: integer
+        acquisitionChannel:
+          type: string
+        primaryAddressStrId:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomerAddressSchema'
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+                minLength: 1
+              relationshipType:
+                type: string
+                minLength: 1
+            required:
+            - contactStrId
+            - relationshipType
+    PolicyListResponseSchema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyListItemSchema'
+        pagination:
+          $ref: '#/components/schemas/AmsPaginationSchema'
+      required:
+      - data
+      - pagination
+    AmsBulkUpdateCustomerDataSchema:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        dob:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+          enum:
+          - male
+          - female
+          - null
+        type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - individual
+          - group
+          - null
+        status:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - integer
+          - 'null'
+        acquisitionChannel:
+          type:
+          - string
+          - 'null'
+        primaryAddressStrId:
+          type:
+          - string
+          - 'null'
+    CustomerListResponseSchema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerListItemSchema'
+        pagination:
+          $ref: '#/components/schemas/AmsPaginationSchema'
+      required:
+      - data
+      - pagination
+    AmsPaginationSchema:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+      - page
+      - pageSize
+      - total
+      - totalPages
+    AmsUpdateCustomerSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        companyName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - other
+        type:
+          type: string
+          enum:
+          - individual
+          - group
+        status:
+          type: string
+        parentId:
+          type: integer
+        acquisitionChannel:
+          type: string
+        primaryAddressStrId:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomerAddressSchema'
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+                minLength: 1
+              relationshipType:
+                type: string
+                minLength: 1
+            required:
+            - contactStrId
+            - relationshipType
+    AmsCustomerListQuerySchema:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+        search:
+          type: string
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        type:
+          type: string
+          enum:
+          - individual
+          - group
+        status:
+          type: string
+        hasPolicy:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+        agentId:
+          type: string
+      required:
+      - page
+      - pageSize
+      - sortOrder
+    CustomerListItemSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        strId:
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        policyCount:
+          type: integer
+        agents:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+              name:
+                type:
+                - string
+                - 'null'
+              relationshipType:
+                type: string
+            required:
+            - contactStrId
+            - name
+            - relationshipType
+        middleName:
+          type:
+          - string
+          - 'null'
+        dob:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+        acquisitionChannel:
+          type:
+          - string
+          - 'null'
+        nickname:
+          type:
+          - string
+          - 'null'
+        contact:
+          type:
+          - string
+          - 'null'
+        contactEmail:
+          type:
+          - string
+          - 'null'
+        fax:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+        region:
+          type:
+          - string
+          - 'null'
+        groupId:
+          type:
+          - string
+          - 'null'
+        tinNumber:
+          type:
+          - string
+          - 'null'
+        deltaCo:
+          type:
+          - string
+          - 'null'
+        deltaGroupNo:
+          type: array
+          items:
+            type: string
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        originalEffectiveDate:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+      required:
+      - strId
+      - firstName
+      - lastName
+      - companyName
+      - email
+      - phone
+      - type
+      - status
+      - policyCount
+      - agents
+      - middleName
+      - dob
+      - gender
+      - acquisitionChannel
+      - nickname
+      - contact
+      - contactEmail
+      - fax
+      - website
+      - region
+      - groupId
+      - tinNumber
+      - deltaCo
+      - deltaGroupNo
+      - startDate
+      - endDate
+      - originalEffectiveDate
+      - createdAt
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string

@@ -1,0 +1,1533 @@
+openapi: 3.2.0
+info:
+  title: Fintary AMS API documentation AMS - Agents API
+  version: '1.0'
+  description: Agent management endpoints
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- BearerAuth: []
+tags:
+- name: AMS - Agents
+  description: Agent management endpoints
+paths:
+  /api/ams/agents/{strId}:
+    get:
+      summary: Agent detail
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentDetailResponseSchema'
+        '404':
+          description: Not found
+    patch:
+      summary: Update an agent
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsUpdateAgentSchema'
+      responses:
+        '200':
+          description: Agent updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentDetailResponseSchema'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete an agent
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Agent deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: boolean
+                    example: true
+        '404':
+          description: Not found
+  /api/ams/agents/{strId}/contracts/{contractId}:
+    get:
+      summary: Contract detail
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ContractResponseSchema'
+        '404':
+          description: Not found
+    patch:
+      summary: Update a contract
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsUpdateContractSchema'
+      responses:
+        '200':
+          description: Contract updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ContractResponseSchema'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete a contract
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contractId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Contract deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: boolean
+                    example: true
+        '404':
+          description: Not found
+  /api/ams/agents/{strId}/contracts:
+    get:
+      summary: List agent contracts
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ContractListResponseSchema'
+        '404':
+          description: Not found
+    post:
+      summary: Create agent contract
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsCreateContractSchema'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ContractResponseSchema'
+        '404':
+          description: Not found
+  /api/ams/agents/{strId}/hierarchy:
+    get:
+      summary: Get agent hierarchy tree (uplines and downlines)
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentHierarchyResponseSchema'
+        '404':
+          description: Not found
+  /api/ams/agents/{strId}/tree:
+    get:
+      summary: Get the full hierarchy tree for an agent (ancestors + descendants)
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: strId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: query
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/AmsAgentTreeQuerySchema'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentTreeResponseSchema'
+        '404':
+          description: Not found
+  /api/ams/agents/bulk-update:
+    patch:
+      summary: Bulk update agents
+      tags:
+      - AMS - Agents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsBulkUpdateAgentsBodySchema'
+      responses:
+        '200':
+          description: Bulk update results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmsBulkUpdateResponseSchema'
+  /api/ams/agents:
+    get:
+      summary: List agents
+      tags:
+      - AMS - Agents
+      parameters:
+      - name: query
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/AmsAgentListQuerySchema'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentListResponseSchema'
+    post:
+      summary: Create an agent
+      tags:
+      - AMS - Agents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsCreateAgentSchema'
+      responses:
+        '200':
+          description: Agent created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentDetailResponseSchema'
+  /api/ams/agents/summary:
+    get:
+      summary: Agent summary
+      tags:
+      - AMS - Agents
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentSummaryResponseSchema'
+components:
+  schemas:
+    AgentTreeNodeSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        agentCode:
+          type: string
+        level:
+          type: string
+        splitPercentage:
+          type: number
+        depth:
+          type: integer
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentTreeNodeSchema'
+        parentContactId:
+          type: string
+      required:
+      - strId
+      - depth
+      - children
+    AmsCreateAgentSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        agentCode:
+          type: string
+        status:
+          type: string
+        level:
+          type: string
+        type:
+          type: string
+        companyName:
+          type: string
+        geoState:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        userStrId:
+          type: string
+        hierarchy:
+          type: array
+          items:
+            type: object
+            properties:
+              parentContactStrId:
+                type: string
+                minLength: 1
+              relationship:
+                type: string
+            required:
+            - parentContactStrId
+        commissionProfiles:
+          type: array
+          items:
+            type: object
+            properties:
+              profileId:
+                type: integer
+              rate:
+                type: number
+              method:
+                type: string
+              startDate:
+                type: string
+              endDate:
+                type: string
+            required:
+            - profileId
+    AgentHierarchyResponseSchema:
+      type: object
+      properties:
+        strId:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        level:
+          type:
+          - string
+          - 'null'
+        uplines:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
+        downlines:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
+      required:
+      - strId
+      - firstName
+      - lastName
+      - name
+      - email
+      - agentCode
+      - level
+      - uplines
+      - downlines
+    AmsCreateContractSchema:
+      type: object
+      properties:
+        companyId:
+          type: string
+          minLength: 1
+        contractLevel:
+          type: string
+        licenseNumber:
+          type: string
+        status:
+          $ref: '#/components/schemas/AmsContractStatusSchema'
+        effectiveDate:
+          type: string
+        endDate:
+          type: string
+        notes:
+          type: string
+      required:
+      - companyId
+    AmsBulkUpdateAgentDataSchema:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        level:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        userStrId:
+          type:
+          - string
+          - 'null'
+    ContractCompanyResponseSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        companyName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+        address:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - companyName
+      - companyId
+      - email
+      - phone
+      - website
+      - address
+    AgentSummaryResponseSchema:
+      type: object
+      properties:
+        total:
+          type: integer
+        active:
+          type: integer
+        writingAgents:
+          type: integer
+        salesReps:
+          type: integer
+      required:
+      - total
+      - active
+      - writingAgents
+      - salesReps
+    ContractResponseSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        agentId:
+          type: string
+        companyId:
+          type: string
+        company:
+          allOf:
+          - $ref: '#/components/schemas/ContractCompanyResponseSchema'
+        canonicalCompany:
+          allOf:
+          - $ref: '#/components/schemas/ContractCompanyResponseSchema'
+        contractLevel:
+          type:
+          - string
+          - 'null'
+        licenseNumber:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        effectiveDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+      - id
+      - agentId
+      - companyId
+      - contractLevel
+      - licenseNumber
+      - status
+      - effectiveDate
+      - endDate
+      - notes
+      - createdAt
+      - updatedAt
+    AmsUpdateContractSchema:
+      type: object
+      properties:
+        contractLevel:
+          type: string
+        licenseNumber:
+          type: string
+        status:
+          $ref: '#/components/schemas/AmsContractStatusSchema'
+        effectiveDate:
+          type: string
+        endDate:
+          type: string
+        notes:
+          type: string
+    AmsUpdateAgentSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        agentCode:
+          type: string
+        status:
+          type: string
+        level:
+          type: string
+        type:
+          type: string
+        companyName:
+          type: string
+        geoState:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        userStrId:
+          type: string
+        hierarchy:
+          type: array
+          items:
+            type: object
+            properties:
+              parentContactStrId:
+                type: string
+                minLength: 1
+              relationship:
+                type: string
+            required:
+            - parentContactStrId
+        commissionProfiles:
+          type: array
+          items:
+            type: object
+            properties:
+              profileId:
+                type: integer
+              rate:
+                type: number
+              method:
+                type: string
+              startDate:
+                type: string
+              endDate:
+                type: string
+            required:
+            - profileId
+    AmsAgentTreeQuerySchema:
+      type: object
+      properties:
+        strId:
+          type: string
+          minLength: 1
+        effectiveDate:
+          type: string
+      required:
+      - strId
+    AgentDetailResponseSchema:
+      type: object
+      properties:
+        strId:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        level:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        userStrId:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        nickname:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+        birthday:
+          type:
+          - string
+          - 'null'
+        phoneType:
+          type:
+          - string
+          - 'null'
+        phone2:
+          type:
+          - string
+          - 'null'
+        phone2Type:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        payableStatus:
+          type:
+          - string
+          - 'null'
+        payoutLevel:
+          type:
+          - string
+          - 'null'
+        brokerCommPayTo:
+          type:
+          - string
+          - 'null'
+        gaFieldRep:
+          type:
+          - string
+          - 'null'
+        gaRepresentative:
+          type:
+          - string
+          - 'null'
+        qbVendor:
+          type:
+          - string
+          - 'null'
+        street:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        zip:
+          type:
+          - string
+          - 'null'
+        hierarchy:
+          type: array
+          items:
+            type: object
+            properties:
+              parentContactStrId:
+                type: string
+              parentContactName:
+                type:
+                - string
+                - 'null'
+              relationship:
+                type: string
+            required:
+            - parentContactStrId
+            - parentContactName
+            - relationship
+        policies:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type: string
+              policyId:
+                type:
+                - string
+                - 'null'
+              policyStatus:
+                type:
+                - string
+                - 'null'
+              customerName:
+                type:
+                - string
+                - 'null'
+              role:
+                type: string
+              premiumAmount:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - policyId
+            - policyStatus
+            - customerName
+            - role
+            - premiumAmount
+        customers:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type:
+                - string
+                - 'null'
+              firstName:
+                type:
+                - string
+                - 'null'
+              lastName:
+                type:
+                - string
+                - 'null'
+              companyName:
+                type:
+                - string
+                - 'null'
+              relationshipType:
+                type: string
+            required:
+            - strId
+            - firstName
+            - lastName
+            - companyName
+            - relationshipType
+        commissionProfiles:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type: string
+              profileName:
+                type:
+                - string
+                - 'null'
+              rate:
+                type:
+                - string
+                - 'null'
+              method:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - profileName
+            - rate
+            - method
+        contracts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              companyId:
+                type: string
+              company:
+                type:
+                - object
+                - 'null'
+                properties:
+                  id:
+                    type: string
+                  companyName:
+                    type:
+                    - string
+                    - 'null'
+                  companyId:
+                    type:
+                    - string
+                    - 'null'
+                  email:
+                    type:
+                    - string
+                    - 'null'
+                  phone:
+                    type:
+                    - string
+                    - 'null'
+                  website:
+                    type:
+                    - string
+                    - 'null'
+                  address:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - id
+                - companyName
+                - companyId
+                - email
+                - phone
+                - website
+                - address
+              canonicalCompany:
+                type:
+                - object
+                - 'null'
+                properties:
+                  id:
+                    type: string
+                  companyName:
+                    type:
+                    - string
+                    - 'null'
+                  companyId:
+                    type:
+                    - string
+                    - 'null'
+                  email:
+                    type:
+                    - string
+                    - 'null'
+                  phone:
+                    type:
+                    - string
+                    - 'null'
+                  website:
+                    type:
+                    - string
+                    - 'null'
+                  address:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - id
+                - companyName
+                - companyId
+                - email
+                - phone
+                - website
+                - address
+              contractLevel:
+                type:
+                - string
+                - 'null'
+              licenseNumber:
+                type:
+                - string
+                - 'null'
+              status:
+                type:
+                - string
+                - 'null'
+              effectiveDate:
+                type:
+                - string
+                - 'null'
+            required:
+            - id
+            - companyId
+            - contractLevel
+            - licenseNumber
+            - status
+            - effectiveDate
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+      - strId
+      - firstName
+      - lastName
+      - name
+      - email
+      - phone
+      - agentCode
+      - status
+      - level
+      - type
+      - companyName
+      - geoState
+      - startDate
+      - endDate
+      - userStrId
+      - middleName
+      - nickname
+      - title
+      - gender
+      - birthday
+      - phoneType
+      - phone2
+      - phone2Type
+      - externalId
+      - notes
+      - payableStatus
+      - payoutLevel
+      - brokerCommPayTo
+      - gaFieldRep
+      - gaRepresentative
+      - qbVendor
+      - street
+      - city
+      - country
+      - zip
+      - hierarchy
+      - policies
+      - customers
+      - commissionProfiles
+      - createdAt
+      - updatedAt
+    AgentListItemSchema:
+      type: object
+      properties:
+        strId:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        level:
+          type:
+          - string
+          - 'null'
+        policyCount:
+          type: integer
+        customerCount:
+          type: integer
+        companyName:
+          type:
+          - string
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        nickname:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+        birthday:
+          type:
+          - string
+          - 'null'
+        phoneType:
+          type:
+          - string
+          - 'null'
+        phone2:
+          type:
+          - string
+          - 'null'
+        phone2Type:
+          type:
+          - string
+          - 'null'
+        externalId:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        payableStatus:
+          type:
+          - string
+          - 'null'
+        payoutLevel:
+          type:
+          - string
+          - 'null'
+        brokerCommPayTo:
+          type:
+          - string
+          - 'null'
+        gaFieldRep:
+          type:
+          - string
+          - 'null'
+        gaRepresentative:
+          type:
+          - string
+          - 'null'
+        qbVendor:
+          type:
+          - string
+          - 'null'
+        street:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        zip:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+      required:
+      - strId
+      - firstName
+      - lastName
+      - name
+      - email
+      - phone
+      - agentCode
+      - status
+      - level
+      - policyCount
+      - customerCount
+      - companyName
+      - geoState
+      - startDate
+      - endDate
+      - middleName
+      - nickname
+      - title
+      - gender
+      - birthday
+      - phoneType
+      - phone2
+      - phone2Type
+      - externalId
+      - notes
+      - payableStatus
+      - payoutLevel
+      - brokerCommPayTo
+      - gaFieldRep
+      - gaRepresentative
+      - qbVendor
+      - street
+      - city
+      - country
+      - zip
+      - createdAt
+    ContractListResponseSchema:
+      type: object
+      properties:
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractResponseSchema'
+        total:
+          type: number
+        page:
+          type: number
+        pageSize:
+          type: number
+      required:
+      - contracts
+      - total
+      - page
+      - pageSize
+    AmsBulkUpdateAgentsBodySchema:
+      type: object
+      properties:
+        strIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+        data:
+          $ref: '#/components/schemas/AmsBulkUpdateAgentDataSchema'
+      required:
+      - strIds
+      - data
+    AmsContractStatusSchema:
+      type: string
+      enum:
+      - active
+      - inactive
+    AgentListResponseSchema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentListItemSchema'
+        pagination:
+          $ref: '#/components/schemas/AmsPaginationSchema'
+      required:
+      - data
+      - pagination
+    AgentTreeResponseSchema:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/AgentTreeNodeSchema'
+        ancestors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentTreeNodeSchema'
+        descendants:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentTreeNodeSchema'
+      required:
+      - ancestors
+      - descendants
+    AmsAgentListQuerySchema:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+        search:
+          type: string
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        status:
+          type: string
+        role:
+          type: string
+        email:
+          type: string
+        agentCode:
+          type: string
+        level:
+          type: string
+        createdFrom:
+          type: string
+        createdTo:
+          type: string
+      required:
+      - page
+      - pageSize
+      - sortOrder
+    AmsBulkUpdateResponseSchema:
+      type: object
+      properties:
+        totalUpdated:
+          type: integer
+      required:
+      - totalUpdated
+    AgentHierarchyNodeSchema:
+      type: object
+      properties:
+        strId:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        level:
+          type:
+          - string
+          - 'null'
+        splitPercentage:
+          type:
+          - number
+          - 'null'
+        hierarchyId:
+          type:
+          - string
+          - 'null'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
+      required:
+      - strId
+      - firstName
+      - lastName
+      - name
+      - email
+      - agentCode
+      - level
+      - splitPercentage
+      - hierarchyId
+      - children
+    AmsPaginationSchema:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+      - page
+      - pageSize
+      - total
+      - totalPages
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string

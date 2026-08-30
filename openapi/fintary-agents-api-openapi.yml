@@ -1,0 +1,1110 @@
+openapi: 3.2.0
+info:
+  title: Fintary Open API documentation Agents API
+  version: '1.0'
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Agents
+paths:
+  /openapi/agents/{id}:
+    get:
+      operationId: agents.get
+      summary: Get agent by ID
+      description: 'Returns a single agent''s full profile along with its upline and downline hierarchy relationships. The agent is resolved by `str_id`, `agent_code`, or `sync_id`.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved agent
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDetailSchema'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found
+    patch:
+      operationId: agents.update
+      summary: Update an agent
+      description: 'Updates an existing agent''s profile fields. The agent is resolved by `str_id` or `agent_code`. Only the fields supplied in the request body are changed; omitted fields are left untouched.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id or agent_code)
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenAgentUpdateSchema'
+      responses:
+        '200':
+          description: Agent updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDetailSchema'
+        '400':
+          description: Bad request - Request body is required
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found
+  /openapi/agents/{id}/assign-upline:
+    post:
+      operationId: agents.assignUpline
+      summary: Assign upline to an agent
+      description: 'Creates an upline hierarchy relationship for the agent, optionally scoped by a start/end date range and a split percentage. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Returns the created `contact_hierarchy` `str_id`, which is required to remove the relationship via `DELETE /openapi/agents/{id}/assign-upline`.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id) to assign upline to
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignUplineRequestSchema'
+      responses:
+        '200':
+          description: Upline assigned successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/AssignUplineResponseSchema'
+        '400':
+          description: 'Bad request. Either the request body is invalid (e.g. missing upline), or the upline relationship already exists for this agent and upline pair.
+
+            '
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found or Upline agent not found
+    delete:
+      operationId: agents.removeUpline
+      summary: Remove upline from an agent (by contact_hierarchy str_id)
+      description: 'Removes the upline relationship by the contact_hierarchy str_id in the request body. Use the str_id returned when assigning upline.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id) the hierarchy belongs to; must match contact_hierarchy's contact_id
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveUplineRequestSchema'
+      responses:
+        '200':
+          description: Upline removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Upline relationship not found
+  /openapi/agents/{id}/commissions:
+    get:
+      operationId: agents.listCommissions
+      summary: Get commissions for an agent
+      description: 'Returns commission records for the agent from the `latest_commissions` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id)
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 5000
+          default: 20
+      - name: start_date
+        in: query
+        required: false
+        description: Start date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: End date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: Successfully retrieved agent commissions
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDatasetPage'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found
+  /openapi/agents/{id}/dashboard:
+    get:
+      operationId: agents.getDashboard
+      summary: Get dashboard snapshot for an agent
+      description: 'Returns a dashboard snapshot (aggregated production/commission metrics) for the agent, optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the underlying dataset.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id)
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 1
+      - name: start_date
+        in: query
+        required: false
+        description: Start date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: End date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: Successfully retrieved agent dashboard snapshot
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDatasetPage'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found
+  /openapi/agents/{id}/payouts:
+    get:
+      operationId: agents.listPayouts
+      summary: Get payouts for an agent
+      description: 'Returns payout records for the agent from the `contact_payouts_enriched` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id)
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 20
+      - name: start_date
+        in: query
+        required: false
+        description: Start date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: End date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: Successfully retrieved agent payouts
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDatasetPage'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found
+  /openapi/agents/{id}/policies:
+    get:
+      operationId: agents.listPolicies
+      summary: Get policies for an agent
+      description: 'Returns policy records for the agent from the `contact_policies` analytics dataset, paginated, optionally filtered by a date range, and sortable via `order_by` + `sort`. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Agent identifier (str_id, agent_code, or sync_id)
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 20
+      - name: start_date
+        in: query
+        required: false
+        description: Start date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: End date filter (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: order_by
+        in: query
+        required: false
+        description: Column to sort by
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        description: Sort direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          description: Successfully retrieved agent policies
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDatasetPage'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Agent not found
+  /openapi/agents:
+    get:
+      operationId: agents.list
+      summary: List agents
+      description: 'Returns a paginated list of agents in the account, optionally filtered by status, company name, and type. Each item includes the agent''s profile plus its upline (`parent_relationships`) and downline (`child_relationships`) hierarchy records.
+
+        '
+      tags:
+      - Agents
+      parameters:
+      - name: status
+        in: query
+        required: false
+        description: Filter by agent status
+        schema:
+          type: string
+      - name: company_name
+        in: query
+        required: false
+        description: Filter by company name
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        description: Filter by agent type
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        description: Page number (0-based)
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: limit
+        in: query
+        required: false
+        description: Number of items per page (1-1000)
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 50
+      responses:
+        '200':
+          description: Successfully retrieved list of agents
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentListResponseSchema'
+        '401':
+          description: Unauthorized
+    post:
+      operationId: agents.create
+      summary: Create a new agent
+      description: 'Creates a new agent (contact) in the account. Supply an optional `sync_id` to correlate the agent with your external system; Fintary generates its own `str_id`. Returns the created agent''s full profile.
+
+        '
+      tags:
+      - Agents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenAgentCreateSchema'
+      responses:
+        '201':
+          description: Agent created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/OpenAgentDetailSchema'
+        '400':
+          description: Bad request - Request body is required
+        '401':
+          description: Unauthorized
+components:
+  schemas:
+    OpenAgentUpdateSchema:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+        last_name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agent_code:
+          type:
+          - string
+          - 'null'
+        company_name:
+          type:
+          - string
+          - 'null'
+        type:
+          anyOf:
+          - type: string
+            enum:
+            - Sales rep
+            - Agent
+            - IMO
+            - Agency
+          - type: array
+            items:
+              type: string
+              enum:
+              - Sales rep
+              - Agent
+              - IMO
+              - Agency
+          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: ISO datetime string
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Inactive
+          - Terminated
+          - active
+          - archived
+          - manager
+          - current
+          description: Status of the agent
+        payout_level:
+          type:
+          - string
+          - 'null'
+        payable_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - payable
+          - non_payable
+          - pay_to_upline
+          description: Payable status of the agent
+        bank_info:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+      description: Input for updating an existing agent
+    OpenAgentDetailSchema:
+      type: object
+      properties:
+        id:
+          type: number
+        str_id:
+          type:
+          - string
+          - 'null'
+        sync_id:
+          type:
+          - string
+          - 'null'
+        first_name:
+          type:
+          - string
+          - 'null'
+        last_name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agent_code:
+          type:
+          - string
+          - 'null'
+        company_name:
+          type:
+          - string
+          - 'null'
+        type:
+          anyOf:
+          - type: string
+            enum:
+            - Sales rep
+            - Agent
+            - IMO
+            - Agency
+          - type: array
+            items:
+              type: string
+              enum:
+              - Sales rep
+              - Agent
+              - IMO
+              - Agency
+          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: ISO date string
+          format: date
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Inactive
+          - Terminated
+          - active
+          - archived
+          - manager
+          - current
+          description: Status of the agent
+        payout_level:
+          type:
+          - string
+          - 'null'
+        payable_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - payable
+          - non_payable
+          - pay_to_upline
+          description: Payable status of the agent
+        bank_info:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          description: ISO datetime when created
+          format: date-time
+        created_by:
+          type:
+          - string
+          - 'null'
+        updated_at:
+          type: string
+          description: ISO datetime when last updated
+          format: date-time
+        updated_by:
+          type:
+          - string
+          - 'null'
+        parent_relationships:
+          type: array
+          items:
+            type: object
+            properties:
+              str_id:
+                type:
+                - string
+                - 'null'
+                description: Fintary-generated identifier for this hierarchy relationship (contact_hierarchy.str_id). Use when removing upline.
+              start_date:
+                type:
+                - string
+                - 'null'
+                format: date-time
+              end_date:
+                type:
+                - string
+                - 'null'
+                format: date-time
+              split_percentage: {}
+              sync_id:
+                type:
+                - string
+                - 'null'
+                description: Client system identifier for this hierarchy relationship (contact_hierarchy.sync_id).
+              created_at:
+                type: string
+                format: date-time
+              parent:
+                type:
+                - object
+                - 'null'
+                properties:
+                  str_id:
+                    type:
+                    - string
+                    - 'null'
+                  sync_id:
+                    type:
+                    - string
+                    - 'null'
+                  first_name:
+                    type:
+                    - string
+                    - 'null'
+                  last_name:
+                    type:
+                    - string
+                    - 'null'
+                  email:
+                    type:
+                    - string
+                    - 'null'
+                    format: email
+                  phone:
+                    type:
+                    - string
+                    - 'null'
+                  agent_code:
+                    type:
+                    - string
+                    - 'null'
+                  status:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - str_id
+                - sync_id
+                - first_name
+                - last_name
+                - email
+                - phone
+                - agent_code
+                - status
+            required:
+            - str_id
+            - start_date
+            - end_date
+            - sync_id
+            - created_at
+            - parent
+        child_relationships:
+          type: array
+          items:
+            type: object
+            properties:
+              str_id:
+                type:
+                - string
+                - 'null'
+                description: Fintary-generated identifier for this hierarchy relationship (contact_hierarchy.str_id). Use when removing upline.
+              start_date:
+                type:
+                - string
+                - 'null'
+                format: date-time
+              end_date:
+                type:
+                - string
+                - 'null'
+                format: date-time
+              split_percentage: {}
+              sync_id:
+                type:
+                - string
+                - 'null'
+                description: Client system identifier for this hierarchy relationship (contact_hierarchy.sync_id).
+              created_at:
+                type: string
+                format: date-time
+              contact:
+                type: object
+                properties:
+                  str_id:
+                    type:
+                    - string
+                    - 'null'
+                  sync_id:
+                    type:
+                    - string
+                    - 'null'
+                  first_name:
+                    type:
+                    - string
+                    - 'null'
+                  last_name:
+                    type:
+                    - string
+                    - 'null'
+                  email:
+                    type:
+                    - string
+                    - 'null'
+                    format: email
+                  phone:
+                    type:
+                    - string
+                    - 'null'
+                  agent_code:
+                    type:
+                    - string
+                    - 'null'
+                  status:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - str_id
+                - sync_id
+                - first_name
+                - last_name
+                - email
+                - phone
+                - agent_code
+                - status
+            required:
+            - str_id
+            - start_date
+            - end_date
+            - sync_id
+            - created_at
+            - contact
+      required:
+      - id
+      - str_id
+      - sync_id
+      - first_name
+      - last_name
+      - email
+      - phone
+      - agent_code
+      - company_name
+      - type
+      - start_date
+      - status
+      - payout_level
+      - payable_status
+      - bank_info
+      - notes
+      - created_at
+      - created_by
+      - updated_at
+      - updated_by
+      - parent_relationships
+      - child_relationships
+      description: Agent detail
+    OpenAgentCreateSchema:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+        last_name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agent_code:
+          type:
+          - string
+          - 'null'
+        company_name:
+          type:
+          - string
+          - 'null'
+        type:
+          anyOf:
+          - type: string
+            enum:
+            - Sales rep
+            - Agent
+            - IMO
+            - Agency
+          - type: array
+            items:
+              type: string
+              enum:
+              - Sales rep
+              - Agent
+              - IMO
+              - Agency
+          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: ISO datetime string
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Inactive
+          - Terminated
+          - active
+          - archived
+          - manager
+          - current
+          description: Status of the agent
+        payout_level:
+          type:
+          - string
+          - 'null'
+        payable_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - payable
+          - non_payable
+          - pay_to_upline
+          description: Payable status of the agent
+        bank_info:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        sync_id:
+          type: string
+          minLength: 1
+          description: Client system identifier for the agent. Used for syncing with external systems; Fintary generates its own str_id internally.
+      description: Input for creating a new agent
+    AssignUplineResponseSchema:
+      type: object
+      properties:
+        assigned:
+          type: boolean
+          enum:
+          - true
+        str_id:
+          type: string
+          description: str_id of the created contact_hierarchy record; use this when removing upline
+      required:
+      - assigned
+      - str_id
+      description: Response when upline is successfully assigned
+    RemoveUplineRequestSchema:
+      type: object
+      properties:
+        str_id:
+          type: string
+          minLength: 1
+          description: str_id of the contact_hierarchy record (returned when assigning upline)
+      required:
+      - str_id
+      description: Request body for removing upline (by contact_hierarchy str_id)
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
+    AssignUplineRequestSchema:
+      type: object
+      properties:
+        upline:
+          type: string
+          minLength: 1
+          description: Agent identifier (str_id or agent_code) of the upline agent
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: Start date of the hierarchy period
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: End date of the hierarchy period
+          format: date-time
+        split_percentage:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 100
+          description: Split percentage (0-100). Stored in percentage form (e.g. 80 for 80%)
+      required:
+      - upline
+      description: Request body for assigning upline to an agent
+    OpenAgentListResponseSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAgentDetailSchema'
+        count:
+          type: integer
+          minimum: 0
+      required:
+      - items
+      - count
+      description: Paginated list of agents with total count
+    OpenAgentDatasetPage:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          description: Dataset rows for the current page. Columns are determined by the underlying analytics dataset and are not statically typed. Additional non-reserved query parameters are applied as column filters.
+        pageRowCount:
+          type: integer
+          minimum: 0
+          description: Number of rows returned on the current page
+          example: 20
+        rowCount:
+          type: integer
+          minimum: 0
+          description: Total number of rows matching the query across all pages
+          example: 137
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved start of the date filter window, when applied
+          example: '2026-01-01T00:00:00.000Z'
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved end of the date filter window, when applied
+          example: '2026-03-31T23:59:59.999Z'
+        page:
+          type: integer
+          minimum: 0
+          description: Zero-based page index returned
+          example: 0
+      required:
+      - rows
+      - pageRowCount
+      - rowCount
+      description: Paginated dataset rows returned by the agent commissions, payouts, policies, and dashboard endpoints. Wrapped in the standard Open API response envelope under `data`.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key for authentication

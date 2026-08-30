@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  title: Fintary AMS API documentation AMS - Registry API
+  version: '1.0'
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- BearerAuth: []
+tags:
+- name: AMS - Registry
+paths:
+  /api/ams/registry/capabilities:
+    get:
+      summary: Get the AI/wire manifest (bindable fields, widget vocabulary, endpoint allowlist, limits) for an AMS entity
+      tags:
+      - AMS - Registry
+      parameters:
+      - name: entity
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '304':
+          description: Not Modified
+  /api/ams/registry/page-config-default:
+    put:
+      summary: Make one of the calling account's saved page-config variants its active default
+      tags:
+      - AMS - Registry
+      parameters:
+      - name: entity
+        in: query
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+      responses:
+        '200':
+          description: Success
+  /api/ams/registry/page-config-save:
+    put:
+      summary: Save a named page-config variant for the calling account
+      tags:
+      - AMS - Registry
+      parameters:
+      - name: entity
+        in: query
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+      responses:
+        '200':
+          description: Success
+  /api/ams/registry/page-config:
+    get:
+      summary: Get the wire page config for an AMS entity
+      tags:
+      - AMS - Registry
+      parameters:
+      - name: entity
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '304':
+          description: Not Modified
+  /api/ams/registry/page-configs:
+    get:
+      summary: List the calling account's saved page-config variants for an AMS entity (excludes the account's active default)
+      tags:
+      - AMS - Registry
+      parameters:
+      - name: entity
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string

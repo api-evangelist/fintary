@@ -1,0 +1,1359 @@
+openapi: 3.2.0
+info:
+  title: Fintary Open API documentation Analytics API
+  version: '1.0'
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Analytics
+paths:
+  /openapi/analytics/datasets/{name}:
+    get:
+      operationId: analytics.getDatasetData
+      summary: Query an analytics dataset by name
+      description: 'Returns filtered, sorted, and optionally aggregated rows for a named dataset, or streams the result as CSV when `csv_output=true`. Complex parameters (`filter_model`, `sort_model`, `filters`, `measures`) are passed as JSON-encoded strings.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: name
+        in: path
+        required: true
+        description: Dataset name to query.
+        schema:
+          type: string
+          example: latest_commissions
+      - name: account_id
+        in: query
+        required: false
+        description: Account override (Fintary Admin only).
+        schema:
+          type: string
+      - name: contact_id
+        in: query
+        required: false
+        description: Scope rows to a single contact.
+        schema:
+          type: integer
+      - name: start_date
+        in: query
+        required: false
+        description: Start of the date filter window (ISO 8601).
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: End of the date filter window (ISO 8601).
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: columns
+        in: query
+        required: false
+        description: Columns to return. Repeat the parameter for multiple values.
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: true
+      - name: csv_output
+        in: query
+        required: false
+        description: When `true`, stream the result as a CSV file attachment.
+        schema:
+          type: boolean
+      - name: filter_model
+        in: query
+        required: false
+        description: JSON-encoded AG Grid filter model.
+        schema:
+          type: string
+      - name: sort_model
+        in: query
+        required: false
+        description: JSON-encoded AG Grid sort model.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        required: false
+        description: JSON-encoded array of `{ column, operation, values }` filters.
+        schema:
+          type: string
+      - name: orderBy
+        in: query
+        required: false
+        description: 'Column(s) to sort by. Repeat for multiple values. `sortBy` is accepted as an alias and takes precedence when both are supplied.
+
+          '
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: true
+      - name: order
+        in: query
+        required: false
+        description: Sort direction per `order_by` column.
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - asc
+            - desc
+        style: form
+        explode: true
+      - name: group_bys
+        in: query
+        required: false
+        description: Columns to group by when measures are supplied.
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: true
+      - name: measures
+        in: query
+        required: false
+        description: JSON-encoded array of `{ column, aggregation, outputName }` measures.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Paginated dataset rows as JSON, or a CSV file stream when `csv_output=true`.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsDatasetDataResponse'
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Report name is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+        '401':
+          description: 'Unauthorized. Middleware auth failures return the standard response envelope; the handler returns `{ error }` when the account context is missing.
+
+            '
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+  /openapi/analytics/datasets:
+    get:
+      operationId: analytics.listDatasets
+      summary: List analytics datasets
+      description: 'Lists the available analytics datasets (BigQuery tables) for the account, including each dataset''s description and its full column list (name, type, and business description sourced from the BigQuery schema). Used by downstream experiences (e.g. My Data Insights) to surface metadata for selecting the right dataset.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Available analytics datasets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsDatasetListResponse'
+        '401':
+          description: 'Unauthorized. Missing or invalid API key / bearer token is rejected by the API middleware and returns the standard response envelope.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAPIResponseSchema'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+  /openapi/analytics/reports/{id}:
+    get:
+      operationId: analytics.getReportData
+      summary: Fetch data for a specific analytics report
+      description: 'Fetches a published analytics report by id. Returns report data rows by default; pass `metadata_only=true` for the report configuration only, or `csv_output=true` (optionally with `background_task=true`) to export as CSV. Admin/Account-Admin callers may scope to another account/contact via `account_id`/`contact_id`.
+
+        '
+      tags:
+      - Analytics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Report identifier. Pass the string ID (`str_id`) of the report. Integer IDs are accepted for legacy compatibility but deprecated.
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        description: Start date (inclusive) in YYYY-MM-DD for report data query.
+        schema:
+          type: string
+          format: date
+      - name: end_date
+        in: query
+        required: false
+        description: End date (inclusive) in YYYY-MM-DD for report data query.
+        schema:
+          type: string
+          format: date
+      - name: page_size
+        in: query
+        required: false
+        description: Page size for report data query.
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        description: Zero-based page index for report data query.
+        schema:
+          type: integer
+      - name: account_id
+        in: query
+        required: false
+        description: Account ID override (Fintary Admin or Account Admin). Account admins are restricted to their own account.
+        schema:
+          type: string
+      - name: contact_id
+        in: query
+        required: false
+        description: Contact ID to fetch report data for (Fintary Admin or Account Admin). Must be used with account_id.
+        schema:
+          type: integer
+      - name: csv_output
+        in: query
+        required: false
+        description: When true, returns report data as CSV.
+        schema:
+          type: boolean
+      - name: filter_model
+        in: query
+        required: false
+        description: AgGrid filter model JSON string for server-side filtering.
+        schema:
+          type: string
+      - name: order_by
+        in: query
+        required: false
+        description: Sort column name. Repeat the parameter to apply multi-column sorting, for example `?order_by=column_a&order_by=column_b`.
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+        style: form
+        explode: true
+      - name: sort
+        in: query
+        required: false
+        description: Sort direction aligned with `order_by`. Repeat the parameter to match multi-column sorting, for example `?sort=asc&sort=desc`.
+        schema:
+          oneOf:
+          - type: string
+            enum:
+            - asc
+            - desc
+          - type: array
+            items:
+              type: string
+              enum:
+              - asc
+              - desc
+        style: form
+        explode: true
+      - name: background_task
+        in: query
+        required: false
+        description: When true (requires csv_output=true), queues the export as a background task. Returns `{ taskId, statusUrl }` instead of streaming CSV. Poll `GET /openapi/analytics/tasks/{taskId}` for status and the signed download URL.
+        schema:
+          type: boolean
+      - name: email_account_admins
+        in: query
+        required: false
+        description: When true (requires background_task=true), emails account admins when the export completes.
+        schema:
+          type: boolean
+      - name: metadata_only
+        in: query
+        required: false
+        description: When true, returns only the report configuration (no data rows). See response shape (2).
+        schema:
+          type: boolean
+      - name: '{column}_start'
+        in: query
+        required: false
+        description: 'Dynamic per-column date-range lower bound (inclusive). Replace `{column}` with any filterable date column (e.g. `effective_date_start`); pair it with the matching `{column}_end`. Parsed by `parseDateColumnRangesFromQuery`. Distinct from the report-wide `start_date`/`end_date`.
+
+          '
+        schema:
+          type: string
+          format: date
+      - name: '{column}_end'
+        in: query
+        required: false
+        description: 'Dynamic per-column date-range upper bound (inclusive). Pairs with `{column}_start` (e.g. `effective_date_end`).
+
+          '
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: 'Several response shapes depending on parameters: (1) Default — returns report data with rows, pageRowCount, rowCount, and page. A date range (or dynamic `{column}_start`/`{column}_end`) narrows the data but is not required. (2) metadata_only=true — returns report configuration only (analytic_report_access with selected_columns, group_by_columns, filters, roles, users). (3) csv_output=true — streams CSV directly. (4) csv_output=true&background_task=true — returns `{ taskId: string, statusUrl: string }`. Poll GET /openapi/analytics/tasks/{taskId} for status.
+
+            '
+        '401':
+          description: Unauthorized
+        '404':
+          description: Report not found
+        '500':
+          description: Internal server error
+  /openapi/analytics/reports:
+    get:
+      operationId: analytics.listReports
+      summary: List published analytics reports
+      description: 'Returns published analytics report definitions visible to the authenticated principal. Each item represents one **report access record** (not the underlying template) and includes resolved dataset column metadata.
+
+        Use the `str_id` from a list item as `{id}` in `GET /openapi/analytics/reports/{id}` to fetch report data or export CSV.
+
+        **Admin overrides:** Fintary Admins and Account Admins may pass `account_id` and `contact_id` together to list reports as if they were that contact''s user. `contact_id` alone has no effect; `account_id` alone has no effect. Account admins are restricted to their own `account_id`.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: account_id
+        in: query
+        required: false
+        description: 'Account override (Fintary Admin or Account Admin). Must be used with `contact_id`. Account admins may only query their own account.
+
+          '
+        schema:
+          type: string
+          example: acct_7f3c2b1a
+      - name: contact_id
+        in: query
+        required: false
+        description: 'Contact override (Fintary Admin or Account Admin). Must be used with `account_id`. Resolves the contact''s user and role for access checks.
+
+          '
+        schema:
+          type: integer
+          minimum: 1
+          example: 12345
+      responses:
+        '200':
+          description: Published analytics reports for the resolved principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsReportsListResponseSchema'
+              examples:
+                withReports:
+                  summary: One published report
+                  value:
+                  - id: 42
+                    str_id: rpt_abc123xyz
+                    name: Agency receivables by policy
+                    principal_type: account
+                    account_id: acct_7f3c2b1a
+                    selected_columns:
+                    - policy_number
+                    - premium_amount
+                    - effective_date
+                    group_by_columns: []
+                    column_order:
+                    - policy_number
+                    - premium_amount
+                    columns:
+                    - name: policy_number
+                      type: STRING
+                      description: Unique policy number assigned by the carrier
+                    - name: premium_amount
+                      type: FLOAT
+                      description: Annualized premium amount for the policy
+                    - name: effective_date
+                      type: DATE
+                      description: Date the policy became effective
+                    measures: []
+                    column_header_names: null
+                    output_columns:
+                    - policy_number
+                    - premium_amount
+                    - effective_date
+                    date_key: effective_date
+                    dataset_description: Receivables aggregated at the policy level
+                    updated_at: '2026-04-06T18:00:00.000Z'
+                    dataset_id: fintary-prod.analytics_reports.agency_receivables_by_policy
+                    state: active
+                    published: true
+                    description: null
+                    filters: []
+                    created_at: '2026-01-15T12:30:00.000Z'
+                empty:
+                  summary: No visible published reports
+                  value: []
+        '401':
+          description: 'Missing or invalid authentication, invalid role context, or unauthorized account override. Middleware auth failures return the standard response envelope; the handler returns `{ error }` for an unauthorized account override.
+
+            '
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+              examples:
+                unauthorizedAccount:
+                  summary: Account admin querying another account
+                  value:
+                    error: Account admins can only query their own account
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+              examples:
+                serverError:
+                  value:
+                    error: Internal server error
+  /openapi/analytics/tasks/{taskId}:
+    get:
+      operationId: analytics.getExportTaskStatus
+      summary: Get analytics export task status
+      description: 'Poll the status of a background analytics CSV export task. Create a task by calling `GET /openapi/analytics/reports/{id}` with `csv_output=true&background_task=true`. The `statusUrl` in that response points here.
+
+        Poll until `status` is `completed` or `error`. On completion, `result.downloadUrl` is a signed GCS URL valid for 24 hours.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        description: Task ID returned by the background export request.
+        schema:
+          type: string
+          example: pz9BqB8PhZmrzsDn3AYFN
+      responses:
+        '200':
+          description: Task record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - taskId
+                - status
+                - type
+                - createdAt
+                - updatedAt
+                - duration
+                - result
+                - error
+                properties:
+                  taskId:
+                    type: string
+                    example: pz9BqB8PhZmrzsDn3AYFN
+                  status:
+                    type: string
+                    enum:
+                    - pending
+                    - processing
+                    - completed
+                    - error
+                    example: completed
+                  type:
+                    type: string
+                    example: analytics_export
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  duration:
+                    type:
+                    - integer
+                    - 'null'
+                    description: Elapsed processing time in milliseconds. Null until complete.
+                    example: 45213
+                  result:
+                    type:
+                    - object
+                    - 'null'
+                    description: Populated when status is `completed`.
+                    properties:
+                      fileName:
+                        type: string
+                        example: my-dataset-2026-04-06T18-00-00-abc123.csv
+                      downloadUrl:
+                        type: string
+                        description: Signed GCS URL valid for 24 hours.
+                        example: https://storage.googleapis.com/...
+                      completedAt:
+                        type: string
+                        format: date-time
+                  error:
+                    type:
+                    - string
+                    - 'null'
+                    description: Error message when status is `error`. Null otherwise.
+                    example: null
+              examples:
+                pending:
+                  summary: Task still processing
+                  value:
+                    taskId: pz9BqB8PhZmrzsDn3AYFN
+                    status: pending
+                    type: analytics_export
+                    createdAt: '2026-04-06T18:00:00.000Z'
+                    updatedAt: '2026-04-06T18:00:01.000Z'
+                    duration: null
+                    result: null
+                    error: null
+                completed:
+                  summary: Task completed with download URL
+                  value:
+                    taskId: pz9BqB8PhZmrzsDn3AYFN
+                    status: completed
+                    type: analytics_export
+                    createdAt: '2026-04-06T18:00:00.000Z'
+                    updatedAt: '2026-04-06T18:00:45.000Z'
+                    duration: 45213
+                    result:
+                      fileName: my-dataset-2026-04-06T18-00-00-abc123.csv
+                      downloadUrl: https://storage.googleapis.com/fintary-dev.appspot.com/exports/...
+                      completedAt: '2026-04-06T18:00:45.000Z'
+                    error: null
+                error:
+                  summary: Task failed
+                  value:
+                    taskId: pz9BqB8PhZmrzsDn3AYFN
+                    status: error
+                    type: analytics_export
+                    createdAt: '2026-04-06T18:00:00.000Z'
+                    updatedAt: '2026-04-06T18:00:10.000Z'
+                    duration: 10032
+                    result: null
+                    error: 'Failed to stream CSV: dataset not found'
+        '401':
+          description: Missing or invalid authentication
+        '404':
+          description: Task not found or belongs to a different account
+        '500':
+          description: Internal server error
+  /openapi/analytics/widgets/defaults:
+    get:
+      operationId: analytics.listDefaultWidgets
+      summary: List default analytics dashboard widgets
+      description: 'Returns the default analytics widget templates available for the authenticated user''s role, with rendered chart data. Use `POST /openapi/analytics/widgets/defaults/restore` to add one of these defaults back to the user''s dashboard. Optional `dateColumnRange_<column>` query parameters constrain the data window per dataset column.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: dateColumnRange_effective_date
+        in: query
+        required: false
+        description: 'Per-column date range filter. Replace the suffix with any dataset date column. Value is a JSON-encoded `{ startDate, endDate }` range.
+
+          '
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Default widgets for the user's role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAnalyticsWidgetListResponse'
+        '401':
+          description: 'Unauthorized or invalid role context. Middleware auth failures return the standard response envelope; the handler returns `{ error }` for an unresolved account or invalid role.
+
+            '
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+  /openapi/analytics/widgets/defaults/restore:
+    post:
+      operationId: analytics.restoreDefaultWidget
+      summary: Restore a default analytics widget
+      description: 'Restores a default widget template to the authenticated user''s dashboard. Pass the `default_widget_str_id` of a template returned by `GET /openapi/analytics/widgets/defaults`. Returns the restored widget with rendered chart data.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestoreDefaultWidgetRequest'
+      responses:
+        '200':
+          description: The restored widget
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAnalyticsWidget'
+        '401':
+          description: 'Unauthorized or invalid role context. Middleware auth failures return the standard response envelope; the handler returns `{ error }` for an unresolved account/user or invalid role.
+
+            '
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+        '404':
+          description: Default widget not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+  /openapi/analytics/widgets:
+    get:
+      operationId: analytics.listWidgets
+      summary: List analytics dashboard widgets
+      description: 'Returns the analytics dashboard widgets configured for the authenticated user within their account, with rendered chart data. Optional `dateColumnRange_<column>` query parameters constrain the data window per dataset column. Returns an empty array when the user has no resolvable widget context.
+
+        '
+      tags:
+      - Analytics
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: contact_id
+        in: query
+        required: false
+        description: Resolve widgets for a specific contact (admin/impersonation).
+        schema:
+          type: integer
+          example: 12345
+      - name: adminOnly
+        in: query
+        required: false
+        description: When `true`, restrict results to account-admin widgets.
+        schema:
+          type: boolean
+      - name: dateColumnRange_effective_date
+        in: query
+        required: false
+        description: 'Per-column date range filter. Replace the suffix with any dataset date column. Value is a JSON-encoded `{ startDate, endDate }` range.
+
+          '
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Widgets visible to the authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAnalyticsWidgetListResponse'
+        '401':
+          description: 'Unauthorized. Auth failures from the API middleware return the standard response envelope; the handler returns `{ error }` when the account cannot be resolved.
+
+            '
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+        '403':
+          description: Forbidden for the resolved widget context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenApiCodedErrorResponseSchema'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
+components:
+  schemas:
+    RestoreDefaultWidgetRequest:
+      type: object
+      properties:
+        default_widget_str_id:
+          type: string
+          minLength: 1
+          description: str_id of the default widget template to restore (from `GET /openapi/analytics/widgets/defaults`)
+          example: wgt_default_premium
+      required:
+      - default_widget_str_id
+      description: Request body for restoring a default analytics widget
+    OpenAnalyticsWidgetGridPosition:
+      type: object
+      properties:
+        x:
+          type: number
+          description: Grid column offset
+          example: 0
+        y:
+          type: number
+          description: Grid row offset
+          example: 0
+        w:
+          type: number
+          description: Width in grid units
+          example: 6
+        h:
+          type: number
+          description: Height in grid units
+          example: 4
+      required:
+      - x
+      - y
+      - w
+      - h
+      description: Dashboard grid placement of a widget
+    OpenAnalyticsWidget:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Numeric identifier of the widget record
+          example: 481
+        str_id:
+          type: string
+          description: String identifier of the widget record
+          example: wgt_4f2a9c1b
+        analytic_report_access_id:
+          type:
+          - integer
+          - 'null'
+          description: Report access record the widget is backed by, when any
+          example: 42
+        analytic_report_access_str_id:
+          type:
+          - string
+          - 'null'
+          description: String identifier of the backing report access record
+          example: rpt_abc123xyz
+        principal_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - account
+          - user
+          - role
+          - null
+          description: Access principal type that scopes the backing report
+          example: account
+        is_default_widget:
+          type: boolean
+          description: Whether this widget originates from a default template
+          example: false
+        label:
+          type: string
+          description: Display label of the widget
+          example: Premium by carrier
+        chart_type:
+          type: string
+          enum:
+          - line
+          - bar
+          - pie
+          - value
+          - table
+          description: Visualization type used to render the widget
+          example: bar
+        x_axis_column:
+          type:
+          - string
+          - 'null'
+          description: Dataset column mapped to the x-axis (dimension)
+          example: carrier_name
+        y_axis_column:
+          type: string
+          description: Dataset column mapped to the y-axis (measure)
+          example: premium_amount
+        stack_column:
+          type:
+          - string
+          - 'null'
+          description: Dataset column used to stack series, when configured
+        echart_option:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: ECharts option object used to render chart widgets. Shape varies by chart type.
+        value:
+          type:
+          - number
+          - 'null'
+          description: Aggregated scalar result for `value` chart widgets
+          example: 124500
+        config:
+          allOf:
+          - $ref: '#/components/schemas/OpenAnalyticsWidgetTableConfig'
+          description: Table widget configuration; null for non-table widgets
+        table_data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: 'null'
+          description: Row matrix for `table` chart widgets. The first row contains column headers.
+        data_error:
+          type:
+          - string
+          - 'null'
+          description: Error message when the widget data could not be resolved
+        grid_position:
+          allOf:
+          - $ref: '#/components/schemas/OpenAnalyticsWidgetGridPosition'
+          description: Dashboard grid placement of the widget
+        created_at:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp when the widget was created
+          example: '2026-01-15T12:30:00.000Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp when the widget was last updated
+          example: '2026-04-06T18:00:00.000Z'
+      required:
+      - id
+      - str_id
+      - analytic_report_access_id
+      - analytic_report_access_str_id
+      - principal_type
+      - is_default_widget
+      - label
+      - chart_type
+      - x_axis_column
+      - y_axis_column
+      - stack_column
+      - echart_option
+      - value
+      - config
+      - table_data
+      - data_error
+      - grid_position
+      - created_at
+      - updated_at
+      description: Resolved analytics dashboard widget with rendered chart data
+    AnalyticsReportFilterSchema:
+      type: object
+      properties:
+        column_name:
+          type: string
+          description: Dataset column the filter applies to
+          example: carrier_name
+        operation:
+          type:
+          - string
+          - 'null'
+          description: Filter operation identifier
+          example: substring_contains
+        filter_values:
+          type: array
+          items:
+            type: string
+          description: Values used by the filter operation
+          example:
+          - Acme
+      required:
+      - column_name
+      - filter_values
+    AnalyticsDatasetDataResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          description: Dataset rows for the current page. Column set depends on the dataset.
+        reportName:
+          type: string
+          description: Name of the queried dataset
+          example: latest_commissions
+        accountId:
+          type: string
+          description: Account the dataset rows belong to
+          example: acct_7f3c2b1a
+        pageRowCount:
+          type: integer
+          minimum: 0
+          description: Number of rows returned on the current page
+          example: 50
+        rowCount:
+          type: integer
+          minimum: 0
+          description: Total rows matching the query across all pages
+          example: 412
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved start of the date filter window, when applied
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved end of the date filter window, when applied
+        page:
+          type: integer
+          minimum: 0
+          description: Zero-based page index returned
+          example: 0
+      required:
+      - data
+      - reportName
+      - accountId
+      - pageRowCount
+      - rowCount
+      description: Paginated dataset rows returned by the deprecated dataset-by-name query endpoint
+    AnalyticsDatasetTable:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Full table identifier
+          example: fintary-prod.analytics_reports.agency_receivables_by_policy
+        friendlyName:
+          type: string
+          description: Human-readable name for the table
+          example: Agency receivables by policy
+        description:
+          type: string
+          description: Description of the table
+        labels:
+          type: object
+          additionalProperties:
+            anyOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: Labels attached to the table
+        columns:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the column
+              type:
+                type: string
+                description: Data type of the column
+              description:
+                type: string
+                description: Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.
+                example: Unique policy number assigned by the carrier
+            required:
+            - name
+            - type
+          description: Column definitions for the dataset
+      required:
+      - id
+    AnalyticsReportColumnMetadataSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Column name in the underlying dataset
+          example: policy_number
+        type:
+          type: string
+          description: BigQuery column type
+          example: STRING
+        description:
+          type: string
+          description: Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.
+          example: Unique policy number assigned by the carrier
+      required:
+      - name
+      - type
+    AnalyticsReportsListResponseSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlattenedPublishedReportSchema'
+      description: Published analytics reports visible to the authenticated principal
+    OpenAnalyticsWidgetListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/OpenAnalyticsWidget'
+      description: Analytics dashboard widgets visible to the authenticated user
+    OpenAnalyticsWidgetTableFilter:
+      type: object
+      properties:
+        column:
+          type: string
+          description: Dataset column the filter applies to
+          example: carrier_name
+        operation:
+          type: string
+          enum:
+          - substring_contains
+          - substring_not_contains
+          - contains
+          - not_contains
+          - is_empty
+          - is_not_empty
+          - less_than
+          - equal_to
+          - greater_than
+          description: Filter operation identifier
+          example: contains
+        values:
+          type: array
+          items:
+            type: string
+          description: Values used by the filter operation
+          example:
+          - Acme
+      required:
+      - column
+      - operation
+      - values
+      description: A single filter applied to a table widget
+    OpenAnalyticsWidgetTableConfig:
+      type: object
+      properties:
+        visible_columns:
+          type: array
+          items:
+            type: string
+          description: Columns rendered by the table widget
+          example:
+          - policy_number
+          - premium_amount
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAnalyticsWidgetTableFilter'
+          description: Filters applied to the table widget
+        row_limit:
+          type: integer
+          description: Maximum rows rendered by the table widget
+          example: 100
+          exclusiveMinimum: 0
+      required:
+      - visible_columns
+      description: Configuration for `table` chart-type widgets
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
+    OpenApiCodedErrorResponseSchema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: Forbidden
+        code:
+          type: string
+          description: Machine-readable error code
+          example: FORBIDDEN_WIDGET_CONTEXT
+      required:
+      - error
+      - code
+      description: Error payload that includes a machine-readable `code` (e.g. forbidden widget context)
+    FlattenedPublishedReportSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Numeric identifier of the published report access record (legacy). Prefer `str_id` for follow-up calls.
+          example: 42
+        str_id:
+          type:
+          - string
+          - 'null'
+          description: String identifier of the published report access record. Pass this value as `{id}` to `GET /openapi/analytics/reports/{id}`.
+          example: rpt_abc123xyz
+        name:
+          type: string
+          description: Display name of the published report
+          example: Agency receivables by policy
+        principal_type:
+          type: string
+          enum:
+          - account
+          - user
+          - role
+          description: Access principal type that scopes who can run the report
+          example: account
+        account_id:
+          type:
+          - string
+          - 'null'
+          description: Account the report access record belongs to
+          example: acct_7f3c2b1a
+        selected_columns:
+          type: array
+          items:
+            type: string
+          description: Columns selected for the report, resolved against the dataset schema
+          example:
+          - policy_number
+          - premium_amount
+          - effective_date
+        group_by_columns:
+          type: array
+          items:
+            type: string
+          description: Columns used for grouping when measures are configured
+          example:
+          - carrier_name
+        column_order:
+          type: array
+          items:
+            type: string
+          description: Preferred column ordering for the report UI and exports
+          example:
+          - policy_number
+          - premium_amount
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsReportColumnMetadataSchema'
+          description: Dataset column metadata for the report backing table
+        measures:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsReportMeasureSchema'
+          description: Configured aggregations appended to report output
+        column_header_names:
+          description: Optional custom header labels keyed by column name
+        output_columns:
+          type: array
+          items:
+            type: string
+          description: Final column list returned by `GET /openapi/analytics/reports/{id}` (dimensions plus measure output names)
+          example:
+          - policy_number
+          - premium_amount
+          - total_premium
+        date_key:
+          type:
+          - string
+          - 'null'
+          description: Dataset column used as the default date filter when querying report data
+          example: effective_date
+        dataset_description:
+          type:
+          - string
+          - 'null'
+          description: Human-readable description of the backing dataset
+          example: Receivables aggregated at the policy level
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO-8601 timestamp when the report access record was last updated (falls back to `created_at` when absent)
+          example: '2026-04-06T18:00:00.000Z'
+        dataset_id:
+          type: string
+          description: Fully qualified BigQuery table identifier for the dataset
+          example: fintary-prod.analytics_reports.agency_receivables_by_policy
+        state:
+          type:
+          - string
+          - 'null'
+          description: Lifecycle state of the report access record
+          example: active
+        published:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the report access record is published
+          example: true
+        description:
+          type:
+          - string
+          - 'null'
+          description: Optional description of the published report
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsReportFilterSchema'
+          description: Pre-configured filters applied when the report is run
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO-8601 timestamp when the report access record was created
+          example: '2026-01-15T12:30:00.000Z'
+      required:
+      - selected_columns
+      - column_order
+      - columns
+      - measures
+      - output_columns
+      - date_key
+      - dataset_description
+      - dataset_id
+      description: Published analytics report metadata flattened per access record, including resolved dataset columns
+    AnalyticsReportMeasureSchema:
+      type: object
+      properties:
+        column:
+          type: string
+          description: Source column the measure aggregates
+          example: premium_amount
+        aggregation:
+          type: string
+          enum:
+          - ANY
+          - SUM
+          - AVG
+          - COUNT
+          - MIN
+          - MAX
+          description: Aggregation applied to the column
+          example: SUM
+        outputName:
+          type: string
+          description: Column name exposed in report output
+          example: total_premium
+      required:
+      - column
+      - aggregation
+      - outputName
+    OpenApiSimpleErrorResponseSchema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: Account not found
+      required:
+      - error
+      description: Simple error payload returned by some Open API routes
+    AnalyticsDatasetListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AnalyticsDatasetTable'
+      description: List of available analytics tables
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key for authentication

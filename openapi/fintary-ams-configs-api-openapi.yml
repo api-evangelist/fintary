@@ -1,0 +1,248 @@
+openapi: 3.2.0
+info:
+  title: Fintary AMS API documentation AMS - Configs API
+  version: '1.0'
+  description: AMS configuration endpoints (statuses, roles)
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- BearerAuth: []
+tags:
+- name: AMS - Configs
+  description: AMS configuration endpoints (statuses, roles)
+paths:
+  /api/ams/configs/custom-fields:
+    get:
+      summary: List custom field definitions for the current account
+      tags:
+      - AMS - Configs
+      parameters:
+      - name: query
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/AmsCustomFieldListQuerySchema'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AmsCustomFieldDefinitionSchema'
+    post:
+      summary: Create a custom field definition
+      tags:
+      - AMS - Configs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmsCreateCustomFieldDefinitionSchema'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AmsCustomFieldDefinitionSchema'
+  /api/ams/configs/statuses:
+    get:
+      summary: List status configurations
+      tags:
+      - AMS - Configs
+      parameters:
+      - name: query
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/AmsStatusConfigListQuerySchema'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AmsStatusConfigItemSchema'
+components:
+  schemas:
+    AmsStatusConfigListQuerySchema:
+      type: object
+      properties:
+        entityType:
+          type: string
+    AmsCustomFieldDefinitionSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        strId:
+          type: string
+        entityType:
+          type: string
+        fieldKey:
+          type: string
+        displayName:
+          type: string
+        dataType:
+          type:
+          - string
+          - 'null'
+          enum:
+          - text
+          - number
+          - boolean
+          - date
+          - json
+          - null
+        isRequired:
+          type: boolean
+        isSearchable:
+          type: boolean
+        isFilterable:
+          type: boolean
+        isReportable:
+          type: boolean
+        validationRulesJson:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        enumOptionsJson:
+          type:
+          - string
+          - 'null'
+        sortOrder:
+          type: integer
+      required:
+      - strId
+      - entityType
+      - fieldKey
+      - displayName
+      - dataType
+      - isRequired
+      - isSearchable
+      - isFilterable
+      - isReportable
+      - validationRulesJson
+      - defaultValue
+      - enumOptionsJson
+      - sortOrder
+    AmsStatusConfigItemSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        entityType:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+        color:
+          type:
+          - string
+          - 'null'
+        isSystem:
+          type: boolean
+        isDefault:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+      - strId
+      - entityType
+      - name
+      - label
+      - color
+      - isSystem
+      - isDefault
+      - sortOrder
+    AmsCreateCustomFieldDefinitionSchema:
+      type: object
+      properties:
+        entityType:
+          type: string
+          minLength: 1
+        fieldKey:
+          type: string
+          minLength: 1
+        displayName:
+          type: string
+          minLength: 1
+        dataType:
+          type: string
+          enum:
+          - text
+          - number
+          - boolean
+          - date
+          - json
+        isRequired:
+          type: boolean
+          default: false
+        isSearchable:
+          type: boolean
+          default: false
+        isFilterable:
+          type: boolean
+          default: false
+        isReportable:
+          type: boolean
+          default: false
+        validationRulesJson:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        enumOptionsJson:
+          type:
+          - string
+          - 'null'
+        sortOrder:
+          type: integer
+          default: 0
+      required:
+      - entityType
+      - fieldKey
+      - displayName
+      - dataType
+      - isRequired
+      - isSearchable
+      - isFilterable
+      - isReportable
+      - sortOrder
+    AmsCustomFieldListQuerySchema:
+      type: object
+      properties:
+        entityType:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string

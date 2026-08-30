@@ -1,0 +1,264 @@
+openapi: 3.2.0
+info:
+  title: Fintary Open API documentation Documents API
+  version: '1.0'
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
+security:
+- ApiKeyAuth: []
+- BearerAuth: []
+tags:
+- name: Documents
+paths:
+  /openapi/documents/convert-html-to-pdf:
+    post:
+      operationId: documents.convertHtmlToPdf
+      summary: Convert HTML to PDF
+      description: 'Renders an uploaded HTML document (with optional referenced assets) to a PDF via the Fintary file-conversion service. Multipart upload; the request and the generated PDF are each capped at 32 MB. Requires the FFC feature flag to be enabled for the account (otherwise 403). Optionally set the `x-output-filename` header (must match `*.pdf`) to name the downloaded file; it falls back to `converted.pdf`.
+
+        '
+      tags:
+      - Documents
+      parameters:
+      - name: x-output-filename
+        in: header
+        required: false
+        description: Desired output filename. Must match `*.pdf`, else `converted.pdf` is used.
+        schema:
+          type: string
+          example: statement.pdf
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConvertHtmlToPdfRequest'
+      responses:
+        '200':
+          description: The generated PDF document (binary).
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Missing `html_content`, or invalid `rendering_options` JSON/values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAPIResponseSchema'
+        '403':
+          description: The file-conversion feature is not enabled for the account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAPIResponseSchema'
+        '413':
+          description: The request payload or generated PDF exceeds the 32 MB limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAPIResponseSchema'
+        '500':
+          description: Conversion failed due to an upstream file-conversion error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAPIResponseSchema'
+  /openapi/documents/upload:
+    post:
+      operationId: documents.upload
+      summary: Upload a document
+      description: 'Uploads a commission/policy/compgrid statement document (multipart), classifies it, extracts statement amounts, and creates a processing task. At least one of `company_id` or `company_name` is required.
+
+        '
+      tags:
+      - Documents
+      consumes:
+      - multipart/form-data
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DocumentUploadSchema'
+      responses:
+        '200':
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OpenAPIResponseSchema'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/DocumentUploadResponseSchema'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    ConvertHtmlToPdfRenderingOptions:
+      type: object
+      properties:
+        page_size:
+          type: string
+          description: Paper size (e.g. A4, Letter)
+          example: A4
+        margin_top:
+          type: number
+          description: Top margin
+        margin_bottom:
+          type: number
+          description: Bottom margin
+        margin_left:
+          type: number
+          description: Left margin
+        margin_right:
+          type: number
+          description: Right margin
+        orientation:
+          type: string
+          enum:
+          - portrait
+          - landscape
+          description: Page orientation
+          example: portrait
+        print_background:
+          type: boolean
+          description: Whether to render background graphics
+        scale:
+          type: number
+          description: Render scale factor
+          example: 1
+        title:
+          type: string
+          description: PDF document title
+        author:
+          type: string
+          description: PDF document author
+        subject:
+          type: string
+          description: PDF document subject
+      description: Optional PDF rendering options passed to the conversion service
+    DocumentUploadResponseSchema:
+      type: object
+      properties:
+        id:
+          type: number
+        str_id:
+          type: string
+        sync_id:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - str_id
+      - sync_id
+    DocumentUploadSchema:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - commission
+          - policy
+          - compgrid
+        file:
+          type: file
+          description: File to upload
+        company_id:
+          type: string
+          maxLength: 36
+          description: "Identifier (stored as sync_id of company entity) for the company synced from third-party systems. \n\n**Note:** At least one of `company_id` or `company_name` is required."
+          example: '1234'
+        company_name:
+          type: string
+          maxLength: 100
+          description: "Name of the carrier / company. \n\n**Note:** At least one of `company_id` or `company_name` is required."
+          example: Company name
+        is_upline:
+          type: boolean
+          default: false
+          description: Indicates the provided company_name refers to an upline company
+          example: false
+        bank_total_amount:
+          type: number
+          description: Bank deposit amount for commission statements
+          example: 1000
+        statement_amount:
+          type: number
+          description: Statement amount for commission statements
+          example: 1000
+        check_date:
+          type: string
+          description: Date of the check
+          format: date
+        deposit_date:
+          type: string
+          description: Date of the deposit
+          format: date
+        filename:
+          type: string
+          description: Filename of the file
+          example: filename.pdf
+        notes:
+          type: string
+          description: Notes for the document
+          example: ''
+        sync_id:
+          type: string
+          description: Unique id for document. Currently unused, but allows for referencing file in the future.
+          example: ZBcA7v_iwNGGHR9r4xAiD
+      description: A document uploaded to the server. At least one of company_id or company_name must be provided. If neither is supplied and the system cannot determine the company automatically, the request will be rejected.
+      required:
+      - file
+      - type
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
+    ConvertHtmlToPdfRequest:
+      type: object
+      properties:
+        html_content:
+          type: string
+          format: binary
+          description: HTML file to convert to PDF (required).
+        assets:
+          type: array
+          items:
+            type: string
+            format: binary
+          description: Optional asset files referenced by the HTML (images, fonts, CSS).
+        rendering_options:
+          description: Optional rendering options, sent as a JSON-encoded string form field.
+          allOf:
+          - $ref: '#/components/schemas/ConvertHtmlToPdfRenderingOptions'
+      required:
+      - html_content
+      description: Multipart request to convert an HTML document (plus optional assets) to a PDF. Max 32 MB total.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key for authentication
