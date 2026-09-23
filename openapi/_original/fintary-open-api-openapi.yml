@@ -1421,6 +1421,9 @@ components:
 security:
 - ApiKeyAuth: []
 - BearerAuth: []
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
 paths:
   /openapi/agents/{id}:
     get:

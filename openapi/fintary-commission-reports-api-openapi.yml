@@ -2,9 +2,6 @@ openapi: 3.2.0
 info:
   title: Fintary Open API documentation Commission Reports API
   version: '1.0'
-servers:
-- url: https://api.fintary.com
-  description: Base URL declared by the provider in apis.yml (roadmap#122).
 security:
 - ApiKeyAuth: []
 - BearerAuth: []
@@ -15,9 +12,7 @@ paths:
     get:
       operationId: compReports.getData
       summary: Get commission report data
-      description: 'Returns paginated commission report data rows for a published commission report, identified by its report string id. Rows are processed through the commission-report post-processor (role-based commission-field filtering, owner-zero-row drops, canonical totals), so the payload matches what a user sees in the report view. Note: this is a behavioral change from the previous raw-snapshot response — fields the caller''s role cannot see are now redacted.
-
-        '
+      description: 'Returns paginated commission report data rows for a published commission report, identified by its report string id. Rows are processed through the commission-report post-processor (role-based commission-field filtering, owner-zero-row drops, canonical totals), so the payload matches what a user sees in the report view. Note: this is a behavioral change from the previous raw-snapshot response — fields the caller''s role cannot see are now redacted.'
       tags:
       - Commission Reports
       parameters:

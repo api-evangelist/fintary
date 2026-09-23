@@ -2,9 +2,6 @@ openapi: 3.2.0
 info:
   title: Fintary AMS API documentation AMS - Registry API
   version: '1.0'
-servers:
-- url: https://api.fintary.com
-  description: Base URL declared by the provider in apis.yml (roadmap#122).
 security:
 - BearerAuth: []
 tags:
@@ -12,7 +9,7 @@ tags:
 paths:
   /api/ams/registry/capabilities:
     get:
-      summary: Get the AI/wire manifest (bindable fields, widget vocabulary, endpoint allowlist, limits) for an AMS entity
+      summary: Get the AI/wire manifest (bindable fields, widget vocabulary, endpoint…
       tags:
       - AMS - Registry
       parameters:
@@ -26,6 +23,8 @@ paths:
           description: Success
         '304':
           description: Not Modified
+      operationId: getApiAmsRegistryCapabilities
+      x-operation-id-source: derived
   /api/ams/registry/page-config-default:
     put:
       summary: Make one of the calling account's saved page-config variants its active default
@@ -42,6 +41,8 @@ paths:
       responses:
         '200':
           description: Success
+      operationId: putApiAmsRegistryPageConfigDefault
+      x-operation-id-source: derived
   /api/ams/registry/page-config-save:
     put:
       summary: Save a named page-config variant for the calling account
@@ -58,6 +59,8 @@ paths:
       responses:
         '200':
           description: Success
+      operationId: putApiAmsRegistryPageConfigSave
+      x-operation-id-source: derived
   /api/ams/registry/page-config:
     get:
       summary: Get the wire page config for an AMS entity
@@ -74,9 +77,11 @@ paths:
           description: Success
         '304':
           description: Not Modified
+      operationId: getApiAmsRegistryPageConfig
+      x-operation-id-source: derived
   /api/ams/registry/page-configs:
     get:
-      summary: List the calling account's saved page-config variants for an AMS entity (excludes the account's active default)
+      summary: List the calling account's saved page-config variants for an AMS entity…
       tags:
       - AMS - Registry
       parameters:
@@ -88,6 +93,8 @@ paths:
       responses:
         '200':
           description: Success
+      operationId: getApiAmsRegistryPageConfigs
+      x-operation-id-source: derived
 components:
   securitySchemes:
     BearerAuth:

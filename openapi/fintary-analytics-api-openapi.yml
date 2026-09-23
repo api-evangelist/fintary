@@ -2,9 +2,6 @@ openapi: 3.2.0
 info:
   title: Fintary Open API documentation Analytics API
   version: '1.0'
-servers:
-- url: https://api.fintary.com
-  description: Base URL declared by the provider in apis.yml (roadmap#122).
 security:
 - ApiKeyAuth: []
 - BearerAuth: []
@@ -15,9 +12,7 @@ paths:
     get:
       operationId: analytics.getDatasetData
       summary: Query an analytics dataset by name
-      description: 'Returns filtered, sorted, and optionally aggregated rows for a named dataset, or streams the result as CSV when `csv_output=true`. Complex parameters (`filter_model`, `sort_model`, `filters`, `measures`) are passed as JSON-encoded strings.
-
-        '
+      description: Returns filtered, sorted, and optionally aggregated rows for a named dataset, or streams the result as CSV when `csv_output=true`. Complex parameters (`filter_model`, `sort_model`, `filters`, `measures`) are passed as JSON-encoded strings.
       tags:
       - Analytics
       security:
@@ -184,9 +179,7 @@ paths:
     get:
       operationId: analytics.listDatasets
       summary: List analytics datasets
-      description: 'Lists the available analytics datasets (BigQuery tables) for the account, including each dataset''s description and its full column list (name, type, and business description sourced from the BigQuery schema). Used by downstream experiences (e.g. My Data Insights) to surface metadata for selecting the right dataset.
-
-        '
+      description: Lists the available analytics datasets (BigQuery tables) for the account, including each dataset's description and its full column list (name, type, and business description sourced from the BigQuery schema). Used by downstream experiences (e.g. My Data Insights) to surface metadata for selecting the right dataset.
       tags:
       - Analytics
       security:
@@ -219,9 +212,7 @@ paths:
     get:
       operationId: analytics.getReportData
       summary: Fetch data for a specific analytics report
-      description: 'Fetches a published analytics report by id. Returns report data rows by default; pass `metadata_only=true` for the report configuration only, or `csv_output=true` (optionally with `background_task=true`) to export as CSV. Admin/Account-Admin callers may scope to another account/contact via `account_id`/`contact_id`.
-
-        '
+      description: Fetches a published analytics report by id. Returns report data rows by default; pass `metadata_only=true` for the report configuration only, or `csv_output=true` (optionally with `background_task=true`) to export as CSV. Admin/Account-Admin callers may scope to another account/contact via `account_id`/`contact_id`.
       tags:
       - Analytics
       parameters:
@@ -366,9 +357,7 @@ paths:
 
         Use the `str_id` from a list item as `{id}` in `GET /openapi/analytics/reports/{id}` to fetch report data or export CSV.
 
-        **Admin overrides:** Fintary Admins and Account Admins may pass `account_id` and `contact_id` together to list reports as if they were that contact''s user. `contact_id` alone has no effect; `account_id` alone has no effect. Account admins are restricted to their own `account_id`.
-
-        '
+        **Admin overrides:** Fintary Admins and Account Admins may pass `account_id` and `contact_id` together to list reports as if they were that contact''s user. `contact_id` alone has no effect; `account_id` alone has no effect. Account admins are restricted to their own `account_id`.'
       tags:
       - Analytics
       security:
@@ -479,9 +468,7 @@ paths:
       summary: Get analytics export task status
       description: 'Poll the status of a background analytics CSV export task. Create a task by calling `GET /openapi/analytics/reports/{id}` with `csv_output=true&background_task=true`. The `statusUrl` in that response points here.
 
-        Poll until `status` is `completed` or `error`. On completion, `result.downloadUrl` is a signed GCS URL valid for 24 hours.
-
-        '
+        Poll until `status` is `completed` or `error`. On completion, `result.downloadUrl` is a signed GCS URL valid for 24 hours.'
       tags:
       - Analytics
       security:
@@ -607,9 +594,7 @@ paths:
     get:
       operationId: analytics.listDefaultWidgets
       summary: List default analytics dashboard widgets
-      description: 'Returns the default analytics widget templates available for the authenticated user''s role, with rendered chart data. Use `POST /openapi/analytics/widgets/defaults/restore` to add one of these defaults back to the user''s dashboard. Optional `dateColumnRange_<column>` query parameters constrain the data window per dataset column.
-
-        '
+      description: Returns the default analytics widget templates available for the authenticated user's role, with rendered chart data. Use `POST /openapi/analytics/widgets/defaults/restore` to add one of these defaults back to the user's dashboard. Optional `dateColumnRange_` query parameters constrain the data window per dataset column.
       tags:
       - Analytics
       security:
@@ -653,9 +638,7 @@ paths:
     post:
       operationId: analytics.restoreDefaultWidget
       summary: Restore a default analytics widget
-      description: 'Restores a default widget template to the authenticated user''s dashboard. Pass the `default_widget_str_id` of a template returned by `GET /openapi/analytics/widgets/defaults`. Returns the restored widget with rendered chart data.
-
-        '
+      description: Restores a default widget template to the authenticated user's dashboard. Pass the `default_widget_str_id` of a template returned by `GET /openapi/analytics/widgets/defaults`. Returns the restored widget with rendered chart data.
       tags:
       - Analytics
       security:
@@ -702,9 +685,7 @@ paths:
     get:
       operationId: analytics.listWidgets
       summary: List analytics dashboard widgets
-      description: 'Returns the analytics dashboard widgets configured for the authenticated user within their account, with rendered chart data. Optional `dateColumnRange_<column>` query parameters constrain the data window per dataset column. Returns an empty array when the user has no resolvable widget context.
-
-        '
+      description: Returns the analytics dashboard widgets configured for the authenticated user within their account, with rendered chart data. Optional `dateColumnRange_` query parameters constrain the data window per dataset column. Returns an empty array when the user has no resolvable widget context.
       tags:
       - Analytics
       security:
@@ -765,409 +746,6 @@ paths:
                 - $ref: '#/components/schemas/OpenApiSimpleErrorResponseSchema'
 components:
   schemas:
-    RestoreDefaultWidgetRequest:
-      type: object
-      properties:
-        default_widget_str_id:
-          type: string
-          minLength: 1
-          description: str_id of the default widget template to restore (from `GET /openapi/analytics/widgets/defaults`)
-          example: wgt_default_premium
-      required:
-      - default_widget_str_id
-      description: Request body for restoring a default analytics widget
-    OpenAnalyticsWidgetGridPosition:
-      type: object
-      properties:
-        x:
-          type: number
-          description: Grid column offset
-          example: 0
-        y:
-          type: number
-          description: Grid row offset
-          example: 0
-        w:
-          type: number
-          description: Width in grid units
-          example: 6
-        h:
-          type: number
-          description: Height in grid units
-          example: 4
-      required:
-      - x
-      - y
-      - w
-      - h
-      description: Dashboard grid placement of a widget
-    OpenAnalyticsWidget:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Numeric identifier of the widget record
-          example: 481
-        str_id:
-          type: string
-          description: String identifier of the widget record
-          example: wgt_4f2a9c1b
-        analytic_report_access_id:
-          type:
-          - integer
-          - 'null'
-          description: Report access record the widget is backed by, when any
-          example: 42
-        analytic_report_access_str_id:
-          type:
-          - string
-          - 'null'
-          description: String identifier of the backing report access record
-          example: rpt_abc123xyz
-        principal_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - account
-          - user
-          - role
-          - null
-          description: Access principal type that scopes the backing report
-          example: account
-        is_default_widget:
-          type: boolean
-          description: Whether this widget originates from a default template
-          example: false
-        label:
-          type: string
-          description: Display label of the widget
-          example: Premium by carrier
-        chart_type:
-          type: string
-          enum:
-          - line
-          - bar
-          - pie
-          - value
-          - table
-          description: Visualization type used to render the widget
-          example: bar
-        x_axis_column:
-          type:
-          - string
-          - 'null'
-          description: Dataset column mapped to the x-axis (dimension)
-          example: carrier_name
-        y_axis_column:
-          type: string
-          description: Dataset column mapped to the y-axis (measure)
-          example: premium_amount
-        stack_column:
-          type:
-          - string
-          - 'null'
-          description: Dataset column used to stack series, when configured
-        echart_option:
-          type:
-          - object
-          - 'null'
-          additionalProperties: {}
-          description: ECharts option object used to render chart widgets. Shape varies by chart type.
-        value:
-          type:
-          - number
-          - 'null'
-          description: Aggregated scalar result for `value` chart widgets
-          example: 124500
-        config:
-          allOf:
-          - $ref: '#/components/schemas/OpenAnalyticsWidgetTableConfig'
-          description: Table widget configuration; null for non-table widgets
-        table_data:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: 'null'
-          description: Row matrix for `table` chart widgets. The first row contains column headers.
-        data_error:
-          type:
-          - string
-          - 'null'
-          description: Error message when the widget data could not be resolved
-        grid_position:
-          allOf:
-          - $ref: '#/components/schemas/OpenAnalyticsWidgetGridPosition'
-          description: Dashboard grid placement of the widget
-        created_at:
-          type: string
-          format: date-time
-          description: ISO-8601 timestamp when the widget was created
-          example: '2026-01-15T12:30:00.000Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: ISO-8601 timestamp when the widget was last updated
-          example: '2026-04-06T18:00:00.000Z'
-      required:
-      - id
-      - str_id
-      - analytic_report_access_id
-      - analytic_report_access_str_id
-      - principal_type
-      - is_default_widget
-      - label
-      - chart_type
-      - x_axis_column
-      - y_axis_column
-      - stack_column
-      - echart_option
-      - value
-      - config
-      - table_data
-      - data_error
-      - grid_position
-      - created_at
-      - updated_at
-      description: Resolved analytics dashboard widget with rendered chart data
-    AnalyticsReportFilterSchema:
-      type: object
-      properties:
-        column_name:
-          type: string
-          description: Dataset column the filter applies to
-          example: carrier_name
-        operation:
-          type:
-          - string
-          - 'null'
-          description: Filter operation identifier
-          example: substring_contains
-        filter_values:
-          type: array
-          items:
-            type: string
-          description: Values used by the filter operation
-          example:
-          - Acme
-      required:
-      - column_name
-      - filter_values
-    AnalyticsDatasetDataResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            additionalProperties: {}
-          description: Dataset rows for the current page. Column set depends on the dataset.
-        reportName:
-          type: string
-          description: Name of the queried dataset
-          example: latest_commissions
-        accountId:
-          type: string
-          description: Account the dataset rows belong to
-          example: acct_7f3c2b1a
-        pageRowCount:
-          type: integer
-          minimum: 0
-          description: Number of rows returned on the current page
-          example: 50
-        rowCount:
-          type: integer
-          minimum: 0
-          description: Total rows matching the query across all pages
-          example: 412
-        startDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Resolved start of the date filter window, when applied
-        endDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Resolved end of the date filter window, when applied
-        page:
-          type: integer
-          minimum: 0
-          description: Zero-based page index returned
-          example: 0
-      required:
-      - data
-      - reportName
-      - accountId
-      - pageRowCount
-      - rowCount
-      description: Paginated dataset rows returned by the deprecated dataset-by-name query endpoint
-    AnalyticsDatasetTable:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Full table identifier
-          example: fintary-prod.analytics_reports.agency_receivables_by_policy
-        friendlyName:
-          type: string
-          description: Human-readable name for the table
-          example: Agency receivables by policy
-        description:
-          type: string
-          description: Description of the table
-        labels:
-          type: object
-          additionalProperties:
-            anyOf:
-            - type: string
-            - type: array
-              items:
-                type: string
-          description: Labels attached to the table
-        columns:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Name of the column
-              type:
-                type: string
-                description: Data type of the column
-              description:
-                type: string
-                description: Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.
-                example: Unique policy number assigned by the carrier
-            required:
-            - name
-            - type
-          description: Column definitions for the dataset
-      required:
-      - id
-    AnalyticsReportColumnMetadataSchema:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Column name in the underlying dataset
-          example: policy_number
-        type:
-          type: string
-          description: BigQuery column type
-          example: STRING
-        description:
-          type: string
-          description: Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.
-          example: Unique policy number assigned by the carrier
-      required:
-      - name
-      - type
-    AnalyticsReportsListResponseSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/FlattenedPublishedReportSchema'
-      description: Published analytics reports visible to the authenticated principal
-    OpenAnalyticsWidgetListResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/OpenAnalyticsWidget'
-      description: Analytics dashboard widgets visible to the authenticated user
-    OpenAnalyticsWidgetTableFilter:
-      type: object
-      properties:
-        column:
-          type: string
-          description: Dataset column the filter applies to
-          example: carrier_name
-        operation:
-          type: string
-          enum:
-          - substring_contains
-          - substring_not_contains
-          - contains
-          - not_contains
-          - is_empty
-          - is_not_empty
-          - less_than
-          - equal_to
-          - greater_than
-          description: Filter operation identifier
-          example: contains
-        values:
-          type: array
-          items:
-            type: string
-          description: Values used by the filter operation
-          example:
-          - Acme
-      required:
-      - column
-      - operation
-      - values
-      description: A single filter applied to a table widget
-    OpenAnalyticsWidgetTableConfig:
-      type: object
-      properties:
-        visible_columns:
-          type: array
-          items:
-            type: string
-          description: Columns rendered by the table widget
-          example:
-          - policy_number
-          - premium_amount
-        filters:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAnalyticsWidgetTableFilter'
-          description: Filters applied to the table widget
-        row_limit:
-          type: integer
-          description: Maximum rows rendered by the table widget
-          example: 100
-          exclusiveMinimum: 0
-      required:
-      - visible_columns
-      description: Configuration for `table` chart-type widgets
-    OpenAPIResponseSchema:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data: {}
-        message:
-          type: string
-        statusCode:
-          type: number
-      required:
-      - success
-      - message
-      - statusCode
-    OpenApiCodedErrorResponseSchema:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-          example: Forbidden
-        code:
-          type: string
-          description: Machine-readable error code
-          example: FORBIDDEN_WIDGET_CONTEXT
-      required:
-      - error
-      - code
-      description: Error payload that includes a machine-readable `code` (e.g. forbidden widget context)
     FlattenedPublishedReportSchema:
       type: object
       properties:
@@ -1306,6 +884,424 @@ components:
       - dataset_description
       - dataset_id
       description: Published analytics report metadata flattened per access record, including resolved dataset columns
+    OpenAnalyticsWidget:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Numeric identifier of the widget record
+          example: 481
+        str_id:
+          type: string
+          description: String identifier of the widget record
+          example: wgt_4f2a9c1b
+        analytic_report_access_id:
+          type:
+          - integer
+          - 'null'
+          description: Report access record the widget is backed by, when any
+          example: 42
+        analytic_report_access_str_id:
+          type:
+          - string
+          - 'null'
+          description: String identifier of the backing report access record
+          example: rpt_abc123xyz
+        principal_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - account
+          - user
+          - role
+          - null
+          description: Access principal type that scopes the backing report
+          example: account
+        is_default_widget:
+          type: boolean
+          description: Whether this widget originates from a default template
+          example: false
+        label:
+          type: string
+          description: Display label of the widget
+          example: Premium by carrier
+        chart_type:
+          type: string
+          enum:
+          - line
+          - bar
+          - pie
+          - value
+          - table
+          description: Visualization type used to render the widget
+          example: bar
+        x_axis_column:
+          type:
+          - string
+          - 'null'
+          description: Dataset column mapped to the x-axis (dimension)
+          example: carrier_name
+        y_axis_column:
+          type: string
+          description: Dataset column mapped to the y-axis (measure)
+          example: premium_amount
+        stack_column:
+          type:
+          - string
+          - 'null'
+          description: Dataset column used to stack series, when configured
+        echart_option:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          description: ECharts option object used to render chart widgets. Shape varies by chart type.
+        value:
+          type:
+          - number
+          - 'null'
+          description: Aggregated scalar result for `value` chart widgets
+          example: 124500
+        config:
+          allOf:
+          - $ref: '#/components/schemas/OpenAnalyticsWidgetTableConfig'
+          description: Table widget configuration; null for non-table widgets
+        table_data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: 'null'
+          description: Row matrix for `table` chart widgets. The first row contains column headers.
+        data_error:
+          type:
+          - string
+          - 'null'
+          description: Error message when the widget data could not be resolved
+        grid_position:
+          allOf:
+          - $ref: '#/components/schemas/OpenAnalyticsWidgetGridPosition'
+          description: Dashboard grid placement of the widget
+        created_at:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp when the widget was created
+          example: '2026-01-15T12:30:00.000Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp when the widget was last updated
+          example: '2026-04-06T18:00:00.000Z'
+      required:
+      - id
+      - str_id
+      - analytic_report_access_id
+      - analytic_report_access_str_id
+      - principal_type
+      - is_default_widget
+      - label
+      - chart_type
+      - x_axis_column
+      - y_axis_column
+      - stack_column
+      - echart_option
+      - value
+      - config
+      - table_data
+      - data_error
+      - grid_position
+      - created_at
+      - updated_at
+      description: Resolved analytics dashboard widget with rendered chart data
+    OpenAnalyticsWidgetTableFilter:
+      type: object
+      properties:
+        column:
+          type: string
+          description: Dataset column the filter applies to
+          example: carrier_name
+        operation:
+          type: string
+          enum:
+          - substring_contains
+          - substring_not_contains
+          - contains
+          - not_contains
+          - is_empty
+          - is_not_empty
+          - less_than
+          - equal_to
+          - greater_than
+          description: Filter operation identifier
+          example: contains
+        values:
+          type: array
+          items:
+            type: string
+          description: Values used by the filter operation
+          example:
+          - Acme
+      required:
+      - column
+      - operation
+      - values
+      description: A single filter applied to a table widget
+    OpenAnalyticsWidgetListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/OpenAnalyticsWidget'
+      description: Analytics dashboard widgets visible to the authenticated user
+    AnalyticsReportsListResponseSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/FlattenedPublishedReportSchema'
+      description: Published analytics reports visible to the authenticated principal
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
+    RestoreDefaultWidgetRequest:
+      type: object
+      properties:
+        default_widget_str_id:
+          type: string
+          minLength: 1
+          description: str_id of the default widget template to restore (from `GET /openapi/analytics/widgets/defaults`)
+          example: wgt_default_premium
+      required:
+      - default_widget_str_id
+      description: Request body for restoring a default analytics widget
+    AnalyticsDatasetDataResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          description: Dataset rows for the current page. Column set depends on the dataset.
+        reportName:
+          type: string
+          description: Name of the queried dataset
+          example: latest_commissions
+        accountId:
+          type: string
+          description: Account the dataset rows belong to
+          example: acct_7f3c2b1a
+        pageRowCount:
+          type: integer
+          minimum: 0
+          description: Number of rows returned on the current page
+          example: 50
+        rowCount:
+          type: integer
+          minimum: 0
+          description: Total rows matching the query across all pages
+          example: 412
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved start of the date filter window, when applied
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved end of the date filter window, when applied
+        page:
+          type: integer
+          minimum: 0
+          description: Zero-based page index returned
+          example: 0
+      required:
+      - data
+      - reportName
+      - accountId
+      - pageRowCount
+      - rowCount
+      description: Paginated dataset rows returned by the deprecated dataset-by-name query endpoint
+    OpenApiCodedErrorResponseSchema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: Forbidden
+        code:
+          type: string
+          description: Machine-readable error code
+          example: FORBIDDEN_WIDGET_CONTEXT
+      required:
+      - error
+      - code
+      description: Error payload that includes a machine-readable `code` (e.g. forbidden widget context)
+    AnalyticsReportColumnMetadataSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Column name in the underlying dataset
+          example: policy_number
+        type:
+          type: string
+          description: BigQuery column type
+          example: STRING
+        description:
+          type: string
+          description: Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.
+          example: Unique policy number assigned by the carrier
+      required:
+      - name
+      - type
+    OpenAnalyticsWidgetGridPosition:
+      type: object
+      properties:
+        x:
+          type: number
+          description: Grid column offset
+          example: 0
+        y:
+          type: number
+          description: Grid row offset
+          example: 0
+        w:
+          type: number
+          description: Width in grid units
+          example: 6
+        h:
+          type: number
+          description: Height in grid units
+          example: 4
+      required:
+      - x
+      - y
+      - w
+      - h
+      description: Dashboard grid placement of a widget
+    AnalyticsDatasetTable:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Full table identifier
+          example: fintary-prod.analytics_reports.agency_receivables_by_policy
+        friendlyName:
+          type: string
+          description: Human-readable name for the table
+          example: Agency receivables by policy
+        description:
+          type: string
+          description: Description of the table
+        labels:
+          type: object
+          additionalProperties:
+            anyOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: Labels attached to the table
+        columns:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the column
+              type:
+                type: string
+                description: Data type of the column
+              description:
+                type: string
+                description: Business description of the column sourced from the BigQuery schema. Omitted when the column has no description.
+                example: Unique policy number assigned by the carrier
+            required:
+            - name
+            - type
+          description: Column definitions for the dataset
+      required:
+      - id
+    OpenApiSimpleErrorResponseSchema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: Account not found
+      required:
+      - error
+      description: Simple error payload returned by some Open API routes
+    OpenAnalyticsWidgetTableConfig:
+      type: object
+      properties:
+        visible_columns:
+          type: array
+          items:
+            type: string
+          description: Columns rendered by the table widget
+          example:
+          - policy_number
+          - premium_amount
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAnalyticsWidgetTableFilter'
+          description: Filters applied to the table widget
+        row_limit:
+          type: integer
+          description: Maximum rows rendered by the table widget
+          example: 100
+          exclusiveMinimum: 0
+      required:
+      - visible_columns
+      description: Configuration for `table` chart-type widgets
+    AnalyticsReportFilterSchema:
+      type: object
+      properties:
+        column_name:
+          type: string
+          description: Dataset column the filter applies to
+          example: carrier_name
+        operation:
+          type:
+          - string
+          - 'null'
+          description: Filter operation identifier
+          example: substring_contains
+        filter_values:
+          type: array
+          items:
+            type: string
+          description: Values used by the filter operation
+          example:
+          - Acme
+      required:
+      - column_name
+      - filter_values
+    AnalyticsDatasetListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AnalyticsDatasetTable'
+      description: List of available analytics tables
     AnalyticsReportMeasureSchema:
       type: object
       properties:
@@ -1332,21 +1328,6 @@ components:
       - column
       - aggregation
       - outputName
-    OpenApiSimpleErrorResponseSchema:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-          example: Account not found
-      required:
-      - error
-      description: Simple error payload returned by some Open API routes
-    AnalyticsDatasetListResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/AnalyticsDatasetTable'
-      description: List of available analytics tables
   securitySchemes:
     BearerAuth:
       type: http

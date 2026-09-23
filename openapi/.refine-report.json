@@ -1,0 +1,49 @@
+{
+  "provider": "fintary",
+  "sources": [
+    "_original/fintary-ams-api-openapi.json",
+    "_original/fintary-open-api-openapi.json"
+  ],
+  "outputs": [
+    "fintary-ams-agents-api-openapi.yml",
+    "fintary-ams-configs-api-openapi.yml",
+    "fintary-ams-customers-api-openapi.yml",
+    "fintary-ams-policies-api-openapi.yml",
+    "fintary-ams-registry-api-openapi.yml",
+    "fintary-ams-tasks-api-openapi.yml",
+    "fintary-agents-api-openapi.yml",
+    "fintary-analytics-api-openapi.yml",
+    "fintary-commission-reports-api-openapi.yml",
+    "fintary-documents-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "2 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "fintary-ams-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "fintary-ams-api-openapi.json: declared missing tag: AMS - Registry",
+    "fintary-ams-api-openapi.json: declared missing tag: AMS - Tasks",
+    "fintary-open-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "fintary-open-api-openapi.json: declared missing tag: Agents",
+    "fintary-open-api-openapi.json: declared missing tag: Analytics",
+    "fintary-open-api-openapi.json: declared missing tag: Commission Reports",
+    "fintary-open-api-openapi.json: declared missing tag: Documents",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/fintary-open-api-openapi.yml: archived document superseded by a larger archived document",
+    "_original/fintary-ams-api-openapi.yml: archived document superseded by a larger archived document",
+    "fintary-agents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-ams-agents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-ams-configs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-ams-customers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-ams-policies-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-ams-registry-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-ams-tasks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-analytics-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-commission-reports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fintary-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

@@ -2,9 +2,6 @@ openapi: 3.2.0
 info:
   title: Fintary Open API documentation Documents API
   version: '1.0'
-servers:
-- url: https://api.fintary.com
-  description: Base URL declared by the provider in apis.yml (roadmap#122).
 security:
 - ApiKeyAuth: []
 - BearerAuth: []
@@ -15,9 +12,7 @@ paths:
     post:
       operationId: documents.convertHtmlToPdf
       summary: Convert HTML to PDF
-      description: 'Renders an uploaded HTML document (with optional referenced assets) to a PDF via the Fintary file-conversion service. Multipart upload; the request and the generated PDF are each capped at 32 MB. Requires the FFC feature flag to be enabled for the account (otherwise 403). Optionally set the `x-output-filename` header (must match `*.pdf`) to name the downloaded file; it falls back to `converted.pdf`.
-
-        '
+      description: Renders an uploaded HTML document (with optional referenced assets) to a PDF via the Fintary file-conversion service. Multipart upload; the request and the generated PDF are each capped at 32 MB. Requires the FFC feature flag to be enabled for the account (otherwise 403). Optionally set the `x-output-filename` header (must match `*.pdf`) to name the downloaded file; it falls back to `converted.pdf`.
       tags:
       - Documents
       parameters:
@@ -70,9 +65,7 @@ paths:
     post:
       operationId: documents.upload
       summary: Upload a document
-      description: 'Uploads a commission/policy/compgrid statement document (multipart), classifies it, extracts statement amounts, and creates a processing task. At least one of `company_id` or `company_name` is required.
-
-        '
+      description: Uploads a commission/policy/compgrid statement document (multipart), classifies it, extracts statement amounts, and creates a processing task. At least one of `company_id` or `company_name` is required.
       tags:
       - Documents
       consumes:
@@ -101,6 +94,26 @@ paths:
           description: Internal server error
 components:
   schemas:
+    ConvertHtmlToPdfRequest:
+      type: object
+      properties:
+        html_content:
+          type: string
+          format: binary
+          description: HTML file to convert to PDF (required).
+        assets:
+          type: array
+          items:
+            type: string
+            format: binary
+          description: Optional asset files referenced by the HTML (images, fonts, CSS).
+        rendering_options:
+          description: Optional rendering options, sent as a JSON-encoded string form field.
+          allOf:
+          - $ref: '#/components/schemas/ConvertHtmlToPdfRenderingOptions'
+      required:
+      - html_content
+      description: Multipart request to convert an HTML document (plus optional assets) to a PDF. Max 32 MB total.
     ConvertHtmlToPdfRenderingOptions:
       type: object
       properties:
@@ -159,6 +172,20 @@ components:
       - id
       - str_id
       - sync_id
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
     DocumentUploadSchema:
       type: object
       properties:
@@ -218,40 +245,6 @@ components:
       required:
       - file
       - type
-    OpenAPIResponseSchema:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data: {}
-        message:
-          type: string
-        statusCode:
-          type: number
-      required:
-      - success
-      - message
-      - statusCode
-    ConvertHtmlToPdfRequest:
-      type: object
-      properties:
-        html_content:
-          type: string
-          format: binary
-          description: HTML file to convert to PDF (required).
-        assets:
-          type: array
-          items:
-            type: string
-            format: binary
-          description: Optional asset files referenced by the HTML (images, fonts, CSS).
-        rendering_options:
-          description: Optional rendering options, sent as a JSON-encoded string form field.
-          allOf:
-          - $ref: '#/components/schemas/ConvertHtmlToPdfRenderingOptions'
-      required:
-      - html_content
-      description: Multipart request to convert an HTML document (plus optional assets) to a PDF. Max 32 MB total.
   securitySchemes:
     BearerAuth:
       type: http

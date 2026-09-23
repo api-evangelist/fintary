@@ -2,9 +2,6 @@ openapi: 3.2.0
 info:
   title: Fintary Open API documentation Agents API
   version: '1.0'
-servers:
-- url: https://api.fintary.com
-  description: Base URL declared by the provider in apis.yml (roadmap#122).
 security:
 - ApiKeyAuth: []
 - BearerAuth: []
@@ -15,9 +12,7 @@ paths:
     get:
       operationId: agents.get
       summary: Get agent by ID
-      description: 'Returns a single agent''s full profile along with its upline and downline hierarchy relationships. The agent is resolved by `str_id`, `agent_code`, or `sync_id`.
-
-        '
+      description: Returns a single agent's full profile along with its upline and downline hierarchy relationships. The agent is resolved by `str_id`, `agent_code`, or `sync_id`.
       tags:
       - Agents
       parameters:
@@ -46,9 +41,7 @@ paths:
     patch:
       operationId: agents.update
       summary: Update an agent
-      description: 'Updates an existing agent''s profile fields. The agent is resolved by `str_id` or `agent_code`. Only the fields supplied in the request body are changed; omitted fields are left untouched.
-
-        '
+      description: Updates an existing agent's profile fields. The agent is resolved by `str_id` or `agent_code`. Only the fields supplied in the request body are changed; omitted fields are left untouched.
       tags:
       - Agents
       parameters:
@@ -86,9 +79,7 @@ paths:
     post:
       operationId: agents.assignUpline
       summary: Assign upline to an agent
-      description: 'Creates an upline hierarchy relationship for the agent, optionally scoped by a start/end date range and a split percentage. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Returns the created `contact_hierarchy` `str_id`, which is required to remove the relationship via `DELETE /openapi/agents/{id}/assign-upline`.
-
-        '
+      description: Creates an upline hierarchy relationship for the agent, optionally scoped by a start/end date range and a split percentage. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Returns the created `contact_hierarchy` `str_id`, which is required to remove the relationship via `DELETE /openapi/agents/{id}/assign-upline`.
       tags:
       - Agents
       parameters:
@@ -127,9 +118,7 @@ paths:
     delete:
       operationId: agents.removeUpline
       summary: Remove upline from an agent (by contact_hierarchy str_id)
-      description: 'Removes the upline relationship by the contact_hierarchy str_id in the request body. Use the str_id returned when assigning upline.
-
-        '
+      description: Removes the upline relationship by the contact_hierarchy str_id in the request body. Use the str_id returned when assigning upline.
       tags:
       - Agents
       parameters:
@@ -156,9 +145,7 @@ paths:
     get:
       operationId: agents.listCommissions
       summary: Get commissions for an agent
-      description: 'Returns commission records for the agent from the `latest_commissions` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
-
-        '
+      description: Returns commission records for the agent from the `latest_commissions` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
       tags:
       - Agents
       parameters:
@@ -217,9 +204,7 @@ paths:
     get:
       operationId: agents.getDashboard
       summary: Get dashboard snapshot for an agent
-      description: 'Returns a dashboard snapshot (aggregated production/commission metrics) for the agent, optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the underlying dataset.
-
-        '
+      description: Returns a dashboard snapshot (aggregated production/commission metrics) for the agent, optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the underlying dataset.
       tags:
       - Agents
       parameters:
@@ -278,9 +263,7 @@ paths:
     get:
       operationId: agents.listPayouts
       summary: Get payouts for an agent
-      description: 'Returns payout records for the agent from the `contact_payouts_enriched` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
-
-        '
+      description: Returns payout records for the agent from the `contact_payouts_enriched` analytics dataset, paginated and optionally filtered by a date range. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
       tags:
       - Agents
       parameters:
@@ -339,9 +322,7 @@ paths:
     get:
       operationId: agents.listPolicies
       summary: Get policies for an agent
-      description: 'Returns policy records for the agent from the `contact_policies` analytics dataset, paginated, optionally filtered by a date range, and sortable via `order_by` + `sort`. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
-
-        '
+      description: Returns policy records for the agent from the `contact_policies` analytics dataset, paginated, optionally filtered by a date range, and sortable via `order_by` + `sort`. The agent is resolved by `str_id`, `agent_code`, or `sync_id`. Any additional (non-reserved) query parameters are applied as exact-match column filters on the dataset.
       tags:
       - Agents
       parameters:
@@ -415,9 +396,7 @@ paths:
     get:
       operationId: agents.list
       summary: List agents
-      description: 'Returns a paginated list of agents in the account, optionally filtered by status, company name, and type. Each item includes the agent''s profile plus its upline (`parent_relationships`) and downline (`child_relationships`) hierarchy records.
-
-        '
+      description: Returns a paginated list of agents in the account, optionally filtered by status, company name, and type. Each item includes the agent's profile plus its upline (`parent_relationships`) and downline (`child_relationships`) hierarchy records.
       tags:
       - Agents
       parameters:
@@ -473,9 +452,7 @@ paths:
     post:
       operationId: agents.create
       summary: Create a new agent
-      description: 'Creates a new agent (contact) in the account. Supply an optional `sync_id` to correlate the agent with your external system; Fintary generates its own `str_id`. Returns the created agent''s full profile.
-
-        '
+      description: Creates a new agent (contact) in the account. Supply an optional `sync_id` to correlate the agent with your external system; Fintary generates its own `str_id`. Returns the created agent's full profile.
       tags:
       - Agents
       requestBody:
@@ -502,91 +479,6 @@ paths:
           description: Unauthorized
 components:
   schemas:
-    OpenAgentUpdateSchema:
-      type: object
-      properties:
-        first_name:
-          type:
-          - string
-          - 'null'
-        last_name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-          format: email
-        phone:
-          type:
-          - string
-          - 'null'
-        agent_code:
-          type:
-          - string
-          - 'null'
-        company_name:
-          type:
-          - string
-          - 'null'
-        type:
-          anyOf:
-          - type: string
-            enum:
-            - Sales rep
-            - Agent
-            - IMO
-            - Agency
-          - type: array
-            items:
-              type: string
-              enum:
-              - Sales rep
-              - Agent
-              - IMO
-              - Agency
-          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
-        start_date:
-          type:
-          - string
-          - 'null'
-          description: ISO datetime string
-          format: date-time
-        status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - Inactive
-          - Terminated
-          - active
-          - archived
-          - manager
-          - current
-          description: Status of the agent
-        payout_level:
-          type:
-          - string
-          - 'null'
-        payable_status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - payable
-          - non_payable
-          - pay_to_upline
-          description: Payable status of the agent
-        bank_info:
-          type:
-          - string
-          - 'null'
-        notes:
-          type:
-          - string
-          - 'null'
-      description: Input for updating an existing agent
     OpenAgentDetailSchema:
       type: object
       properties:
@@ -974,20 +866,6 @@ components:
           minLength: 1
           description: Client system identifier for the agent. Used for syncing with external systems; Fintary generates its own str_id internally.
       description: Input for creating a new agent
-    AssignUplineResponseSchema:
-      type: object
-      properties:
-        assigned:
-          type: boolean
-          enum:
-          - true
-        str_id:
-          type: string
-          description: str_id of the created contact_hierarchy record; use this when removing upline
-      required:
-      - assigned
-      - str_id
-      description: Response when upline is successfully assigned
     RemoveUplineRequestSchema:
       type: object
       properties:
@@ -1012,49 +890,6 @@ components:
       - success
       - message
       - statusCode
-    AssignUplineRequestSchema:
-      type: object
-      properties:
-        upline:
-          type: string
-          minLength: 1
-          description: Agent identifier (str_id or agent_code) of the upline agent
-        start_date:
-          type:
-          - string
-          - 'null'
-          description: Start date of the hierarchy period
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          description: End date of the hierarchy period
-          format: date-time
-        split_percentage:
-          type:
-          - number
-          - 'null'
-          minimum: 0
-          maximum: 100
-          description: Split percentage (0-100). Stored in percentage form (e.g. 80 for 80%)
-      required:
-      - upline
-      description: Request body for assigning upline to an agent
-    OpenAgentListResponseSchema:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAgentDetailSchema'
-        count:
-          type: integer
-          minimum: 0
-      required:
-      - items
-      - count
-      description: Paginated list of agents with total count
     OpenAgentDatasetPage:
       type: object
       properties:
@@ -1098,6 +933,148 @@ components:
       - pageRowCount
       - rowCount
       description: Paginated dataset rows returned by the agent commissions, payouts, policies, and dashboard endpoints. Wrapped in the standard Open API response envelope under `data`.
+    AssignUplineResponseSchema:
+      type: object
+      properties:
+        assigned:
+          type: boolean
+          enum:
+          - true
+        str_id:
+          type: string
+          description: str_id of the created contact_hierarchy record; use this when removing upline
+      required:
+      - assigned
+      - str_id
+      description: Response when upline is successfully assigned
+    OpenAgentUpdateSchema:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+        last_name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agent_code:
+          type:
+          - string
+          - 'null'
+        company_name:
+          type:
+          - string
+          - 'null'
+        type:
+          anyOf:
+          - type: string
+            enum:
+            - Sales rep
+            - Agent
+            - IMO
+            - Agency
+          - type: array
+            items:
+              type: string
+              enum:
+              - Sales rep
+              - Agent
+              - IMO
+              - Agency
+          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: ISO datetime string
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Inactive
+          - Terminated
+          - active
+          - archived
+          - manager
+          - current
+          description: Status of the agent
+        payout_level:
+          type:
+          - string
+          - 'null'
+        payable_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - payable
+          - non_payable
+          - pay_to_upline
+          description: Payable status of the agent
+        bank_info:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+      description: Input for updating an existing agent
+    AssignUplineRequestSchema:
+      type: object
+      properties:
+        upline:
+          type: string
+          minLength: 1
+          description: Agent identifier (str_id or agent_code) of the upline agent
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: Start date of the hierarchy period
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: End date of the hierarchy period
+          format: date-time
+        split_percentage:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+          maximum: 100
+          description: Split percentage (0-100). Stored in percentage form (e.g. 80 for 80%)
+      required:
+      - upline
+      description: Request body for assigning upline to an agent
+    OpenAgentListResponseSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAgentDetailSchema'
+        count:
+          type: integer
+          minimum: 0
+      required:
+      - items
+      - count
+      description: Paginated list of agents with total count
   securitySchemes:
     BearerAuth:
       type: http

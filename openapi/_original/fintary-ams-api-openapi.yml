@@ -4183,6 +4183,9 @@ components:
       - type
 security:
 - BearerAuth: []
+servers:
+- url: https://api.fintary.com
+  description: Base URL declared by the provider in apis.yml (roadmap#122).
 paths:
   /api/ams/agents/{strId}:
     get:
