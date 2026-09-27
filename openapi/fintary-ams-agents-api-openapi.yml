@@ -379,108 +379,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AmsCreateContractSchema:
-      type: object
-      properties:
-        companyId:
-          type: string
-          minLength: 1
-        contractLevel:
-          type: string
-        licenseNumber:
-          type: string
-        status:
-          $ref: '#/components/schemas/AmsContractStatusSchema'
-        effectiveDate:
-          type: string
-        endDate:
-          type: string
-        notes:
-          type: string
-      required:
-      - companyId
-    AmsUpdateAgentSchema:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        agentCode:
-          type: string
-        status:
-          type: string
-        level:
-          type: string
-        type:
-          type: string
-        companyName:
-          type: string
-        geoState:
-          type: string
-        startDate:
-          type: string
-        endDate:
-          type: string
-        userStrId:
-          type: string
-        hierarchy:
-          type: array
-          items:
-            type: object
-            properties:
-              parentContactStrId:
-                type: string
-                minLength: 1
-              relationship:
-                type: string
-            required:
-            - parentContactStrId
-        commissionProfiles:
-          type: array
-          items:
-            type: object
-            properties:
-              profileId:
-                type: integer
-              rate:
-                type: number
-              method:
-                type: string
-              startDate:
-                type: string
-              endDate:
-                type: string
-            required:
-            - profileId
-    AgentSummaryResponseSchema:
-      type: object
-      properties:
-        total:
-          type: integer
-        active:
-          type: integer
-        writingAgents:
-          type: integer
-        salesReps:
-          type: integer
-      required:
-      - total
-      - active
-      - writingAgents
-      - salesReps
-    AmsContractStatusSchema:
-      type: string
-      enum:
-      - active
-      - inactive
     ContractCompanyResponseSchema:
       type: object
       properties:
@@ -530,9 +428,13 @@ components:
       required:
       - data
       - pagination
-    AmsBulkUpdateAgentDataSchema:
+    AgentHierarchyResponseSchema:
       type: object
       properties:
+        strId:
+          type:
+          - string
+          - 'null'
         firstName:
           type:
           - string
@@ -549,16 +451,7 @@ components:
           type:
           - string
           - 'null'
-          format: email
-        phone:
-          type:
-          - string
-          - 'null'
         agentCode:
-          type:
-          - string
-          - 'null'
-        status:
           type:
           - string
           - 'null'
@@ -566,26 +459,101 @@ components:
           type:
           - string
           - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        geoState:
-          type:
-          - string
-          - 'null'
-        startDate:
-          type:
-          - string
-          - 'null'
-        endDate:
-          type:
-          - string
-          - 'null'
-        userStrId:
-          type:
-          - string
-          - 'null'
+        uplines:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
+        downlines:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
+      required:
+      - strId
+      - firstName
+      - lastName
+      - name
+      - email
+      - agentCode
+      - level
+      - uplines
+      - downlines
+    AmsBulkUpdateResponseSchema:
+      type: object
+      properties:
+        totalUpdated:
+          type: integer
+      required:
+      - totalUpdated
+    AgentTreeResponseSchema:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/AgentTreeNodeSchema'
+        ancestors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentTreeNodeSchema'
+        descendants:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentTreeNodeSchema'
+      required:
+      - ancestors
+      - descendants
+    AmsBulkUpdateAgentsBodySchema:
+      type: object
+      properties:
+        strIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+        data:
+          $ref: '#/components/schemas/AmsBulkUpdateAgentDataSchema'
+      required:
+      - strIds
+      - data
+    AmsAgentListQuerySchema:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+        search:
+          type: string
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+        status:
+          type: string
+        role:
+          type: string
+        email:
+          type: string
+        agentCode:
+          type: string
+        level:
+          type: string
+        createdFrom:
+          type: string
+        createdTo:
+          type: string
+      required:
+      - page
+      - pageSize
+      - sortOrder
     AgentListItemSchema:
       type: object
       properties:
@@ -764,69 +732,26 @@ components:
       - country
       - zip
       - createdAt
-    AmsAgentListQuerySchema:
+    AmsCreateContractSchema:
       type: object
       properties:
-        page:
-          type: integer
-          minimum: 1
-          default: 1
-        pageSize:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 25
-        search:
+        companyId:
           type: string
-        sortBy:
+          minLength: 1
+        contractLevel:
           type: string
-        sortOrder:
+        licenseNumber:
           type: string
-          enum:
-          - asc
-          - desc
-          default: desc
         status:
+          $ref: '#/components/schemas/AmsContractStatusSchema'
+        effectiveDate:
           type: string
-        role:
+        endDate:
           type: string
-        email:
-          type: string
-        agentCode:
-          type: string
-        level:
-          type: string
-        createdFrom:
-          type: string
-        createdTo:
+        notes:
           type: string
       required:
-      - page
-      - pageSize
-      - sortOrder
-    AgentTreeResponseSchema:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/AgentTreeNodeSchema'
-        ancestors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AgentTreeNodeSchema'
-        descendants:
-          type: array
-          items:
-            $ref: '#/components/schemas/AgentTreeNodeSchema'
-      required:
-      - ancestors
-      - descendants
-    AmsBulkUpdateResponseSchema:
-      type: object
-      properties:
-        totalUpdated:
-          type: integer
-      required:
-      - totalUpdated
+      - companyId
     ContractListResponseSchema:
       type: object
       properties:
@@ -845,96 +770,98 @@ components:
       - total
       - page
       - pageSize
-    AgentTreeNodeSchema:
+    AmsPaginationSchema:
       type: object
       properties:
-        strId:
-          type: string
-        name:
-          type: string
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+      - page
+      - pageSize
+      - total
+      - totalPages
+    AmsUpdateAgentSchema:
+      type: object
+      properties:
         firstName:
           type: string
         lastName:
           type: string
+        name:
+          type: string
         email:
+          type: string
+          format: email
+        phone:
           type: string
         agentCode:
           type: string
+        status:
+          type: string
         level:
           type: string
-        splitPercentage:
-          type: number
-        depth:
-          type: integer
-        children:
+        type:
+          type: string
+        companyName:
+          type: string
+        geoState:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        userStrId:
+          type: string
+        hierarchy:
           type: array
           items:
-            $ref: '#/components/schemas/AgentTreeNodeSchema'
-        parentContactId:
-          type: string
-      required:
-      - strId
-      - depth
-      - children
-    AmsAgentTreeQuerySchema:
+            type: object
+            properties:
+              parentContactStrId:
+                type: string
+                minLength: 1
+              relationship:
+                type: string
+            required:
+            - parentContactStrId
+        commissionProfiles:
+          type: array
+          items:
+            type: object
+            properties:
+              profileId:
+                type: integer
+              rate:
+                type: number
+              method:
+                type: string
+              startDate:
+                type: string
+              endDate:
+                type: string
+            required:
+            - profileId
+    AmsUpdateContractSchema:
       type: object
       properties:
-        strId:
+        contractLevel:
           type: string
-          minLength: 1
+        licenseNumber:
+          type: string
+        status:
+          $ref: '#/components/schemas/AmsContractStatusSchema'
         effectiveDate:
           type: string
-      required:
-      - strId
-    AgentHierarchyResponseSchema:
-      type: object
-      properties:
-        strId:
-          type:
-          - string
-          - 'null'
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-        agentCode:
-          type:
-          - string
-          - 'null'
-        level:
-          type:
-          - string
-          - 'null'
-        uplines:
-          type: array
-          items:
-            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
-        downlines:
-          type: array
-          items:
-            $ref: '#/components/schemas/AgentHierarchyNodeSchema'
-      required:
-      - strId
-      - firstName
-      - lastName
-      - name
-      - email
-      - agentCode
-      - level
-      - uplines
-      - downlines
+        endDate:
+          type: string
+        notes:
+          type: string
     AgentHierarchyNodeSchema:
       type: object
       properties:
@@ -989,36 +916,6 @@ components:
       - splitPercentage
       - hierarchyId
       - children
-    AmsBulkUpdateAgentsBodySchema:
-      type: object
-      properties:
-        strIds:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          minItems: 1
-        data:
-          $ref: '#/components/schemas/AmsBulkUpdateAgentDataSchema'
-      required:
-      - strIds
-      - data
-    AmsPaginationSchema:
-      type: object
-      properties:
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
-      required:
-      - page
-      - pageSize
-      - total
-      - totalPages
     ContractResponseSchema:
       type: object
       properties:
@@ -1074,6 +971,22 @@ components:
       - notes
       - createdAt
       - updatedAt
+    AgentSummaryResponseSchema:
+      type: object
+      properties:
+        total:
+          type: integer
+        active:
+          type: integer
+        writingAgents:
+          type: integer
+        salesReps:
+          type: integer
+      required:
+      - total
+      - active
+      - writingAgents
+      - salesReps
     AgentDetailResponseSchema:
       type: object
       properties:
@@ -1475,6 +1388,108 @@ components:
       - commissionProfiles
       - createdAt
       - updatedAt
+    AmsBulkUpdateAgentDataSchema:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        level:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        userStrId:
+          type:
+          - string
+          - 'null'
+    AmsContractStatusSchema:
+      type: string
+      enum:
+      - active
+      - inactive
+    AgentTreeNodeSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        agentCode:
+          type: string
+        level:
+          type: string
+        splitPercentage:
+          type: number
+        depth:
+          type: integer
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentTreeNodeSchema'
+        parentContactId:
+          type: string
+      required:
+      - strId
+      - depth
+      - children
+    AmsAgentTreeQuerySchema:
+      type: object
+      properties:
+        strId:
+          type: string
+          minLength: 1
+        effectiveDate:
+          type: string
+      required:
+      - strId
     AmsCreateAgentSchema:
       type: object
       properties:
@@ -1536,21 +1551,6 @@ components:
                 type: string
             required:
             - profileId
-    AmsUpdateContractSchema:
-      type: object
-      properties:
-        contractLevel:
-          type: string
-        licenseNumber:
-          type: string
-        status:
-          $ref: '#/components/schemas/AmsContractStatusSchema'
-        effectiveDate:
-          type: string
-        endDate:
-          type: string
-        notes:
-          type: string
   securitySchemes:
     BearerAuth:
       type: http

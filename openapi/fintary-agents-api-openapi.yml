@@ -479,6 +479,20 @@ paths:
           description: Unauthorized
 components:
   schemas:
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
     OpenAgentDetailSchema:
       type: object
       properties:
@@ -777,95 +791,20 @@ components:
       - parent_relationships
       - child_relationships
       description: Agent detail
-    OpenAgentCreateSchema:
+    OpenAgentListResponseSchema:
       type: object
       properties:
-        first_name:
-          type:
-          - string
-          - 'null'
-        last_name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-          format: email
-        phone:
-          type:
-          - string
-          - 'null'
-        agent_code:
-          type:
-          - string
-          - 'null'
-        company_name:
-          type:
-          - string
-          - 'null'
-        type:
-          anyOf:
-          - type: string
-            enum:
-            - Sales rep
-            - Agent
-            - IMO
-            - Agency
-          - type: array
-            items:
-              type: string
-              enum:
-              - Sales rep
-              - Agent
-              - IMO
-              - Agency
-          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
-        start_date:
-          type:
-          - string
-          - 'null'
-          description: ISO datetime string
-          format: date-time
-        status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - Inactive
-          - Terminated
-          - active
-          - archived
-          - manager
-          - current
-          description: Status of the agent
-        payout_level:
-          type:
-          - string
-          - 'null'
-        payable_status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - payable
-          - non_payable
-          - pay_to_upline
-          description: Payable status of the agent
-        bank_info:
-          type:
-          - string
-          - 'null'
-        notes:
-          type:
-          - string
-          - 'null'
-        sync_id:
-          type: string
-          minLength: 1
-          description: Client system identifier for the agent. Used for syncing with external systems; Fintary generates its own str_id internally.
-      description: Input for creating a new agent
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAgentDetailSchema'
+        count:
+          type: integer
+          minimum: 0
+      required:
+      - items
+      - count
+      description: Paginated list of agents with total count
     RemoveUplineRequestSchema:
       type: object
       properties:
@@ -876,63 +815,6 @@ components:
       required:
       - str_id
       description: Request body for removing upline (by contact_hierarchy str_id)
-    OpenAPIResponseSchema:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data: {}
-        message:
-          type: string
-        statusCode:
-          type: number
-      required:
-      - success
-      - message
-      - statusCode
-    OpenAgentDatasetPage:
-      type: object
-      properties:
-        rows:
-          type: array
-          items:
-            type: object
-            additionalProperties: {}
-          description: Dataset rows for the current page. Columns are determined by the underlying analytics dataset and are not statically typed. Additional non-reserved query parameters are applied as column filters.
-        pageRowCount:
-          type: integer
-          minimum: 0
-          description: Number of rows returned on the current page
-          example: 20
-        rowCount:
-          type: integer
-          minimum: 0
-          description: Total number of rows matching the query across all pages
-          example: 137
-        startDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Resolved start of the date filter window, when applied
-          example: '2026-01-01T00:00:00.000Z'
-        endDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Resolved end of the date filter window, when applied
-          example: '2026-03-31T23:59:59.999Z'
-        page:
-          type: integer
-          minimum: 0
-          description: Zero-based page index returned
-          example: 0
-      required:
-      - rows
-      - pageRowCount
-      - rowCount
-      description: Paginated dataset rows returned by the agent commissions, payouts, policies, and dashboard endpoints. Wrapped in the standard Open API response envelope under `data`.
     AssignUplineResponseSchema:
       type: object
       properties:
@@ -1032,6 +914,95 @@ components:
           - string
           - 'null'
       description: Input for updating an existing agent
+    OpenAgentCreateSchema:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+        last_name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agent_code:
+          type:
+          - string
+          - 'null'
+        company_name:
+          type:
+          - string
+          - 'null'
+        type:
+          anyOf:
+          - type: string
+            enum:
+            - Sales rep
+            - Agent
+            - IMO
+            - Agency
+          - type: array
+            items:
+              type: string
+              enum:
+              - Sales rep
+              - Agent
+              - IMO
+              - Agency
+          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: ISO datetime string
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Inactive
+          - Terminated
+          - active
+          - archived
+          - manager
+          - current
+          description: Status of the agent
+        payout_level:
+          type:
+          - string
+          - 'null'
+        payable_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - payable
+          - non_payable
+          - pay_to_upline
+          description: Payable status of the agent
+        bank_info:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        sync_id:
+          type: string
+          minLength: 1
+          description: Client system identifier for the agent. Used for syncing with external systems; Fintary generates its own str_id internally.
+      description: Input for creating a new agent
     AssignUplineRequestSchema:
       type: object
       properties:
@@ -1061,20 +1032,49 @@ components:
       required:
       - upline
       description: Request body for assigning upline to an agent
-    OpenAgentListResponseSchema:
+    OpenAgentDatasetPage:
       type: object
       properties:
-        items:
+        rows:
           type: array
           items:
-            $ref: '#/components/schemas/OpenAgentDetailSchema'
-        count:
+            type: object
+            additionalProperties: {}
+          description: Dataset rows for the current page. Columns are determined by the underlying analytics dataset and are not statically typed. Additional non-reserved query parameters are applied as column filters.
+        pageRowCount:
           type: integer
           minimum: 0
+          description: Number of rows returned on the current page
+          example: 20
+        rowCount:
+          type: integer
+          minimum: 0
+          description: Total number of rows matching the query across all pages
+          example: 137
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved start of the date filter window, when applied
+          example: '2026-01-01T00:00:00.000Z'
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Resolved end of the date filter window, when applied
+          example: '2026-03-31T23:59:59.999Z'
+        page:
+          type: integer
+          minimum: 0
+          description: Zero-based page index returned
+          example: 0
       required:
-      - items
-      - count
-      description: Paginated list of agents with total count
+      - rows
+      - pageRowCount
+      - rowCount
+      description: Paginated dataset rows returned by the agent commissions, payouts, policies, and dashboard endpoints. Wrapped in the standard Open API response envelope under `data`.
   securitySchemes:
     BearerAuth:
       type: http

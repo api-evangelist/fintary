@@ -192,6 +192,92 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CustomerListResponseSchema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerListItemSchema'
+        pagination:
+          $ref: '#/components/schemas/AmsPaginationSchema'
+      required:
+      - data
+      - pagination
+    AmsCreateCustomerSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        companyName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - other
+        type:
+          type: string
+          enum:
+          - individual
+          - group
+        status:
+          type: string
+        parentId:
+          type: integer
+        acquisitionChannel:
+          type: string
+        primaryAddressStrId:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomerAddressSchema'
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+                minLength: 1
+              relationshipType:
+                type: string
+                minLength: 1
+            required:
+            - contactStrId
+            - relationshipType
+    CustomerSummaryResponseSchema:
+      type: object
+      properties:
+        total:
+          type: integer
+        activeWithPolicies:
+          type: integer
+        withoutPolicies:
+          type: integer
+        individual:
+          type: integer
+        group:
+          type: integer
+      required:
+      - total
+      - activeWithPolicies
+      - withoutPolicies
+      - individual
+      - group
     AmsCustomerListQuerySchema:
       type: object
       properties:
@@ -288,18 +374,621 @@ components:
       required:
       - strIds
       - data
-    CustomerListResponseSchema:
+    AmsPaginationSchema:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+      - page
+      - pageSize
+      - total
+      - totalPages
+    CustomerDetailResponseSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        strId:
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        dob:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - integer
+          - 'null'
+        acquisitionChannel:
+          type:
+          - string
+          - 'null'
+        primaryAddressStrId:
+          type:
+          - string
+          - 'null'
+        nickname:
+          type:
+          - string
+          - 'null'
+        contact:
+          type:
+          - string
+          - 'null'
+        contactEmail:
+          type:
+          - string
+          - 'null'
+        fax:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+        region:
+          type:
+          - string
+          - 'null'
+        groupId:
+          type:
+          - string
+          - 'null'
+        tinNumber:
+          type:
+          - string
+          - 'null'
+        deltaCo:
+          type:
+          - string
+          - 'null'
+        deltaGroupNo:
+          type: array
+          items:
+            type: string
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        originalEffectiveDate:
+          type:
+          - string
+          - 'null'
+        addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type: string
+              type:
+                type:
+                - string
+                - 'null'
+              label:
+                type:
+                - string
+                - 'null'
+              address1:
+                type:
+                - string
+                - 'null'
+              address2:
+                type:
+                - string
+                - 'null'
+              city:
+                type:
+                - string
+                - 'null'
+              state:
+                type:
+                - string
+                - 'null'
+              country:
+                type:
+                - string
+                - 'null'
+              zip:
+                type:
+                - string
+                - 'null'
+              zipExt4:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - type
+            - label
+            - address1
+            - address2
+            - city
+            - state
+            - country
+            - zip
+            - zipExt4
+        policies:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type: string
+              policyId:
+                type:
+                - string
+                - 'null'
+              policyStatus:
+                type:
+                - string
+                - 'null'
+              productName:
+                type:
+                - string
+                - 'null'
+              writingCarrierName:
+                type:
+                - string
+                - 'null'
+              effectiveDate:
+                type:
+                - string
+                - 'null'
+              premiumAmount:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - policyId
+            - policyStatus
+            - productName
+            - writingCarrierName
+            - effectiveDate
+            - premiumAmount
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+              contactName:
+                type:
+                - string
+                - 'null'
+              relationshipType:
+                type: string
+            required:
+            - contactStrId
+            - contactName
+            - relationshipType
+        aliases:
+          type: array
+          items:
+            type: object
+            properties:
+              strId:
+                type:
+                - string
+                - 'null'
+              firstName:
+                type:
+                - string
+                - 'null'
+              lastName:
+                type:
+                - string
+                - 'null'
+              companyName:
+                type:
+                - string
+                - 'null'
+            required:
+            - strId
+            - firstName
+            - lastName
+            - companyName
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+      - strId
+      - firstName
+      - lastName
+      - middleName
+      - companyName
+      - email
+      - phone
+      - dob
+      - gender
+      - type
+      - status
+      - parentId
+      - acquisitionChannel
+      - primaryAddressStrId
+      - nickname
+      - contact
+      - contactEmail
+      - fax
+      - website
+      - region
+      - groupId
+      - tinNumber
+      - deltaCo
+      - deltaGroupNo
+      - startDate
+      - endDate
+      - originalEffectiveDate
+      - addresses
+      - policies
+      - owners
+      - aliases
+      - createdAt
+      - updatedAt
+    AmsBulkUpdateCustomerDataSchema:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        middleName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        dob:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+          enum:
+          - male
+          - female
+          - null
+        type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - individual
+          - group
+          - null
+        status:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - integer
+          - 'null'
+        acquisitionChannel:
+          type:
+          - string
+          - 'null'
+        primaryAddressStrId:
+          type:
+          - string
+          - 'null'
+    AmsBulkUpdateResponseSchema:
+      type: object
+      properties:
+        totalUpdated:
+          type: integer
+      required:
+      - totalUpdated
+    AmsCustomerAddressSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        type:
+          type: string
+        label:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        zip:
+          type: string
+        zipExt4:
+          type: string
+    AmsUpdateCustomerSchema:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        companyName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - other
+        type:
+          type: string
+          enum:
+          - individual
+          - group
+        status:
+          type: string
+        parentId:
+          type: integer
+        acquisitionChannel:
+          type: string
+        primaryAddressStrId:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomerAddressSchema'
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+                minLength: 1
+              relationshipType:
+                type: string
+                minLength: 1
+            required:
+            - contactStrId
+            - relationshipType
+    PolicyListResponseSchema:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerListItemSchema'
+            $ref: '#/components/schemas/PolicyListItemSchema'
         pagination:
           $ref: '#/components/schemas/AmsPaginationSchema'
       required:
       - data
       - pagination
+    CustomerListItemSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        strId:
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        policyCount:
+          type: integer
+        agents:
+          type: array
+          items:
+            type: object
+            properties:
+              contactStrId:
+                type: string
+              name:
+                type:
+                - string
+                - 'null'
+              relationshipType:
+                type: string
+            required:
+            - contactStrId
+            - name
+            - relationshipType
+        middleName:
+          type:
+          - string
+          - 'null'
+        dob:
+          type:
+          - string
+          - 'null'
+        gender:
+          type:
+          - string
+          - 'null'
+        acquisitionChannel:
+          type:
+          - string
+          - 'null'
+        nickname:
+          type:
+          - string
+          - 'null'
+        contact:
+          type:
+          - string
+          - 'null'
+        contactEmail:
+          type:
+          - string
+          - 'null'
+        fax:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+        region:
+          type:
+          - string
+          - 'null'
+        groupId:
+          type:
+          - string
+          - 'null'
+        tinNumber:
+          type:
+          - string
+          - 'null'
+        deltaCo:
+          type:
+          - string
+          - 'null'
+        deltaGroupNo:
+          type: array
+          items:
+            type: string
+        startDate:
+          type:
+          - string
+          - 'null'
+        endDate:
+          type:
+          - string
+          - 'null'
+        originalEffectiveDate:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+      required:
+      - strId
+      - firstName
+      - lastName
+      - companyName
+      - email
+      - phone
+      - type
+      - status
+      - policyCount
+      - agents
+      - middleName
+      - dob
+      - gender
+      - acquisitionChannel
+      - nickname
+      - contact
+      - contactEmail
+      - fax
+      - website
+      - region
+      - groupId
+      - tinNumber
+      - deltaCo
+      - deltaGroupNo
+      - startDate
+      - endDate
+      - originalEffectiveDate
+      - createdAt
     PolicyListItemSchema:
       type: object
       properties:
@@ -587,695 +1276,6 @@ components:
       - updatedAt
       - customFields
       - receivables
-    CustomerListItemSchema:
-      type: object
-      properties:
-        id:
-          type: integer
-        strId:
-          type: string
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-        phone:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - string
-          - 'null'
-        policyCount:
-          type: integer
-        agents:
-          type: array
-          items:
-            type: object
-            properties:
-              contactStrId:
-                type: string
-              name:
-                type:
-                - string
-                - 'null'
-              relationshipType:
-                type: string
-            required:
-            - contactStrId
-            - name
-            - relationshipType
-        middleName:
-          type:
-          - string
-          - 'null'
-        dob:
-          type:
-          - string
-          - 'null'
-        gender:
-          type:
-          - string
-          - 'null'
-        acquisitionChannel:
-          type:
-          - string
-          - 'null'
-        nickname:
-          type:
-          - string
-          - 'null'
-        contact:
-          type:
-          - string
-          - 'null'
-        contactEmail:
-          type:
-          - string
-          - 'null'
-        fax:
-          type:
-          - string
-          - 'null'
-        website:
-          type:
-          - string
-          - 'null'
-        region:
-          type:
-          - string
-          - 'null'
-        groupId:
-          type:
-          - string
-          - 'null'
-        tinNumber:
-          type:
-          - string
-          - 'null'
-        deltaCo:
-          type:
-          - string
-          - 'null'
-        deltaGroupNo:
-          type: array
-          items:
-            type: string
-        startDate:
-          type:
-          - string
-          - 'null'
-        endDate:
-          type:
-          - string
-          - 'null'
-        originalEffectiveDate:
-          type:
-          - string
-          - 'null'
-        createdAt:
-          type: string
-      required:
-      - strId
-      - firstName
-      - lastName
-      - companyName
-      - email
-      - phone
-      - type
-      - status
-      - policyCount
-      - agents
-      - middleName
-      - dob
-      - gender
-      - acquisitionChannel
-      - nickname
-      - contact
-      - contactEmail
-      - fax
-      - website
-      - region
-      - groupId
-      - tinNumber
-      - deltaCo
-      - deltaGroupNo
-      - startDate
-      - endDate
-      - originalEffectiveDate
-      - createdAt
-    PolicyListResponseSchema:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyListItemSchema'
-        pagination:
-          $ref: '#/components/schemas/AmsPaginationSchema'
-      required:
-      - data
-      - pagination
-    AmsPaginationSchema:
-      type: object
-      properties:
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
-      required:
-      - page
-      - pageSize
-      - total
-      - totalPages
-    AmsBulkUpdateCustomerDataSchema:
-      type: object
-      properties:
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        middleName:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-          format: email
-        phone:
-          type:
-          - string
-          - 'null'
-        dob:
-          type:
-          - string
-          - 'null'
-        gender:
-          type:
-          - string
-          - 'null'
-          enum:
-          - male
-          - female
-          - null
-        type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - individual
-          - group
-          - null
-        status:
-          type:
-          - string
-          - 'null'
-        parentId:
-          type:
-          - integer
-          - 'null'
-        acquisitionChannel:
-          type:
-          - string
-          - 'null'
-        primaryAddressStrId:
-          type:
-          - string
-          - 'null'
-    AmsCustomerAddressSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        type:
-          type: string
-        label:
-          type: string
-        address1:
-          type: string
-        address2:
-          type: string
-        city:
-          type: string
-        state:
-          type: string
-        country:
-          type: string
-        zip:
-          type: string
-        zipExt4:
-          type: string
-    AmsCreateCustomerSchema:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        middleName:
-          type: string
-        companyName:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        dob:
-          type: string
-        gender:
-          type: string
-          enum:
-          - male
-          - female
-          - other
-        type:
-          type: string
-          enum:
-          - individual
-          - group
-        status:
-          type: string
-        parentId:
-          type: integer
-        acquisitionChannel:
-          type: string
-        primaryAddressStrId:
-          type: string
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmsCustomerAddressSchema'
-        owners:
-          type: array
-          items:
-            type: object
-            properties:
-              contactStrId:
-                type: string
-                minLength: 1
-              relationshipType:
-                type: string
-                minLength: 1
-            required:
-            - contactStrId
-            - relationshipType
-    AmsBulkUpdateResponseSchema:
-      type: object
-      properties:
-        totalUpdated:
-          type: integer
-      required:
-      - totalUpdated
-    CustomerDetailResponseSchema:
-      type: object
-      properties:
-        id:
-          type: integer
-        strId:
-          type: string
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        middleName:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-        phone:
-          type:
-          - string
-          - 'null'
-        dob:
-          type:
-          - string
-          - 'null'
-        gender:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - string
-          - 'null'
-        parentId:
-          type:
-          - integer
-          - 'null'
-        acquisitionChannel:
-          type:
-          - string
-          - 'null'
-        primaryAddressStrId:
-          type:
-          - string
-          - 'null'
-        nickname:
-          type:
-          - string
-          - 'null'
-        contact:
-          type:
-          - string
-          - 'null'
-        contactEmail:
-          type:
-          - string
-          - 'null'
-        fax:
-          type:
-          - string
-          - 'null'
-        website:
-          type:
-          - string
-          - 'null'
-        region:
-          type:
-          - string
-          - 'null'
-        groupId:
-          type:
-          - string
-          - 'null'
-        tinNumber:
-          type:
-          - string
-          - 'null'
-        deltaCo:
-          type:
-          - string
-          - 'null'
-        deltaGroupNo:
-          type: array
-          items:
-            type: string
-        startDate:
-          type:
-          - string
-          - 'null'
-        endDate:
-          type:
-          - string
-          - 'null'
-        originalEffectiveDate:
-          type:
-          - string
-          - 'null'
-        addresses:
-          type: array
-          items:
-            type: object
-            properties:
-              strId:
-                type: string
-              type:
-                type:
-                - string
-                - 'null'
-              label:
-                type:
-                - string
-                - 'null'
-              address1:
-                type:
-                - string
-                - 'null'
-              address2:
-                type:
-                - string
-                - 'null'
-              city:
-                type:
-                - string
-                - 'null'
-              state:
-                type:
-                - string
-                - 'null'
-              country:
-                type:
-                - string
-                - 'null'
-              zip:
-                type:
-                - string
-                - 'null'
-              zipExt4:
-                type:
-                - string
-                - 'null'
-            required:
-            - strId
-            - type
-            - label
-            - address1
-            - address2
-            - city
-            - state
-            - country
-            - zip
-            - zipExt4
-        policies:
-          type: array
-          items:
-            type: object
-            properties:
-              strId:
-                type: string
-              policyId:
-                type:
-                - string
-                - 'null'
-              policyStatus:
-                type:
-                - string
-                - 'null'
-              productName:
-                type:
-                - string
-                - 'null'
-              writingCarrierName:
-                type:
-                - string
-                - 'null'
-              effectiveDate:
-                type:
-                - string
-                - 'null'
-              premiumAmount:
-                type:
-                - string
-                - 'null'
-            required:
-            - strId
-            - policyId
-            - policyStatus
-            - productName
-            - writingCarrierName
-            - effectiveDate
-            - premiumAmount
-        owners:
-          type: array
-          items:
-            type: object
-            properties:
-              contactStrId:
-                type: string
-              contactName:
-                type:
-                - string
-                - 'null'
-              relationshipType:
-                type: string
-            required:
-            - contactStrId
-            - contactName
-            - relationshipType
-        aliases:
-          type: array
-          items:
-            type: object
-            properties:
-              strId:
-                type:
-                - string
-                - 'null'
-              firstName:
-                type:
-                - string
-                - 'null'
-              lastName:
-                type:
-                - string
-                - 'null'
-              companyName:
-                type:
-                - string
-                - 'null'
-            required:
-            - strId
-            - firstName
-            - lastName
-            - companyName
-        createdAt:
-          type: string
-        updatedAt:
-          type: string
-      required:
-      - strId
-      - firstName
-      - lastName
-      - middleName
-      - companyName
-      - email
-      - phone
-      - dob
-      - gender
-      - type
-      - status
-      - parentId
-      - acquisitionChannel
-      - primaryAddressStrId
-      - nickname
-      - contact
-      - contactEmail
-      - fax
-      - website
-      - region
-      - groupId
-      - tinNumber
-      - deltaCo
-      - deltaGroupNo
-      - startDate
-      - endDate
-      - originalEffectiveDate
-      - addresses
-      - policies
-      - owners
-      - aliases
-      - createdAt
-      - updatedAt
-    AmsUpdateCustomerSchema:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        middleName:
-          type: string
-        companyName:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        dob:
-          type: string
-        gender:
-          type: string
-          enum:
-          - male
-          - female
-          - other
-        type:
-          type: string
-          enum:
-          - individual
-          - group
-        status:
-          type: string
-        parentId:
-          type: integer
-        acquisitionChannel:
-          type: string
-        primaryAddressStrId:
-          type: string
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmsCustomerAddressSchema'
-        owners:
-          type: array
-          items:
-            type: object
-            properties:
-              contactStrId:
-                type: string
-                minLength: 1
-              relationshipType:
-                type: string
-                minLength: 1
-            required:
-            - contactStrId
-            - relationshipType
-    CustomerSummaryResponseSchema:
-      type: object
-      properties:
-        total:
-          type: integer
-        activeWithPolicies:
-          type: integer
-        withoutPolicies:
-          type: integer
-        individual:
-          type: integer
-        group:
-          type: integer
-      required:
-      - total
-      - activeWithPolicies
-      - withoutPolicies
-      - individual
-      - group
   securitySchemes:
     BearerAuth:
       type: http

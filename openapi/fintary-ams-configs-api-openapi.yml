@@ -174,16 +174,6 @@ components:
       - isSystem
       - isDefault
       - sortOrder
-    AmsStatusConfigListQuerySchema:
-      type: object
-      properties:
-        entityType:
-          type: string
-    AmsCustomFieldListQuerySchema:
-      type: object
-      properties:
-        entityType:
-          type: string
     AmsCustomFieldDefinitionSchema:
       type: object
       properties:
@@ -244,6 +234,16 @@ components:
       - defaultValue
       - enumOptionsJson
       - sortOrder
+    AmsStatusConfigListQuerySchema:
+      type: object
+      properties:
+        entityType:
+          type: string
+    AmsCustomFieldListQuerySchema:
+      type: object
+      properties:
+        entityType:
+          type: string
   securitySchemes:
     BearerAuth:
       type: http
