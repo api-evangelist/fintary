@@ -87,63 +87,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AmsCreateCustomFieldDefinitionSchema:
-      type: object
-      properties:
-        entityType:
-          type: string
-          minLength: 1
-        fieldKey:
-          type: string
-          minLength: 1
-        displayName:
-          type: string
-          minLength: 1
-        dataType:
-          type: string
-          enum:
-          - text
-          - number
-          - boolean
-          - date
-          - json
-        isRequired:
-          type: boolean
-          default: false
-        isSearchable:
-          type: boolean
-          default: false
-        isFilterable:
-          type: boolean
-          default: false
-        isReportable:
-          type: boolean
-          default: false
-        validationRulesJson:
-          type:
-          - string
-          - 'null'
-        defaultValue:
-          type:
-          - string
-          - 'null'
-        enumOptionsJson:
-          type:
-          - string
-          - 'null'
-        sortOrder:
-          type: integer
-          default: 0
-      required:
-      - entityType
-      - fieldKey
-      - displayName
-      - dataType
-      - isRequired
-      - isSearchable
-      - isFilterable
-      - isReportable
-      - sortOrder
     AmsStatusConfigItemSchema:
       type: object
       properties:
@@ -174,6 +117,11 @@ components:
       - isSystem
       - isDefault
       - sortOrder
+    AmsStatusConfigListQuerySchema:
+      type: object
+      properties:
+        entityType:
+          type: string
     AmsCustomFieldDefinitionSchema:
       type: object
       properties:
@@ -234,11 +182,63 @@ components:
       - defaultValue
       - enumOptionsJson
       - sortOrder
-    AmsStatusConfigListQuerySchema:
+    AmsCreateCustomFieldDefinitionSchema:
       type: object
       properties:
         entityType:
           type: string
+          minLength: 1
+        fieldKey:
+          type: string
+          minLength: 1
+        displayName:
+          type: string
+          minLength: 1
+        dataType:
+          type: string
+          enum:
+          - text
+          - number
+          - boolean
+          - date
+          - json
+        isRequired:
+          type: boolean
+          default: false
+        isSearchable:
+          type: boolean
+          default: false
+        isFilterable:
+          type: boolean
+          default: false
+        isReportable:
+          type: boolean
+          default: false
+        validationRulesJson:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        enumOptionsJson:
+          type:
+          - string
+          - 'null'
+        sortOrder:
+          type: integer
+          default: 0
+      required:
+      - entityType
+      - fieldKey
+      - displayName
+      - dataType
+      - isRequired
+      - isSearchable
+      - isFilterable
+      - isReportable
+      - sortOrder
     AmsCustomFieldListQuerySchema:
       type: object
       properties:

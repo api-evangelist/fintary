@@ -479,20 +479,6 @@ paths:
           description: Unauthorized
 components:
   schemas:
-    OpenAPIResponseSchema:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data: {}
-        message:
-          type: string
-        statusCode:
-          type: number
-      required:
-      - success
-      - message
-      - statusCode
     OpenAgentDetailSchema:
       type: object
       properties:
@@ -791,129 +777,6 @@ components:
       - parent_relationships
       - child_relationships
       description: Agent detail
-    OpenAgentListResponseSchema:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAgentDetailSchema'
-        count:
-          type: integer
-          minimum: 0
-      required:
-      - items
-      - count
-      description: Paginated list of agents with total count
-    RemoveUplineRequestSchema:
-      type: object
-      properties:
-        str_id:
-          type: string
-          minLength: 1
-          description: str_id of the contact_hierarchy record (returned when assigning upline)
-      required:
-      - str_id
-      description: Request body for removing upline (by contact_hierarchy str_id)
-    AssignUplineResponseSchema:
-      type: object
-      properties:
-        assigned:
-          type: boolean
-          enum:
-          - true
-        str_id:
-          type: string
-          description: str_id of the created contact_hierarchy record; use this when removing upline
-      required:
-      - assigned
-      - str_id
-      description: Response when upline is successfully assigned
-    OpenAgentUpdateSchema:
-      type: object
-      properties:
-        first_name:
-          type:
-          - string
-          - 'null'
-        last_name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-          format: email
-        phone:
-          type:
-          - string
-          - 'null'
-        agent_code:
-          type:
-          - string
-          - 'null'
-        company_name:
-          type:
-          - string
-          - 'null'
-        type:
-          anyOf:
-          - type: string
-            enum:
-            - Sales rep
-            - Agent
-            - IMO
-            - Agency
-          - type: array
-            items:
-              type: string
-              enum:
-              - Sales rep
-              - Agent
-              - IMO
-              - Agency
-          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
-        start_date:
-          type:
-          - string
-          - 'null'
-          description: ISO datetime string
-          format: date-time
-        status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - Inactive
-          - Terminated
-          - active
-          - archived
-          - manager
-          - current
-          description: Status of the agent
-        payout_level:
-          type:
-          - string
-          - 'null'
-        payable_status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - payable
-          - non_payable
-          - pay_to_upline
-          description: Payable status of the agent
-        bank_info:
-          type:
-          - string
-          - 'null'
-        notes:
-          type:
-          - string
-          - 'null'
-      description: Input for updating an existing agent
     OpenAgentCreateSchema:
       type: object
       properties:
@@ -1075,6 +938,143 @@ components:
       - pageRowCount
       - rowCount
       description: Paginated dataset rows returned by the agent commissions, payouts, policies, and dashboard endpoints. Wrapped in the standard Open API response envelope under `data`.
+    OpenAgentListResponseSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAgentDetailSchema'
+        count:
+          type: integer
+          minimum: 0
+      required:
+      - items
+      - count
+      description: Paginated list of agents with total count
+    AssignUplineResponseSchema:
+      type: object
+      properties:
+        assigned:
+          type: boolean
+          enum:
+          - true
+        str_id:
+          type: string
+          description: str_id of the created contact_hierarchy record; use this when removing upline
+      required:
+      - assigned
+      - str_id
+      description: Response when upline is successfully assigned
+    OpenAgentUpdateSchema:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+        last_name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+        agent_code:
+          type:
+          - string
+          - 'null'
+        company_name:
+          type:
+          - string
+          - 'null'
+        type:
+          anyOf:
+          - type: string
+            enum:
+            - Sales rep
+            - Agent
+            - IMO
+            - Agency
+          - type: array
+            items:
+              type: string
+              enum:
+              - Sales rep
+              - Agent
+              - IMO
+              - Agency
+          description: 'Type of the agent. Known values: Sales rep, Agent, IMO, Agency'
+        start_date:
+          type:
+          - string
+          - 'null'
+          description: ISO datetime string
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Inactive
+          - Terminated
+          - active
+          - archived
+          - manager
+          - current
+          description: Status of the agent
+        payout_level:
+          type:
+          - string
+          - 'null'
+        payable_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - payable
+          - non_payable
+          - pay_to_upline
+          description: Payable status of the agent
+        bank_info:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+      description: Input for updating an existing agent
+    OpenAPIResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data: {}
+        message:
+          type: string
+        statusCode:
+          type: number
+      required:
+      - success
+      - message
+      - statusCode
+    RemoveUplineRequestSchema:
+      type: object
+      properties:
+        str_id:
+          type: string
+          minLength: 1
+          description: str_id of the contact_hierarchy record (returned when assigning upline)
+      required:
+      - str_id
+      description: Request body for removing upline (by contact_hierarchy str_id)
   securitySchemes:
     BearerAuth:
       type: http
