@@ -157,33 +157,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AmsEscalateMyTaskSchema:
-      type: object
-      properties:
-        taskId:
-          type: string
-          minLength: 1
-        priority:
-          type: string
-        notes:
-          type: string
-        escalateToUids:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          minItems: 1
-      required:
-      - taskId
-      - escalateToUids
-    AmsMyTasksSummaryQuerySchema:
-      type: object
-      properties:
-        assigneeIds:
-          type: array
-          items:
-            type: string
-            minLength: 1
     MyTasksSummaryResponseSchema:
       type: object
       properties:
@@ -204,6 +177,43 @@ components:
       required:
       - counts
       - total
+    AmsMyTasksSummaryQuerySchema:
+      type: object
+      properties:
+        assigneeIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+    MyTaskListResponseSchema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MyTaskItemSchema'
+        pagination:
+          $ref: '#/components/schemas/AmsPaginationSchema'
+      required:
+      - data
+      - pagination
+    MyTaskPolicyContextSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        policyId:
+          type: string
+        customerName:
+          type: string
+        carrierName:
+          type: string
+        effectiveDate:
+          type: string
+        productName:
+          type: string
+      required:
+      - strId
     AmsUpdateMyTaskSchema:
       type: object
       properties:
@@ -258,105 +268,6 @@ components:
       - hasAgent
       - agents
       - allContactIds
-    MyTaskPolicyContextSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        policyId:
-          type: string
-        customerName:
-          type: string
-        carrierName:
-          type: string
-        effectiveDate:
-          type: string
-        productName:
-          type: string
-      required:
-      - strId
-    AmsPaginationSchema:
-      type: object
-      properties:
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
-      required:
-      - page
-      - pageSize
-      - total
-      - totalPages
-    MyTaskContactSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        role:
-          type: string
-      required:
-      - strId
-    MyTaskItemSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        title:
-          type: string
-        status:
-          type: string
-        type:
-          type: string
-        priority:
-          type:
-          - string
-          - 'null'
-          enum:
-          - urgent
-          - high
-          - medium
-          - low
-          - null
-        dueDate:
-          type: string
-        notes:
-          type: string
-        createdAt:
-          type: string
-        updatedAt:
-          type: string
-        metadataJson:
-          type: string
-        targetAudience:
-          type: string
-        targetId:
-          type: string
-        creator:
-          $ref: '#/components/schemas/MyTaskContactSchema'
-        assignees:
-          type: array
-          items:
-            $ref: '#/components/schemas/MyTaskContactSchema'
-        policyContext:
-          $ref: '#/components/schemas/MyTaskPolicyContextSchema'
-      required:
-      - strId
-      - title
-      - status
-      - type
-      - priority
-      - createdAt
-      - targetAudience
-      - targetId
-      - assignees
     AmsMyTasksQuerySchema:
       type: object
       properties:
@@ -383,18 +294,25 @@ components:
       required:
       - page
       - pageSize
-    MyTaskListResponseSchema:
+    AmsEscalateMyTaskSchema:
       type: object
       properties:
-        data:
+        taskId:
+          type: string
+          minLength: 1
+        priority:
+          type: string
+        notes:
+          type: string
+        escalateToUids:
           type: array
           items:
-            $ref: '#/components/schemas/MyTaskItemSchema'
-        pagination:
-          $ref: '#/components/schemas/AmsPaginationSchema'
+            type: string
+            minLength: 1
+          minItems: 1
       required:
-      - data
-      - pagination
+      - taskId
+      - escalateToUids
     AmsCreateMyTaskSchema:
       type: object
       properties:
@@ -450,6 +368,88 @@ components:
       - status
       - priority
       - type
+    AmsPaginationSchema:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+      - page
+      - pageSize
+      - total
+      - totalPages
+    MyTaskItemSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+        priority:
+          type:
+          - string
+          - 'null'
+          enum:
+          - urgent
+          - high
+          - medium
+          - low
+          - null
+        dueDate:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        metadataJson:
+          type: string
+        targetAudience:
+          type: string
+        targetId:
+          type: string
+        creator:
+          $ref: '#/components/schemas/MyTaskContactSchema'
+        assignees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MyTaskContactSchema'
+        policyContext:
+          $ref: '#/components/schemas/MyTaskPolicyContextSchema'
+      required:
+      - strId
+      - title
+      - status
+      - type
+      - priority
+      - createdAt
+      - targetAudience
+      - targetId
+      - assignees
+    MyTaskContactSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+      required:
+      - strId
   securitySchemes:
     BearerAuth:
       type: http

@@ -87,37 +87,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AmsStatusConfigItemSchema:
+    AmsStatusConfigListQuerySchema:
       type: object
       properties:
-        strId:
-          type: string
         entityType:
           type: string
-        name:
-          type: string
-        label:
-          type: string
-        color:
-          type:
-          - string
-          - 'null'
-        isSystem:
-          type: boolean
-        isDefault:
-          type: boolean
-        sortOrder:
-          type: integer
-      required:
-      - strId
-      - entityType
-      - name
-      - label
-      - color
-      - isSystem
-      - isDefault
-      - sortOrder
-    AmsStatusConfigListQuerySchema:
+    AmsCustomFieldListQuerySchema:
       type: object
       properties:
         entityType:
@@ -239,11 +214,36 @@ components:
       - isFilterable
       - isReportable
       - sortOrder
-    AmsCustomFieldListQuerySchema:
+    AmsStatusConfigItemSchema:
       type: object
       properties:
+        strId:
+          type: string
         entityType:
           type: string
+        name:
+          type: string
+        label:
+          type: string
+        color:
+          type:
+          - string
+          - 'null'
+        isSystem:
+          type: boolean
+        isDefault:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+      - strId
+      - entityType
+      - name
+      - label
+      - color
+      - isSystem
+      - isDefault
+      - sortOrder
   securitySchemes:
     BearerAuth:
       type: http
