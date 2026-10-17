@@ -87,16 +87,98 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AmsStatusConfigListQuerySchema:
+    AmsCreateCustomFieldDefinitionSchema:
       type: object
       properties:
         entityType:
           type: string
+          minLength: 1
+        fieldKey:
+          type: string
+          minLength: 1
+        displayName:
+          type: string
+          minLength: 1
+        dataType:
+          type: string
+          enum:
+          - text
+          - number
+          - boolean
+          - date
+          - json
+        isRequired:
+          type: boolean
+          default: false
+        isSearchable:
+          type: boolean
+          default: false
+        isFilterable:
+          type: boolean
+          default: false
+        isReportable:
+          type: boolean
+          default: false
+        validationRulesJson:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        enumOptionsJson:
+          type:
+          - string
+          - 'null'
+        sortOrder:
+          type: integer
+          default: 0
+      required:
+      - entityType
+      - fieldKey
+      - displayName
+      - dataType
+      - isRequired
+      - isSearchable
+      - isFilterable
+      - isReportable
+      - sortOrder
     AmsCustomFieldListQuerySchema:
       type: object
       properties:
         entityType:
           type: string
+    AmsStatusConfigItemSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        entityType:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+        color:
+          type:
+          - string
+          - 'null'
+        isSystem:
+          type: boolean
+        isDefault:
+          type: boolean
+        sortOrder:
+          type: integer
+      required:
+      - strId
+      - entityType
+      - name
+      - label
+      - color
+      - isSystem
+      - isDefault
+      - sortOrder
     AmsCustomFieldDefinitionSchema:
       type: object
       properties:
@@ -157,93 +239,11 @@ components:
       - defaultValue
       - enumOptionsJson
       - sortOrder
-    AmsCreateCustomFieldDefinitionSchema:
+    AmsStatusConfigListQuerySchema:
       type: object
       properties:
         entityType:
           type: string
-          minLength: 1
-        fieldKey:
-          type: string
-          minLength: 1
-        displayName:
-          type: string
-          minLength: 1
-        dataType:
-          type: string
-          enum:
-          - text
-          - number
-          - boolean
-          - date
-          - json
-        isRequired:
-          type: boolean
-          default: false
-        isSearchable:
-          type: boolean
-          default: false
-        isFilterable:
-          type: boolean
-          default: false
-        isReportable:
-          type: boolean
-          default: false
-        validationRulesJson:
-          type:
-          - string
-          - 'null'
-        defaultValue:
-          type:
-          - string
-          - 'null'
-        enumOptionsJson:
-          type:
-          - string
-          - 'null'
-        sortOrder:
-          type: integer
-          default: 0
-      required:
-      - entityType
-      - fieldKey
-      - displayName
-      - dataType
-      - isRequired
-      - isSearchable
-      - isFilterable
-      - isReportable
-      - sortOrder
-    AmsStatusConfigItemSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        entityType:
-          type: string
-        name:
-          type: string
-        label:
-          type: string
-        color:
-          type:
-          - string
-          - 'null'
-        isSystem:
-          type: boolean
-        isDefault:
-          type: boolean
-        sortOrder:
-          type: integer
-      required:
-      - strId
-      - entityType
-      - name
-      - label
-      - color
-      - isSystem
-      - isDefault
-      - sortOrder
   securitySchemes:
     BearerAuth:
       type: http

@@ -666,11 +666,64 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AmsPolicyDocumentStatusSchema:
-      type: string
-      enum:
-      - pending
-      - ready
+    AmsSortSchema:
+      type: object
+      properties:
+        field:
+          type: string
+          minLength: 1
+        direction:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+      required:
+      - field
+      - direction
+    PolicyTeamMemberDetailSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        contactStrId:
+          type: string
+        role:
+          type: string
+        roleLabel:
+          type:
+          - string
+          - 'null'
+        isPrimary:
+          type: boolean
+        agentSplit:
+          type:
+          - number
+          - 'null'
+        contact:
+          $ref: '#/components/schemas/PolicyTeamMemberContactSchema'
+      required:
+      - strId
+      - contactStrId
+      - role
+      - roleLabel
+      - isPrimary
+      - agentSplit
+      - contact
+    AmsBulkUpdatePoliciesBodySchema:
+      type: object
+      properties:
+        strIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+        data:
+          $ref: '#/components/schemas/AmsBulkUpdatePolicyDataSchema'
+      required:
+      - strIds
+      - data
     PolicyFilterOptionValueSchema:
       type: object
       properties:
@@ -684,169 +737,108 @@ components:
       - value
       - label
       - count
-    PolicyCustomerListItemSchema:
+    AmsUpdatePolicyStatusSchema:
       type: object
       properties:
-        strId:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        companyName:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        type:
-          type:
-          - string
-          - 'null'
         status:
           type: string
+          minLength: 1
       required:
-      - strId
-      - type
-    PolicyListResponseSchema:
+      - status
+    AmsFilterValueSchema:
+      anyOf:
+      - anyOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: 'null'
+      - type: array
+        items:
+          anyOf:
+          - type: string
+          - type: number
+          - type: boolean
+        minItems: 1
+    AmsPaginationSchema:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyListItemSchema'
-        pagination:
-          $ref: '#/components/schemas/AmsPaginationSchema'
-      required:
-      - data
-      - pagination
-    PolicyCaseManagerUpdateResponseSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        caseManagerId:
-          type: string
-      required:
-      - strId
-    PolicyCommissionDetailSchema:
-      type: object
-      properties:
-        receivables:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyCommissionReceivableLineSchema'
-        totalReceivedToDate:
-          type: string
-        payoutsByRole:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyCommissionPayoutByRoleSchema'
-        statementCount:
+        page:
           type: integer
-        totalPaidOut:
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+      - page
+      - pageSize
+      - total
+      - totalPages
+    AmsPolicyTeamMemberSchema:
+      type: object
+      properties:
+        contactStrId:
           type: string
-        netProfit:
+          minLength: 1
+        role:
           type: string
-        marginPercentRate:
+          minLength: 1
+        roleLabel:
+          type: string
+        isPrimary:
+          type: boolean
+          default: false
+        agentSplit:
+          type:
+          - number
+          - 'null'
+      required:
+      - contactStrId
+      - role
+      - isPrimary
+    AmsCreatePolicyTaskSchema:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          default: in_progress
+        assigneeUids:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        notes:
+          type: string
+        priority:
+          type: string
+          enum:
+          - urgent
+          - high
+          - medium
+          - low
+          default: medium
+        dueDate:
+          type: string
+          minLength: 1
+      required:
+      - title
+      - status
+      - priority
+      - dueDate
+    AmsUpdatePolicyCaseManagerSchema:
+      type: object
+      properties:
+        caseManagerStrId:
           type:
           - string
           - 'null'
+          minLength: 1
       required:
-      - receivables
-      - totalReceivedToDate
-      - payoutsByRole
-      - statementCount
-      - totalPaidOut
-      - netProfit
-      - marginPercentRate
-    AmsCreatePolicySchema:
-      type: object
-      properties:
-        policyId:
-          type: string
-        policyStatus:
-          type: string
-        caseStatus:
-          type: string
-        customerId:
-          type: integer
-        productName:
-          type: string
-        productType:
-          type: string
-        productSubType:
-          type: string
-        productOptionName:
-          type: string
-        writingCarrierName:
-          type: string
-        effectiveDate:
-          type: string
-        expirationDate:
-          type: string
-        signedDate:
-          type: string
-        policyDate:
-          type: string
-        cancellationDate:
-          type: string
-        reinstatementDate:
-          type: string
-        firstPaymentDate:
-          type: string
-        firstProcessedDate:
-          type: string
-        premiumAmount:
-          type: number
-        commissionablePremiumAmount:
-          type: number
-        excessAmount:
-          type: number
-        commissionsExpected:
-          type: number
-        customerPaidPremiumAmount:
-          type: number
-        splitPercentage:
-          type: number
-        paymentMode:
-          type: string
-        policyTermMonths:
-          type: integer
-        geoState:
-          type: string
-        notes:
-          type: string
-        dba:
-          type: string
-        internalId:
-          type: string
-        transactionType:
-          type: string
-        accountType:
-          type: string
-        groupId:
-          type: string
-        groupName:
-          type: string
-        aggregationId:
-          type: string
-        aggregationPrimary:
-          type: boolean
-        type:
-          type: string
-        documentId:
-          type: string
-        processingStatus:
-          type: string
-        commissionProfileId:
-          type: string
-        syncId:
-          type: string
-        customFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmsCustomFieldValueInputSchema'
+      - caseManagerStrId
     PolicyTaskDetailSchema:
       type: object
       properties:
@@ -898,278 +890,32 @@ components:
       - dueDate
       - createdAt
       - updatedAt
-    PolicyFilterOptionsResponseSchema:
+    AmsPolicyFilterOptionsQuerySchema:
       type: object
       properties:
+        filter:
+          $ref: '#/components/schemas/AmsFilterNodeSchema'
+        search:
+          type: string
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/PolicyFilterOptionFieldSchema'
-        dateRanges:
+            type: string
+          default: []
+        optionSearch:
           type: object
           additionalProperties:
-            type: object
-            properties:
-              min:
-                type: string
-              max:
-                type: string
-        totalPolicies:
+            type: string
+          default: {}
+        optionLimit:
           type: integer
+          minimum: 1
+          maximum: 500
+          default: 100
       required:
       - fields
-      - dateRanges
-      - totalPolicies
-    AmsCreatePolicyDocumentSchema:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-        fileName:
-          type: string
-          minLength: 1
-        mimeType:
-          type: string
-          minLength: 1
-        fileSize:
-          type: integer
-          minimum: 0
-        expiryDate:
-          type: string
-      required:
-      - name
-      - fileName
-      - mimeType
-    PolicyTeamMemberDetailSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        contactStrId:
-          type: string
-        role:
-          type: string
-        roleLabel:
-          type:
-          - string
-          - 'null'
-        isPrimary:
-          type: boolean
-        agentSplit:
-          type:
-          - number
-          - 'null'
-        contact:
-          $ref: '#/components/schemas/PolicyTeamMemberContactSchema'
-      required:
-      - strId
-      - contactStrId
-      - role
-      - roleLabel
-      - isPrimary
-      - agentSplit
-      - contact
-    PolicyDocumentDetailSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        name:
-          type: string
-        fileName:
-          type: string
-        status:
-          $ref: '#/components/schemas/AmsPolicyDocumentStatusSchema'
-        mimeType:
-          type:
-          - string
-          - 'null'
-        fileSize:
-          type:
-          - integer
-          - 'null'
-        fileHash:
-          type: string
-        expiryDate:
-          type: string
-        uploadedBy:
-          type:
-          - string
-          - 'null'
-        createdAt:
-          type: string
-        updatedAt:
-          type: string
-      required:
-      - strId
-      - name
-      - fileName
-      - status
-      - createdAt
-    PolicySummaryResponseSchema:
-      type: object
-      properties:
-        total:
-          type: integer
-        byStatus:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              label:
-                type: string
-              count:
-                type: integer
-            required:
-            - status
-            - label
-            - count
-      required:
-      - total
-      - byStatus
-    PolicyFilterOptionFieldSchema:
-      type: object
-      properties:
-        field:
-          type: string
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyFilterOptionValueSchema'
-        totalOptions:
-          type: integer
-      required:
-      - field
-      - values
-      - totalOptions
-    PolicyTeamMemberContactSchema:
-      type: object
-      properties:
-        strId:
-          type:
-          - string
-          - 'null'
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-        phone:
-          type:
-          - string
-          - 'null'
-        agentCode:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-      required:
-      - strId
-      - firstName
-      - lastName
-      - name
-      - email
-      - phone
-      - agentCode
-      - companyName
-    AmsCustomFieldValueSchema:
-      type: object
-      properties:
-        fieldDefinitionId:
-          type: string
-        fieldKey:
-          type: string
-        displayName:
-          type: string
-        dataType:
-          type: string
-          enum:
-          - text
-          - number
-          - boolean
-          - date
-          - json
-        valueText:
-          type:
-          - string
-          - 'null'
-        valueNumber:
-          type:
-          - number
-          - 'null'
-        valueBoolean:
-          type:
-          - boolean
-          - 'null'
-        valueDate:
-          type:
-          - string
-          - 'null'
-        valueJson:
-          type:
-          - string
-          - 'null'
-      required:
-      - fieldDefinitionId
-      - fieldKey
-      - displayName
-      - dataType
-    AmsBulkUpdateResponseSchema:
-      type: object
-      properties:
-        totalUpdated:
-          type: integer
-      required:
-      - totalUpdated
-    AmsUpdatePolicyTeamSchema:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmsPolicyTeamMemberSchema'
-      required:
-      - members
-    AmsUpdatePolicyStatusSchema:
-      type: object
-      properties:
-        status:
-          type: string
-          minLength: 1
-      required:
-      - status
-    PolicyCommissionPayoutByRoleSchema:
-      type: object
-      properties:
-        role:
-          type: string
-        roleLabel:
-          type:
-          - string
-          - 'null'
-        amount:
-          type: string
-      required:
-      - role
-      - roleLabel
-      - amount
+      - optionSearch
+      - optionLimit
     AmsPolicyFilterMetadataSchema:
       type: object
       properties:
@@ -1179,33 +925,13 @@ components:
             $ref: '#/components/schemas/AmsFilterFieldSchema'
       required:
       - fields
-    AmsUpdatePolicyTaskSchema:
+    AmsBulkUpdateResponseSchema:
       type: object
       properties:
-        title:
-          type: string
-          minLength: 1
-        status:
-          type: string
-          default: in_progress
-        assigneeUids:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        notes:
-          type: string
-        priority:
-          type: string
-          enum:
-          - urgent
-          - high
-          - medium
-          - low
-          default: medium
-        dueDate:
-          type: string
-          minLength: 1
+        totalUpdated:
+          type: integer
+      required:
+      - totalUpdated
     PolicyCommissionReceivableLineSchema:
       type: object
       properties:
@@ -1246,34 +972,6 @@ components:
       - contactId
       - contactName
       - date
-    AmsCustomFieldValueInputSchema:
-      type: object
-      properties:
-        fieldDefinitionId:
-          type: string
-          minLength: 1
-        valueText:
-          type:
-          - string
-          - 'null'
-        valueNumber:
-          type:
-          - number
-          - 'null'
-        valueBoolean:
-          type:
-          - boolean
-          - 'null'
-        valueDate:
-          type:
-          - string
-          - 'null'
-        valueJson:
-          type:
-          - string
-          - 'null'
-      required:
-      - fieldDefinitionId
     AmsFilterFieldSchema:
       type: object
       properties:
@@ -1346,179 +1044,31 @@ components:
       - type
       - operators
       - sortable
-    AmsUpdatePolicySchema:
+    PolicyCustomerListItemSchema:
       type: object
       properties:
-        policyId:
+        strId:
           type: string
-        policyStatus:
+        firstName:
           type: string
-        caseStatus:
+        lastName:
           type: string
-        customerId:
-          type: integer
-        productName:
+        companyName:
           type: string
-        productType:
+        email:
           type: string
-        productSubType:
+        phone:
           type: string
-        productOptionName:
-          type: string
-        writingCarrierName:
-          type: string
-        effectiveDate:
-          type: string
-        expirationDate:
-          type: string
-        signedDate:
-          type: string
-        policyDate:
-          type: string
-        cancellationDate:
-          type: string
-        reinstatementDate:
-          type: string
-        firstPaymentDate:
-          type: string
-        firstProcessedDate:
-          type: string
-        premiumAmount:
-          type: number
-        commissionablePremiumAmount:
-          type: number
-        excessAmount:
-          type: number
-        commissionsExpected:
-          type: number
-        customerPaidPremiumAmount:
-          type: number
-        splitPercentage:
-          type: number
-        paymentMode:
-          type: string
-        policyTermMonths:
-          type: integer
-        geoState:
-          type: string
-        notes:
-          type: string
-        dba:
-          type: string
-        internalId:
-          type: string
-        transactionType:
-          type: string
-        accountType:
-          type: string
-        groupId:
-          type: string
-        groupName:
-          type: string
-        aggregationId:
-          type: string
-        aggregationPrimary:
-          type: boolean
         type:
-          type: string
-        documentId:
-          type: string
-        processingStatus:
-          type: string
-        commissionProfileId:
-          type: string
-        syncId:
-          type: string
-        customFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmsCustomFieldValueInputSchema'
-    AmsPolicyTeamMemberSchema:
-      type: object
-      properties:
-        contactStrId:
-          type: string
-          minLength: 1
-        role:
-          type: string
-          minLength: 1
-        roleLabel:
-          type: string
-        isPrimary:
-          type: boolean
-          default: false
-        agentSplit:
-          type:
-          - number
-          - 'null'
-      required:
-      - contactStrId
-      - role
-      - isPrimary
-    AmsUpdatePolicyCaseManagerSchema:
-      type: object
-      properties:
-        caseManagerStrId:
           type:
           - string
           - 'null'
-          minLength: 1
-      required:
-      - caseManagerStrId
-    AmsFilterConditionSchema:
-      type: object
-      properties:
-        field:
+        status:
           type: string
-          minLength: 1
-        op:
-          type: string
-          enum:
-          - eq
-          - ne
-          - in
-          - gt
-          - gte
-          - lt
-          - lte
-          - contains
-          - starts_with
-          - ends_with
-          - exists
-          - is_empty
-          - is_not_empty
-        value:
-          $ref: '#/components/schemas/AmsFilterValueSchema'
       required:
-      - field
-      - op
-    AmsPolicyFilterOptionsQuerySchema:
-      type: object
-      properties:
-        filter:
-          $ref: '#/components/schemas/AmsFilterNodeSchema'
-        search:
-          type: string
-        fields:
-          type: array
-          items:
-            type: string
-          default: []
-        optionSearch:
-          type: object
-          additionalProperties:
-            type: string
-          default: {}
-        optionLimit:
-          type: integer
-          minimum: 1
-          maximum: 500
-          default: 100
-      required:
-      - fields
-      - optionSearch
-      - optionLimit
-    AmsCreatePolicyTaskSchema:
+      - strId
+      - type
+    AmsUpdatePolicyTaskSchema:
       type: object
       properties:
         title:
@@ -1545,87 +1095,77 @@ components:
         dueDate:
           type: string
           minLength: 1
-      required:
-      - title
-      - status
-      - priority
-      - dueDate
-    PolicyDocumentUploadTicketSchema:
+    PolicyListResponseSchema:
       type: object
       properties:
-        documentStrId:
-          type: string
-        signedPutUrl:
-          type: string
-        mimeType:
-          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyListItemSchema'
+        pagination:
+          $ref: '#/components/schemas/AmsPaginationSchema'
       required:
-      - documentStrId
-      - signedPutUrl
-      - mimeType
-    AmsBulkUpdatePolicyDataSchema:
+      - data
+      - pagination
+    PolicyFilterOptionsResponseSchema:
       type: object
       properties:
-        policyId:
-          type:
-          - string
-          - 'null'
-        policyStatus:
-          type:
-          - string
-          - 'null'
-        caseStatus:
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - integer
-          - 'null'
-        productName:
-          type:
-          - string
-          - 'null'
-        productType:
-          type:
-          - string
-          - 'null'
-        productSubType:
-          type:
-          - string
-          - 'null'
-        writingCarrierName:
-          type:
-          - string
-          - 'null'
-        effectiveDate:
-          type:
-          - string
-          - 'null'
-        expirationDate:
-          type:
-          - string
-          - 'null'
-        premiumAmount:
-          type:
-          - number
-          - 'null'
-        commissionablePremiumAmount:
-          type:
-          - number
-          - 'null'
-        paymentMode:
-          type:
-          - string
-          - 'null'
-        geoState:
-          type:
-          - string
-          - 'null'
-        notes:
-          type:
-          - string
-          - 'null'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyFilterOptionFieldSchema'
+        dateRanges:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              min:
+                type: string
+              max:
+                type: string
+        totalPolicies:
+          type: integer
+      required:
+      - fields
+      - dateRanges
+      - totalPolicies
+    PolicySummaryResponseSchema:
+      type: object
+      properties:
+        total:
+          type: integer
+        byStatus:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              label:
+                type: string
+              count:
+                type: integer
+            required:
+            - status
+            - label
+            - count
+      required:
+      - total
+      - byStatus
+    AmsPolicyDocumentStatusSchema:
+      type: string
+      enum:
+      - pending
+      - ready
+    AmsUpdatePolicyTeamSchema:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsPolicyTeamMemberSchema'
+      required:
+      - members
     AmsFinalizePolicyDocumentSchema:
       type: object
       properties:
@@ -1639,307 +1179,6 @@ components:
           type: string
       required:
       - documentStrId
-    PolicyListItemSchema:
-      type: object
-      properties:
-        strId:
-          type: string
-        policyId:
-          type:
-          - string
-          - 'null'
-        policyStatus:
-          type:
-          - string
-          - 'null'
-        caseStatus:
-          type:
-          - string
-          - 'null'
-        customerName:
-          type:
-          - string
-          - 'null'
-        customerType:
-          type:
-          - string
-          - 'null'
-        productName:
-          type:
-          - string
-          - 'null'
-        productType:
-          type:
-          - string
-          - 'null'
-        productSubType:
-          type:
-          - string
-          - 'null'
-        productOptionName:
-          type:
-          - string
-          - 'null'
-        writingCarrierName:
-          type:
-          - string
-          - 'null'
-        effectiveDate:
-          type:
-          - string
-          - 'null'
-        expirationDate:
-          type:
-          - string
-          - 'null'
-        signedDate:
-          type:
-          - string
-          - 'null'
-        policyDate:
-          type:
-          - string
-          - 'null'
-        cancellationDate:
-          type:
-          - string
-          - 'null'
-        reinstatementDate:
-          type:
-          - string
-          - 'null'
-        firstPaymentDate:
-          type:
-          - string
-          - 'null'
-        firstProcessedDate:
-          type:
-          - string
-          - 'null'
-        premiumAmount:
-          type:
-          - string
-          - 'null'
-        commissionableAmount:
-          type:
-          - string
-          - 'null'
-        excessAmount:
-          type:
-          - string
-          - 'null'
-        commissionsExpected:
-          type:
-          - string
-          - 'null'
-        customerPaidPremiumAmount:
-          type:
-          - string
-          - 'null'
-        splitPercentage:
-          type:
-          - string
-          - 'null'
-        paymentMode:
-          type:
-          - string
-          - 'null'
-        policyTermMonths:
-          type:
-          - integer
-          - 'null'
-        geoState:
-          type:
-          - string
-          - 'null'
-        notes:
-          type:
-          - string
-          - 'null'
-        dba:
-          type:
-          - string
-          - 'null'
-        internalId:
-          type:
-          - string
-          - 'null'
-        transactionType:
-          type:
-          - string
-          - 'null'
-        accountType:
-          type:
-          - string
-          - 'null'
-        groupId:
-          type:
-          - string
-          - 'null'
-        groupName:
-          type:
-          - string
-          - 'null'
-        aggregationId:
-          type:
-          - string
-          - 'null'
-        aggregationPrimary:
-          type:
-          - boolean
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-        tags:
-          type: array
-          items:
-            type: string
-        documentId:
-          type:
-          - string
-          - 'null'
-        processingStatus:
-          type:
-          - string
-          - 'null'
-        commissionProfileId:
-          type:
-          - string
-          - 'null'
-        syncId:
-          type:
-          - string
-          - 'null'
-        applicationDate:
-          type:
-          - string
-          - 'null'
-        issueDate:
-          type:
-          - string
-          - 'null'
-        issueAge:
-          type:
-          - integer
-          - 'null'
-        agentName:
-          type:
-          - string
-          - 'null'
-        createdAt:
-          type: string
-        updatedAt:
-          type:
-          - string
-          - 'null'
-        customFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmsCustomFieldValueSchema'
-        receivables:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              party:
-                type: string
-              compensationType:
-                type:
-                - string
-                - 'null'
-              rate:
-                type:
-                - string
-                - 'null'
-              amount:
-                type:
-                - string
-                - 'null'
-              contactId:
-                type:
-                - string
-                - 'null'
-              contactName:
-                type:
-                - string
-                - 'null'
-              date:
-                type:
-                - string
-                - 'null'
-            required:
-            - id
-            - party
-      required:
-      - strId
-      - policyId
-      - policyStatus
-      - caseStatus
-      - customerName
-      - customerType
-      - productName
-      - productType
-      - productSubType
-      - productOptionName
-      - writingCarrierName
-      - effectiveDate
-      - expirationDate
-      - signedDate
-      - policyDate
-      - cancellationDate
-      - reinstatementDate
-      - firstPaymentDate
-      - firstProcessedDate
-      - premiumAmount
-      - commissionableAmount
-      - excessAmount
-      - commissionsExpected
-      - customerPaidPremiumAmount
-      - splitPercentage
-      - paymentMode
-      - policyTermMonths
-      - geoState
-      - notes
-      - dba
-      - internalId
-      - transactionType
-      - accountType
-      - groupId
-      - groupName
-      - aggregationId
-      - aggregationPrimary
-      - type
-      - tags
-      - documentId
-      - processingStatus
-      - commissionProfileId
-      - syncId
-      - applicationDate
-      - issueDate
-      - issueAge
-      - agentName
-      - createdAt
-      - updatedAt
-      - customFields
-      - receivables
-    AmsFilterValueSchema:
-      anyOf:
-      - anyOf:
-        - type: string
-        - type: number
-        - type: boolean
-        - type: 'null'
-      - type: array
-        items:
-          anyOf:
-          - type: string
-          - type: number
-          - type: boolean
-        minItems: 1
     AmsFilterNodeSchema:
       anyOf:
       - $ref: '#/components/schemas/AmsFilterConditionSchema'
@@ -1967,76 +1206,124 @@ components:
             $ref: '#/components/schemas/AmsFilterNodeSchema'
         required:
         - not
-    AmsBulkUpdatePoliciesBodySchema:
+    PolicyCommissionPayoutByRoleSchema:
       type: object
       properties:
-        strIds:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          minItems: 1
-        data:
-          $ref: '#/components/schemas/AmsBulkUpdatePolicyDataSchema'
+        role:
+          type: string
+        roleLabel:
+          type:
+          - string
+          - 'null'
+        amount:
+          type: string
       required:
-      - strIds
-      - data
-    AmsPaginationSchema:
+      - role
+      - roleLabel
+      - amount
+    PolicyDocumentDetailSchema:
       type: object
       properties:
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
+        strId:
+          type: string
+        name:
+          type: string
+        fileName:
+          type: string
+        status:
+          $ref: '#/components/schemas/AmsPolicyDocumentStatusSchema'
+        mimeType:
+          type:
+          - string
+          - 'null'
+        fileSize:
+          type:
+          - integer
+          - 'null'
+        fileHash:
+          type: string
+        expiryDate:
+          type: string
+        uploadedBy:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
       required:
-      - page
-      - pageSize
-      - total
-      - totalPages
-    AmsSortSchema:
+      - strId
+      - name
+      - fileName
+      - status
+      - createdAt
+    PolicyFilterOptionFieldSchema:
       type: object
       properties:
         field:
           type: string
-          minLength: 1
-        direction:
-          type: string
-          enum:
-          - asc
-          - desc
-          default: desc
-      required:
-      - field
-      - direction
-    AmsPolicyListQuerySchema:
-      type: object
-      properties:
-        page:
-          type: integer
-          minimum: 1
-          default: 1
-        pageSize:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 25
-        search:
-          type: string
-        sort:
+        values:
           type: array
           items:
-            $ref: '#/components/schemas/AmsSortSchema'
-          default: []
-        filter:
-          $ref: '#/components/schemas/AmsFilterNodeSchema'
+            $ref: '#/components/schemas/PolicyFilterOptionValueSchema'
+        totalOptions:
+          type: integer
       required:
-      - page
-      - pageSize
-      - sort
+      - field
+      - values
+      - totalOptions
+    PolicyCaseManagerUpdateResponseSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        caseManagerId:
+          type: string
+      required:
+      - strId
+    AmsCustomFieldValueSchema:
+      type: object
+      properties:
+        fieldDefinitionId:
+          type: string
+        fieldKey:
+          type: string
+        displayName:
+          type: string
+        dataType:
+          type: string
+          enum:
+          - text
+          - number
+          - boolean
+          - date
+          - json
+        valueText:
+          type:
+          - string
+          - 'null'
+        valueNumber:
+          type:
+          - number
+          - 'null'
+        valueBoolean:
+          type:
+          - boolean
+          - 'null'
+        valueDate:
+          type:
+          - string
+          - 'null'
+        valueJson:
+          type:
+          - string
+          - 'null'
+      required:
+      - fieldDefinitionId
+      - fieldKey
+      - displayName
+      - dataType
     PolicyDetailResponseSchema:
       type: object
       properties:
@@ -2387,6 +1674,719 @@ components:
       - tasks
       - commissions
       - customer
+    PolicyCommissionDetailSchema:
+      type: object
+      properties:
+        receivables:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyCommissionReceivableLineSchema'
+        totalReceivedToDate:
+          type: string
+        payoutsByRole:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyCommissionPayoutByRoleSchema'
+        statementCount:
+          type: integer
+        totalPaidOut:
+          type: string
+        netProfit:
+          type: string
+        marginPercentRate:
+          type:
+          - string
+          - 'null'
+      required:
+      - receivables
+      - totalReceivedToDate
+      - payoutsByRole
+      - statementCount
+      - totalPaidOut
+      - netProfit
+      - marginPercentRate
+    AmsUpdatePolicySchema:
+      type: object
+      properties:
+        policyId:
+          type: string
+        policyStatus:
+          type: string
+        caseStatus:
+          type: string
+        customerId:
+          type: integer
+        productName:
+          type: string
+        productType:
+          type: string
+        productSubType:
+          type: string
+        productOptionName:
+          type: string
+        writingCarrierName:
+          type: string
+        effectiveDate:
+          type: string
+        expirationDate:
+          type: string
+        signedDate:
+          type: string
+        policyDate:
+          type: string
+        cancellationDate:
+          type: string
+        reinstatementDate:
+          type: string
+        firstPaymentDate:
+          type: string
+        firstProcessedDate:
+          type: string
+        premiumAmount:
+          type: number
+        commissionablePremiumAmount:
+          type: number
+        excessAmount:
+          type: number
+        commissionsExpected:
+          type: number
+        customerPaidPremiumAmount:
+          type: number
+        splitPercentage:
+          type: number
+        paymentMode:
+          type: string
+        policyTermMonths:
+          type: integer
+        geoState:
+          type: string
+        notes:
+          type: string
+        dba:
+          type: string
+        internalId:
+          type: string
+        transactionType:
+          type: string
+        accountType:
+          type: string
+        groupId:
+          type: string
+        groupName:
+          type: string
+        aggregationId:
+          type: string
+        aggregationPrimary:
+          type: boolean
+        type:
+          type: string
+        documentId:
+          type: string
+        processingStatus:
+          type: string
+        commissionProfileId:
+          type: string
+        syncId:
+          type: string
+        customFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomFieldValueInputSchema'
+    PolicyListItemSchema:
+      type: object
+      properties:
+        strId:
+          type: string
+        policyId:
+          type:
+          - string
+          - 'null'
+        policyStatus:
+          type:
+          - string
+          - 'null'
+        caseStatus:
+          type:
+          - string
+          - 'null'
+        customerName:
+          type:
+          - string
+          - 'null'
+        customerType:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        productType:
+          type:
+          - string
+          - 'null'
+        productSubType:
+          type:
+          - string
+          - 'null'
+        productOptionName:
+          type:
+          - string
+          - 'null'
+        writingCarrierName:
+          type:
+          - string
+          - 'null'
+        effectiveDate:
+          type:
+          - string
+          - 'null'
+        expirationDate:
+          type:
+          - string
+          - 'null'
+        signedDate:
+          type:
+          - string
+          - 'null'
+        policyDate:
+          type:
+          - string
+          - 'null'
+        cancellationDate:
+          type:
+          - string
+          - 'null'
+        reinstatementDate:
+          type:
+          - string
+          - 'null'
+        firstPaymentDate:
+          type:
+          - string
+          - 'null'
+        firstProcessedDate:
+          type:
+          - string
+          - 'null'
+        premiumAmount:
+          type:
+          - string
+          - 'null'
+        commissionableAmount:
+          type:
+          - string
+          - 'null'
+        excessAmount:
+          type:
+          - string
+          - 'null'
+        commissionsExpected:
+          type:
+          - string
+          - 'null'
+        customerPaidPremiumAmount:
+          type:
+          - string
+          - 'null'
+        splitPercentage:
+          type:
+          - string
+          - 'null'
+        paymentMode:
+          type:
+          - string
+          - 'null'
+        policyTermMonths:
+          type:
+          - integer
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        dba:
+          type:
+          - string
+          - 'null'
+        internalId:
+          type:
+          - string
+          - 'null'
+        transactionType:
+          type:
+          - string
+          - 'null'
+        accountType:
+          type:
+          - string
+          - 'null'
+        groupId:
+          type:
+          - string
+          - 'null'
+        groupName:
+          type:
+          - string
+          - 'null'
+        aggregationId:
+          type:
+          - string
+          - 'null'
+        aggregationPrimary:
+          type:
+          - boolean
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        documentId:
+          type:
+          - string
+          - 'null'
+        processingStatus:
+          type:
+          - string
+          - 'null'
+        commissionProfileId:
+          type:
+          - string
+          - 'null'
+        syncId:
+          type:
+          - string
+          - 'null'
+        applicationDate:
+          type:
+          - string
+          - 'null'
+        issueDate:
+          type:
+          - string
+          - 'null'
+        issueAge:
+          type:
+          - integer
+          - 'null'
+        agentName:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+        updatedAt:
+          type:
+          - string
+          - 'null'
+        customFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomFieldValueSchema'
+        receivables:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              party:
+                type: string
+              compensationType:
+                type:
+                - string
+                - 'null'
+              rate:
+                type:
+                - string
+                - 'null'
+              amount:
+                type:
+                - string
+                - 'null'
+              contactId:
+                type:
+                - string
+                - 'null'
+              contactName:
+                type:
+                - string
+                - 'null'
+              date:
+                type:
+                - string
+                - 'null'
+            required:
+            - id
+            - party
+      required:
+      - strId
+      - policyId
+      - policyStatus
+      - caseStatus
+      - customerName
+      - customerType
+      - productName
+      - productType
+      - productSubType
+      - productOptionName
+      - writingCarrierName
+      - effectiveDate
+      - expirationDate
+      - signedDate
+      - policyDate
+      - cancellationDate
+      - reinstatementDate
+      - firstPaymentDate
+      - firstProcessedDate
+      - premiumAmount
+      - commissionableAmount
+      - excessAmount
+      - commissionsExpected
+      - customerPaidPremiumAmount
+      - splitPercentage
+      - paymentMode
+      - policyTermMonths
+      - geoState
+      - notes
+      - dba
+      - internalId
+      - transactionType
+      - accountType
+      - groupId
+      - groupName
+      - aggregationId
+      - aggregationPrimary
+      - type
+      - tags
+      - documentId
+      - processingStatus
+      - commissionProfileId
+      - syncId
+      - applicationDate
+      - issueDate
+      - issueAge
+      - agentName
+      - createdAt
+      - updatedAt
+      - customFields
+      - receivables
+    PolicyDocumentUploadTicketSchema:
+      type: object
+      properties:
+        documentStrId:
+          type: string
+        signedPutUrl:
+          type: string
+        mimeType:
+          type: string
+      required:
+      - documentStrId
+      - signedPutUrl
+      - mimeType
+    AmsCreatePolicySchema:
+      type: object
+      properties:
+        policyId:
+          type: string
+        policyStatus:
+          type: string
+        caseStatus:
+          type: string
+        customerId:
+          type: integer
+        productName:
+          type: string
+        productType:
+          type: string
+        productSubType:
+          type: string
+        productOptionName:
+          type: string
+        writingCarrierName:
+          type: string
+        effectiveDate:
+          type: string
+        expirationDate:
+          type: string
+        signedDate:
+          type: string
+        policyDate:
+          type: string
+        cancellationDate:
+          type: string
+        reinstatementDate:
+          type: string
+        firstPaymentDate:
+          type: string
+        firstProcessedDate:
+          type: string
+        premiumAmount:
+          type: number
+        commissionablePremiumAmount:
+          type: number
+        excessAmount:
+          type: number
+        commissionsExpected:
+          type: number
+        customerPaidPremiumAmount:
+          type: number
+        splitPercentage:
+          type: number
+        paymentMode:
+          type: string
+        policyTermMonths:
+          type: integer
+        geoState:
+          type: string
+        notes:
+          type: string
+        dba:
+          type: string
+        internalId:
+          type: string
+        transactionType:
+          type: string
+        accountType:
+          type: string
+        groupId:
+          type: string
+        groupName:
+          type: string
+        aggregationId:
+          type: string
+        aggregationPrimary:
+          type: boolean
+        type:
+          type: string
+        documentId:
+          type: string
+        processingStatus:
+          type: string
+        commissionProfileId:
+          type: string
+        syncId:
+          type: string
+        customFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsCustomFieldValueInputSchema'
+    AmsPolicyListQuerySchema:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+        search:
+          type: string
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmsSortSchema'
+          default: []
+        filter:
+          $ref: '#/components/schemas/AmsFilterNodeSchema'
+      required:
+      - page
+      - pageSize
+      - sort
+    AmsCustomFieldValueInputSchema:
+      type: object
+      properties:
+        fieldDefinitionId:
+          type: string
+          minLength: 1
+        valueText:
+          type:
+          - string
+          - 'null'
+        valueNumber:
+          type:
+          - number
+          - 'null'
+        valueBoolean:
+          type:
+          - boolean
+          - 'null'
+        valueDate:
+          type:
+          - string
+          - 'null'
+        valueJson:
+          type:
+          - string
+          - 'null'
+      required:
+      - fieldDefinitionId
+    PolicyTeamMemberContactSchema:
+      type: object
+      properties:
+        strId:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        agentCode:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+      required:
+      - strId
+      - firstName
+      - lastName
+      - name
+      - email
+      - phone
+      - agentCode
+      - companyName
+    AmsFilterConditionSchema:
+      type: object
+      properties:
+        field:
+          type: string
+          minLength: 1
+        op:
+          type: string
+          enum:
+          - eq
+          - ne
+          - in
+          - gt
+          - gte
+          - lt
+          - lte
+          - contains
+          - starts_with
+          - ends_with
+          - exists
+          - is_empty
+          - is_not_empty
+        value:
+          $ref: '#/components/schemas/AmsFilterValueSchema'
+      required:
+      - field
+      - op
+    AmsBulkUpdatePolicyDataSchema:
+      type: object
+      properties:
+        policyId:
+          type:
+          - string
+          - 'null'
+        policyStatus:
+          type:
+          - string
+          - 'null'
+        caseStatus:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - integer
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        productType:
+          type:
+          - string
+          - 'null'
+        productSubType:
+          type:
+          - string
+          - 'null'
+        writingCarrierName:
+          type:
+          - string
+          - 'null'
+        effectiveDate:
+          type:
+          - string
+          - 'null'
+        expirationDate:
+          type:
+          - string
+          - 'null'
+        premiumAmount:
+          type:
+          - number
+          - 'null'
+        commissionablePremiumAmount:
+          type:
+          - number
+          - 'null'
+        paymentMode:
+          type:
+          - string
+          - 'null'
+        geoState:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+    AmsCreatePolicyDocumentSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        fileName:
+          type: string
+          minLength: 1
+        mimeType:
+          type: string
+          minLength: 1
+        fileSize:
+          type: integer
+          minimum: 0
+        expiryDate:
+          type: string
+      required:
+      - name
+      - fileName
+      - mimeType
   securitySchemes:
     BearerAuth:
       type: http
